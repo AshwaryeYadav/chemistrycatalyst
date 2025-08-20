@@ -78,7 +78,44 @@ export function LightspeedHero() {
               transformStyle: 'preserve-3d'
             }}
           >
-            LIGHTSPEED
+            <span className="relative inline-block group">
+              <span className="group-hover:opacity-0 transition-opacity duration-300">L</span>
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <svg 
+                  width="40" 
+                  height="60" 
+                  viewBox="0 0 40 60" 
+                  className="text-white fill-current"
+                >
+                  {/* Campanile base */}
+                  <rect x="8" y="45" width="24" height="15" fill="currentColor" opacity="0.9" />
+                  
+                  {/* Main tower */}
+                  <rect x="12" y="15" width="16" height="30" fill="currentColor" opacity="0.8" />
+                  
+                  {/* Clock chamber */}
+                  <rect x="10" y="12" width="20" height="8" fill="currentColor" opacity="0.9" />
+                  
+                  {/* Clock face */}
+                  <circle cx="20" cy="16" r="3" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.7" />
+                  <circle cx="20" cy="16" r="0.5" fill="currentColor" opacity="0.7" />
+                  
+                  {/* Spire */}
+                  <polygon points="20,2 14,12 26,12" fill="currentColor" opacity="0.95" />
+                  
+                  {/* Architectural details */}
+                  <rect x="11" y="20" width="18" height="1" fill="currentColor" opacity="0.6" />
+                  <rect x="11" y="30" width="18" height="1" fill="currentColor" opacity="0.6" />
+                  <rect x="11" y="40" width="18" height="1" fill="currentColor" opacity="0.6" />
+                  
+                  {/* Windows */}
+                  <rect x="15" y="25" width="2" height="3" fill="currentColor" opacity="0.4" />
+                  <rect x="23" y="25" width="2" height="3" fill="currentColor" opacity="0.4" />
+                  <rect x="15" y="35" width="2" height="3" fill="currentColor" opacity="0.4" />
+                  <rect x="23" y="35" width="2" height="3" fill="currentColor" opacity="0.4" />
+                </svg>
+              </div>
+            </span>IGHTSPEED
             <br />
             <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>
           </h1>

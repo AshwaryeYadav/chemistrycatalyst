@@ -56,13 +56,13 @@ export function LightspeedHero() {
   return (
     <div 
       ref={containerRef}
-      className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden"
+      className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden breathing-page edge-vignette noise-texture"
       style={{ perspective: '1000px' }}
     >
       {/* Subtle tech atmosphere */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-30" />
       
-      <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
+      <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10 depth-layer p-16 rounded-lg">
         {/* Logo/Mark - small at top */}
         <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.2s_forwards]">
           <img 
@@ -75,7 +75,7 @@ export function LightspeedHero() {
         {/* Main Title - Less Nike-like */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1 
-            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white mb-8 transition-transform duration-200 ease-out"
+            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white mb-8 transition-transform duration-200 ease-out gentle-title-glow letter-spacing-animation"
             style={{
               transform: `rotateX(${-mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(20px)`,
               textShadow: `

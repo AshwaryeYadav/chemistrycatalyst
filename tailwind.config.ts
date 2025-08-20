@@ -61,10 +61,12 @@ export default {
 			backgroundImage: {
 				'gradient-elite': 'var(--gradient-elite)',
 				'gradient-subtle': 'var(--gradient-subtle)',
+				'gradient-hero': 'var(--gradient-hero)',
 			},
 			boxShadow: {
 				'elite': 'var(--shadow-elite)',
 				'glow': 'var(--shadow-glow)',
+				'premium': 'var(--shadow-premium)',
 			},
 			transitionTimingFunction: {
 				'elite': 'cubic-bezier(0.4, 0, 0.2, 1)',

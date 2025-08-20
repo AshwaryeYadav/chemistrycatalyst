@@ -46,11 +46,13 @@ All colors MUST be HSL.
     
     /* Gradients for exclusivity */
     --gradient-elite: linear-gradient(135deg, hsl(var(--elite-gold)) 0%, hsl(var(--elite-silver)) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(240 20% 1%) 0%, hsl(var(--background)) 50%, hsl(240 15% 3%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(240 30% 2%) 0%, hsl(var(--background)) 50%, hsl(280 20% 1%) 100%);
     
     /* Shadows for depth */
     --shadow-elite: 0 20px 60px -10px hsl(0 0% 0% / 0.4);
     --shadow-glow: 0 0 40px hsl(var(--elite-gold) / 0.1);
+    --shadow-premium: 0 0 60px hsl(var(--elite-gold) / 0.2), 0 0 120px hsl(var(--elite-gold) / 0.1);
     
     /* Animations */
     --transition-elite: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);

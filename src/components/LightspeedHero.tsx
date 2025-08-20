@@ -59,8 +59,9 @@ export function LightspeedHero() {
       className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden"
       style={{ perspective: '1000px' }}
     >
-      {/* Subtle tech atmosphere */}
+      {/* Subtle tech atmosphere with noise texture */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-30" />
+      <div className="absolute inset-0 opacity-[0.015] bg-noise" />
       
       <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
         {/* Logo/Mark - small at top */}
@@ -128,7 +129,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button 
             size="xl"
-            className="w-full py-6 text-lg font-semibold text-white border border-white/20 rounded-lg backdrop-blur-lg bg-white/10 shadow-button hover:shadow-button-hover hover:bg-white/20 hover:scale-[1.02] transition-all duration-500"
+            className="w-full py-6 text-lg font-semibold text-white border border-white/20 rounded-lg backdrop-blur-lg bg-white/10 shadow-button hover:shadow-button-hover hover:bg-white/20 transition-all duration-500"
             onClick={() => window.open('https://form.typeform.com/to/vMxYsW4Y', '_blank')}
           >
             Apply Now

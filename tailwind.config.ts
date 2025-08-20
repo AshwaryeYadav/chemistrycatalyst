@@ -56,12 +56,14 @@ export default {
 					gold: 'hsl(var(--elite-gold))',
 					silver: 'hsl(var(--elite-silver))',
 					accent: 'hsl(var(--elite-accent))',
+					blue: 'hsl(var(--elite-blue))',
 				}
 			},
 			backgroundImage: {
 				'gradient-elite': 'var(--gradient-elite)',
 				'gradient-subtle': 'var(--gradient-subtle)',
 				'gradient-hero': 'var(--gradient-hero)',
+				'gradient-text': 'var(--gradient-text)',
 			},
 			boxShadow: {
 				'elite': 'var(--shadow-elite)',
@@ -72,7 +74,8 @@ export default {
 				'elite': 'cubic-bezier(0.4, 0, 0.2, 1)',
 			},
 			fontFamily: {
-				'sans': ['Inter', 'system-ui', 'sans-serif'],
+				'sans': ['Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+				'display': ['var(--font-display)', 'Inter', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

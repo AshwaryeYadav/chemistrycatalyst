@@ -39,20 +39,25 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
 
-    /* Elite Color Palette */
-    --elite-gold: 45 90% 80%;
-    --elite-silver: 0 0% 80%;
-    --elite-accent: 240 100% 70%;
+    /* Elite Color Palette - Darker, cooler */
+    --elite-gold: 45 85% 70%;
+    --elite-silver: 0 0% 85%;
+    --elite-accent: 270 100% 75%;
+    --elite-blue: 240 100% 80%;
     
-    /* Gradients for exclusivity */
-    --gradient-elite: linear-gradient(135deg, hsl(var(--elite-gold)) 0%, hsl(var(--elite-silver)) 100%);
+    /* Gradients for exclusivity - much darker and cooler */
+    --gradient-elite: linear-gradient(135deg, hsl(var(--elite-gold)) 0%, hsl(var(--elite-blue)) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(240 20% 1%) 0%, hsl(var(--background)) 50%, hsl(240 15% 3%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(240 30% 2%) 0%, hsl(var(--background)) 50%, hsl(280 20% 1%) 100%);
+    --gradient-hero: radial-gradient(ellipse at center, hsl(0 0% 0%) 0%, hsl(240 100% 1%) 50%, hsl(0 0% 0%) 100%);
+    --gradient-text: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(var(--elite-silver)) 50%, hsl(var(--elite-accent)) 100%);
     
-    /* Shadows for depth */
-    --shadow-elite: 0 20px 60px -10px hsl(0 0% 0% / 0.4);
-    --shadow-glow: 0 0 40px hsl(var(--elite-gold) / 0.1);
-    --shadow-premium: 0 0 60px hsl(var(--elite-gold) / 0.2), 0 0 120px hsl(var(--elite-gold) / 0.1);
+    /* Shadows for depth - more dramatic */
+    --shadow-elite: 0 20px 60px -10px hsl(0 0% 0% / 0.8);
+    --shadow-glow: 0 0 80px hsl(var(--elite-accent) / 0.3), 0 0 120px hsl(var(--elite-blue) / 0.2);
+    --shadow-premium: 0 0 100px hsl(var(--elite-accent) / 0.4), 0 0 200px hsl(var(--elite-blue) / 0.3);
+    
+    /* Typography */
+    --font-display: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
     
     /* Animations */
     --transition-elite: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -101,6 +106,24 @@ All colors MUST be HSL.
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+  
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(1deg);
     }
   }
 }

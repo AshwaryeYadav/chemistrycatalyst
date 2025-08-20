@@ -4,47 +4,64 @@ import lightspeedLogo from "@/assets/lightspeed-logo.png";
 export function LightspeedHero() {
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden">
-      {/* Subtle background glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-elite-gold/5 via-transparent to-elite-accent/5 opacity-50" />
+      {/* Dramatic background effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-elite-accent/10 via-transparent to-elite-blue/10" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-elite-accent/5 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-elite-blue/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       
-      <div className="text-center max-w-2xl mx-auto px-8 py-20 relative z-10">
-        {/* Logo */}
-        <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.2s_forwards]">
-          <img 
-            src={lightspeedLogo} 
-            alt="Lightspeed Venture Partners" 
-            className="h-10 w-auto mx-auto mb-12 opacity-80"
-          />
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
-            <span className="bg-gradient-elite bg-clip-text text-transparent">
-              Lightspeed Fellows
+      <div className="text-center max-w-5xl mx-auto px-8 py-20 relative z-10">
+        {/* Lightspeed Branding */}
+        <div className="mb-20 opacity-0 animate-[fade-in_0.8s_ease-out_0.2s_forwards]">
+          {/* Logo - styled like lsvp.com */}
+          <div className="flex items-center justify-center mb-16">
+            <img 
+              src={lightspeedLogo} 
+              alt="Lightspeed" 
+              className="h-6 w-auto opacity-60 mr-3"
+            />
+            <h2 className="text-2xl font-display font-normal tracking-wide text-foreground/80">
+              Lightspeed
+            </h2>
+          </div>
+          
+          {/* Main Hero Text - inspired by their bold typography */}
+          <h1 className="text-7xl md:text-9xl font-display font-black tracking-tight leading-[0.85] mb-8">
+            <span className="block bg-gradient-text bg-clip-text text-transparent">
+              FELLOWS
             </span>
           </h1>
+          
+          {/* Subtitle with cool effect */}
+          <div className="text-2xl md:text-3xl font-light text-foreground/60 tracking-widest uppercase">
+            Elite • Technical • Berkeley
+          </div>
         </div>
 
-        {/* Description */}
-        <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards] space-y-6">
-          <p className="text-2xl md:text-3xl text-foreground/90 font-light leading-relaxed">
-            An elite year-long fellowship for Berkeley's top technical minds
+        {/* Description - more minimal and impactful */}
+        <div className="mb-20 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
+          <p className="text-xl text-foreground/70 font-light leading-relaxed max-w-2xl mx-auto mb-8">
+            Year-long mentorship from Partners at Lightspeed
           </p>
           
-          <p className="text-lg text-muted-foreground/80 leading-relaxed max-w-xl mx-auto">
-            1:1 mentorship from Partners at Lightspeed — investors behind{" "}
-            <span className="text-foreground font-semibold bg-gradient-elite bg-clip-text text-transparent">Stripe</span>,{" "}
-            <span className="text-foreground font-semibold bg-gradient-elite bg-clip-text text-transparent">Anthropic</span>, and{" "}
-            <span className="text-foreground font-semibold bg-gradient-elite bg-clip-text text-transparent">Anduril</span>
-          </p>
+          {/* Company highlights with gradient */}
+          <div className="flex flex-wrap justify-center gap-6 text-lg">
+            <span className="bg-gradient-elite bg-clip-text text-transparent font-medium">Stripe</span>
+            <span className="text-foreground/40">•</span>
+            <span className="bg-gradient-elite bg-clip-text text-transparent font-medium">Anthropic</span>
+            <span className="text-foreground/40">•</span>
+            <span className="bg-gradient-elite bg-clip-text text-transparent font-medium">Anduril</span>
+          </div>
         </div>
 
-        {/* CTA */}
+        {/* CTA - much cooler */}
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards]">
           <Button 
             variant="exclusive" 
             size="xl"
-            className="px-12 py-4 text-lg font-semibold shadow-premium hover:shadow-glow hover:scale-105 transition-all duration-300 hover:bg-gradient-elite hover:text-primary-foreground"
+            className="px-16 py-6 text-base font-medium tracking-wider uppercase border-2 border-foreground/20 bg-transparent text-foreground hover:bg-foreground hover:text-background hover:border-foreground hover:shadow-premium transition-all duration-500 hover:scale-105"
             onClick={() => window.open('https://form.typeform.com/to/vMxYsW4Y', '_blank')}
           >
-            Apply Now
+            Apply
           </Button>
         </div>
       </div>

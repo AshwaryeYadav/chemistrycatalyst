@@ -64,18 +64,22 @@ export default {
 				'gradient-subtle': 'var(--gradient-subtle)',
 				'gradient-hero': 'var(--gradient-hero)',
 				'gradient-text': 'var(--gradient-text)',
+				'gradient-button': 'var(--gradient-button)',
 			},
 			boxShadow: {
 				'elite': 'var(--shadow-elite)',
 				'glow': 'var(--shadow-glow)',
 				'premium': 'var(--shadow-premium)',
+				'button': 'var(--shadow-button)',
+				'button-hover': 'var(--shadow-button-hover)',
 			},
 			transitionTimingFunction: {
 				'elite': 'cubic-bezier(0.4, 0, 0.2, 1)',
 			},
 			fontFamily: {
 				'sans': ['Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-				'display': ['var(--font-display)', 'Inter', 'sans-serif'],
+				'display': ['Inter', 'SF Pro Display', 'sans-serif'],
+				'mono': ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

@@ -88,10 +88,10 @@ export function LightspeedHero() {
         <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
             {">"} A year-long fellowship for Berkeley's top{" "}
-            <span className="text-white font-medium inline-block w-20 text-left">
+            <span className="text-white font-medium inline-block w-20">
               {descriptions[currentDescription]}
             </span>
-            .
+            {"."}
           </div>
           <div 
             className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"

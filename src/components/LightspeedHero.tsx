@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
+import { LightspeedLogo3D } from "./LightspeedLogo3D";
 
 export function LightspeedHero() {
   const companyGroups = [
@@ -62,12 +63,17 @@ export function LightspeedHero() {
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-30" />
       <div className="absolute inset-0 opacity-[0.015] bg-noise" />
       
-      <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
+      <div className="max-w-4xl mx-auto px-8 py-20 text-center relative z-10">
+        
+        {/* 3D Logo */}
+        <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.2s_forwards]">
+          <LightspeedLogo3D className="mx-auto" />
+        </div>
         
         {/* Main Title - Less Nike-like */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1 
-            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white mb-8 transition-transform duration-200 ease-out"
+            className="text-4xl md:text-6xl font-display font-semibold tracking-tight leading-tight text-white mb-8 transition-transform duration-200 ease-out"
             style={{
               transform: `rotateX(${-mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(20px)`,
               textShadow: `

@@ -86,12 +86,27 @@ export function LightspeedHero() {
 
         {/* Description - Typewriter font with cycling effect */}
         <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
-          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
+          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide whitespace-nowrap">
             {">"} A year-long fellowship for Berkeley's top{" "}
-            <span className="text-white font-medium inline-block w-20">
-              {descriptions[currentDescription]}
+            <span className="inline-grid items-baseline relative">
+              {descriptions.map((desc, index) => (
+                <span
+                  key={desc}
+                  className={`text-white font-medium col-start-1 row-start-1 transition-all duration-300 ease-in-out ${
+                    index === currentDescription 
+                      ? 'opacity-100 translate-y-0' 
+                      : 'opacity-0 translate-y-1'
+                  }`}
+                >
+                  {desc}
+                </span>
+              ))}
+              {/* Width sentinel - invisible but determines container width */}
+              <span className="text-white font-medium col-start-1 row-start-1 invisible">
+                entrepreneurs
+              </span>
             </span>
-            {"."}
+            <span className="ml-[0.1ch]">.</span>
           </div>
           <div 
             className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"

@@ -52,6 +52,35 @@ export function LightspeedHero() {
     }
   }, []);
 
+  // Inject 3D Campanile hover styles
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .hover-campanile-container:hover .campanile-l {
+        opacity: 0 !important;
+        transform: rotateY(28deg) translateZ(-36px) scale(0.92) !important;
+      }
+      .hover-campanile-container:hover .campanile-tower {
+        opacity: 1 !important;
+        transform: rotateY(0deg) translateZ(0px) scale(1) !important;
+      }
+      .hover-campanile-container:hover + .campanile-rest {
+        text-shadow: 0 12px 26px rgba(0,0,0,0.45) !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .campanile-l, .campanile-tower {
+          transition: opacity 0.25s ease !important;
+          transform: none !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   return (
     <div 
       ref={containerRef}
@@ -78,44 +107,71 @@ export function LightspeedHero() {
               transformStyle: 'preserve-3d'
             }}
           >
-            <span className="relative inline-block group">
-              <span className="group-hover:opacity-0 transition-opacity duration-300">L</span>
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <svg 
-                  width="40" 
-                  height="60" 
-                  viewBox="0 0 40 60" 
-                  className="text-white fill-current"
+            <span 
+              className="relative inline-block hover-campanile-container"
+              style={{ 
+                perspective: '900px',
+                display: 'inline-block',
+                width: '0.76em',
+                aspectRatio: '5 / 6.2'
+              }}
+            >
+              <svg 
+                width="100%" 
+                height="100%" 
+                viewBox="0 0 100 120" 
+                className="text-white"
+                style={{ display: 'block' }}
+              >
+                {/* Chunky block "L" */}
+                <path 
+                  className="campanile-l fill-current transition-all duration-[600ms] ease-[cubic-bezier(0.2,0.7,0.2,1)]"
+                  style={{
+                    opacity: 1,
+                    transform: 'rotateY(0deg) translateZ(0px) scale(1)',
+                    transformBox: 'fill-box',
+                    transformOrigin: '50% 60%',
+                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                  }}
+                  d="M22 8v104h66v-22H44V8H22Z"
+                />
+                
+                {/* Berkeley Campanile silhouette */}
+                <g 
+                  className="campanile-tower fill-current transition-all duration-[600ms] ease-[cubic-bezier(0.2,0.7,0.2,1)]"
+                  style={{
+                    opacity: 0,
+                    transform: 'rotateY(-32deg) translateZ(-36px) scale(0.92)',
+                    transformBox: 'fill-box',
+                    transformOrigin: '50% 60%',
+                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                  }}
                 >
-                  {/* Campanile base */}
-                  <rect x="8" y="45" width="24" height="15" fill="currentColor" opacity="0.9" />
+                  {/* Main shaft */}
+                  <rect x="43" y="38" width="14" height="72" />
                   
-                  {/* Main tower */}
-                  <rect x="12" y="15" width="16" height="30" fill="currentColor" opacity="0.8" />
-                  
-                  {/* Clock chamber */}
-                  <rect x="10" y="12" width="20" height="8" fill="currentColor" opacity="0.9" />
+                  {/* Belfry chamber with arched openings */}
+                  <rect x="41" y="30" width="18" height="12" />
+                  <circle cx="46" cy="36" r="3" fill="#0b0b0b" />
+                  <circle cx="54" cy="36" r="3" fill="#0b0b0b" />
                   
                   {/* Clock face */}
-                  <circle cx="20" cy="16" r="3" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.7" />
-                  <circle cx="20" cy="16" r="0.5" fill="currentColor" opacity="0.7" />
+                  <circle cx="50" cy="50" r="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  <circle cx="50" cy="50" r="0.8" fill="currentColor" />
                   
-                  {/* Spire */}
-                  <polygon points="20,2 14,12 26,12" fill="currentColor" opacity="0.95" />
+                  {/* Base cap */}
+                  <rect x="39" y="26" width="22" height="4" />
+                  
+                  {/* Pointed spire */}
+                  <polygon points="50,16 64,26 36,26" />
                   
                   {/* Architectural details */}
-                  <rect x="11" y="20" width="18" height="1" fill="currentColor" opacity="0.6" />
-                  <rect x="11" y="30" width="18" height="1" fill="currentColor" opacity="0.6" />
-                  <rect x="11" y="40" width="18" height="1" fill="currentColor" opacity="0.6" />
-                  
-                  {/* Windows */}
-                  <rect x="15" y="25" width="2" height="3" fill="currentColor" opacity="0.4" />
-                  <rect x="23" y="25" width="2" height="3" fill="currentColor" opacity="0.4" />
-                  <rect x="15" y="35" width="2" height="3" fill="currentColor" opacity="0.4" />
-                  <rect x="23" y="35" width="2" height="3" fill="currentColor" opacity="0.4" />
-                </svg>
-              </div>
-            </span>IGHTSPEED
+                  <rect x="44" y="55" width="12" height="1" opacity="0.7" />
+                  <rect x="44" y="70" width="12" height="1" opacity="0.7" />
+                  <rect x="44" y="85" width="12" height="1" opacity="0.7" />
+                </g>
+              </svg>
+            </span><span className="campanile-rest transition-all duration-300">IGHTSPEED</span>
             <br />
             <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>
           </h1>

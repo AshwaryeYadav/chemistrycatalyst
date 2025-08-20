@@ -57,8 +57,8 @@ export function LightspeedHero() {
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            {">"} Backed by the investors behind{" "}
-            <span className="inline-block transition-all duration-500 ease-in-out transform">
+            {">"} Backed by investors behind{" "}
+            <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
               <span className="text-white font-medium">
                 {companyGroups[currentGroup][0]}
               </span>
@@ -66,15 +66,12 @@ export function LightspeedHero() {
               <span className="text-white font-medium">
                 {companyGroups[currentGroup][1]}
               </span>
-              {", and "}
+              {", "}
               <span className="text-white font-medium">
                 {companyGroups[currentGroup][2]}
               </span>
             </span>
             .
-          </div>
-          <div className="text-xs font-mono text-white/30 mt-2">
-            {isPaused ? "// paused" : "// cycling..."}
           </div>
         </div>
 

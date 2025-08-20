@@ -11,7 +11,10 @@ export function LightspeedHero() {
     ["Affirm", "MindBody", "Nicira"]
   ];
 
+  const descriptions = ["builders", "founders", "engineers", "hackers"];
+
   const [currentGroup, setCurrentGroup] = useState(0);
+  const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
@@ -22,6 +25,13 @@ export function LightspeedHero() {
       return () => clearInterval(interval);
     }
   }, [isPaused, companyGroups.length]);
+
+  useEffect(() => {
+    const descInterval = setInterval(() => {
+      setCurrentDescription((prev) => (prev + 1) % descriptions.length);
+    }, 4000);
+    return () => clearInterval(descInterval);
+  }, [descriptions.length]);
 
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden">
@@ -50,7 +60,11 @@ export function LightspeedHero() {
         {/* Description - Typewriter font with cycling effect */}
         <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
-            {">"} A year-long fellowship for Berkeley's top builders.
+            {">"} A year-long fellowship for Berkeley's top{" "}
+            <span className="text-white font-medium transition-all duration-500 ease-in-out">
+              {descriptions[currentDescription]}
+            </span>
+            .
           </div>
           <div 
             className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"

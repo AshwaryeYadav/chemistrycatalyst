@@ -1,7 +1,28 @@
 import { Button } from "@/components/ui/button";
 import lightspeedLogo from "@/assets/lightspeed-logo.png";
+import { useState, useEffect } from "react";
 
 export function LightspeedHero() {
+  const companyGroups = [
+    ["Stripe", "Anthropic", "Anduril"],
+    ["Wiz", "Glean", "Rubrik"],
+    ["Snap", "Mulesoft", "Nest"],
+    ["AppDynamics", "Nutanix", "UiPath"],
+    ["Affirm", "MindBody", "Nicira"]
+  ];
+
+  const [currentGroup, setCurrentGroup] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (!isPaused) {
+      const interval = setInterval(() => {
+        setCurrentGroup((prev) => (prev + 1) % companyGroups.length);
+      }, 2500);
+      return () => clearInterval(interval);
+    }
+  }, [isPaused, companyGroups.length]);
+
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden">
       {/* Subtle tech atmosphere */}
@@ -26,14 +47,35 @@ export function LightspeedHero() {
           </h1>
         </div>
 
-        {/* Description - Typewriter font */}
+        {/* Description - Typewriter font with cycling effect */}
         <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
-          <p className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
+          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
             {">"} A year-long fellowship for Berkeley's top builders.
-          </p>
-          <p className="text-base font-mono text-white/60 tracking-wide">
-            {">"} Backed by the investors behind Stripe, Anthropic, and Anduril.
-          </p>
+          </div>
+          <div 
+            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            {">"} Backed by the investors behind{" "}
+            <span className="inline-block transition-all duration-500 ease-in-out transform">
+              <span className="text-white font-medium">
+                {companyGroups[currentGroup][0]}
+              </span>
+              {", "}
+              <span className="text-white font-medium">
+                {companyGroups[currentGroup][1]}
+              </span>
+              {", and "}
+              <span className="text-white font-medium">
+                {companyGroups[currentGroup][2]}
+              </span>
+            </span>
+            .
+          </div>
+          <div className="text-xs font-mono text-white/30 mt-2">
+            {isPaused ? "// paused" : "// cycling..."}
+          </div>
         </div>
 
         {/* Glowing CTA Button */}

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import lightspeedLogo from "@/assets/lightspeed-logo.png";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function LightspeedHero() {
   const companyGroups = [
@@ -16,6 +16,8 @@ export function LightspeedHero() {
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isPaused) {
@@ -33,8 +35,30 @@ export function LightspeedHero() {
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
 
+  // Mouse tracking for 3D effects
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
+        const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
+        setMousePosition({ x: x * 20, y: y * 20 }); // Scale the movement
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('mousemove', handleMouseMove);
+      return () => container.removeEventListener('mousemove', handleMouseMove);
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden">
+    <div 
+      ref={containerRef}
+      className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden"
+      style={{ perspective: '1000px' }}
+    >
       {/* Subtle tech atmosphere */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-30" />
       
@@ -50,7 +74,18 @@ export function LightspeedHero() {
         
         {/* Main Title - Less Nike-like */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
-          <h1 className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white mb-8">
+          <h1 
+            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white mb-8 transition-transform duration-200 ease-out"
+            style={{
+              transform: `rotateX(${-mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(20px)`,
+              textShadow: `
+                0 1px 0 rgba(255,255,255,0.1),
+                0 2px 4px rgba(0,0,0,0.3),
+                ${mousePosition.x * 0.5}px ${mousePosition.y * 0.5}px 10px rgba(0,0,0,0.2)
+              `,
+              transformStyle: 'preserve-3d'
+            }}
+          >
             LIGHTSPEED
             <br />
             <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>
@@ -93,7 +128,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button 
             size="xl"
-            className="w-full py-6 text-lg font-semibold bg-gradient-button text-black shadow-button hover:shadow-button-hover transition-all duration-500 hover:scale-[1.02] hover:bg-white border-0 rounded-lg"
+            className="w-full py-6 text-lg font-semibold text-white border border-white/20 rounded-lg backdrop-blur-lg bg-white/10 shadow-button hover:shadow-button-hover hover:bg-white/20 hover:scale-[1.02] transition-all duration-500"
             onClick={() => window.open('https://form.typeform.com/to/vMxYsW4Y', '_blank')}
           >
             Apply Now

@@ -41,37 +41,76 @@ function LightspeedModel() {
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
   };
 
-  // Create the Campanile tower geometry
+  // Create the Berkeley Campanile tower geometry
   const createCampanileGeometry = () => {
     const tower = new THREE.Group();
     
-    // Main tower body
-    const towerGeometry = new THREE.BoxGeometry(0.4, 4, 0.4);
-    const tower1 = new THREE.Mesh(towerGeometry, new THREE.MeshPhongMaterial({ 
-      color: '#e5e5e5',
+    // Stone material for authentic look
+    const stoneMaterial = new THREE.MeshPhongMaterial({ 
+      color: '#c8c0b0',
+      shininess: 10,
+      specular: '#999999'
+    });
+    
+    // Main tower body - tall and slender like the real Campanile
+    const mainTowerGeometry = new THREE.CylinderGeometry(0.25, 0.28, 5.5, 12);
+    const mainTower = new THREE.Mesh(mainTowerGeometry, stoneMaterial);
+    mainTower.position.y = 2.75;
+    tower.add(mainTower);
+    
+    // Base section - slightly wider
+    const baseGeometry = new THREE.CylinderGeometry(0.32, 0.35, 1, 12);
+    const base = new THREE.Mesh(baseGeometry, stoneMaterial);
+    base.position.y = 0.5;
+    tower.add(base);
+    
+    // Clock chamber - distinctive square section with arched openings
+    const clockChamberGeometry = new THREE.BoxGeometry(0.7, 1.2, 0.7);
+    const clockChamber = new THREE.Mesh(clockChamberGeometry, stoneMaterial);
+    clockChamber.position.y = 5.8;
+    tower.add(clockChamber);
+    
+    // Clock faces - four sides
+    const clockFaceGeometry = new THREE.CircleGeometry(0.2, 16);
+    const clockFaceMaterial = new THREE.MeshPhongMaterial({ 
+      color: '#ffffff',
+      shininess: 50
+    });
+    
+    // Front clock face
+    const clockFace1 = new THREE.Mesh(clockFaceGeometry, clockFaceMaterial);
+    clockFace1.position.set(0, 5.8, 0.36);
+    tower.add(clockFace1);
+    
+    // Back clock face
+    const clockFace2 = new THREE.Mesh(clockFaceGeometry, clockFaceMaterial);
+    clockFace2.position.set(0, 5.8, -0.36);
+    clockFace2.rotation.y = Math.PI;
+    tower.add(clockFace2);
+    
+    // Bell chamber - arched openings
+    const bellChamberGeometry = new THREE.CylinderGeometry(0.4, 0.42, 0.8, 8);
+    const bellChamber = new THREE.Mesh(bellChamberGeometry, stoneMaterial);
+    bellChamber.position.y = 6.8;
+    tower.add(bellChamber);
+    
+    // Spire - pointed top like the real Campanile
+    const spireGeometry = new THREE.ConeGeometry(0.15, 1.5, 8);
+    const spire = new THREE.Mesh(spireGeometry, new THREE.MeshPhongMaterial({ 
+      color: '#a0a0a0',
       shininess: 30
     }));
-    tower1.position.y = 2;
-    tower.add(tower1);
+    spire.position.y = 8;
+    tower.add(spire);
     
-    // Tower top section
-    const topGeometry = new THREE.BoxGeometry(0.6, 0.8, 0.6);
-    const towerTop = new THREE.Mesh(topGeometry, new THREE.MeshPhongMaterial({ 
-      color: '#f0f0f0',
+    // Finial - small decorative top
+    const finialGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+    const finial = new THREE.Mesh(finialGeometry, new THREE.MeshPhongMaterial({ 
+      color: '#888888',
       shininess: 50
     }));
-    towerTop.position.y = 4.4;
-    tower.add(towerTop);
-    
-    // Clock section
-    const clockGeometry = new THREE.CylinderGeometry(0.15, 0.15, 0.1, 8);
-    const clock = new THREE.Mesh(clockGeometry, new THREE.MeshPhongMaterial({ 
-      color: '#d0d0d0',
-      shininess: 80
-    }));
-    clock.position.y = 4.6;
-    clock.rotation.x = Math.PI / 2;
-    tower.add(clock);
+    finial.position.y = 8.8;
+    tower.add(finial);
     
     return tower;
   };
@@ -96,11 +135,11 @@ function LightspeedModel() {
           />
         </mesh>
         
-        {/* The Campanile tower replacing the vertical part of L */}
+        {/* The Berkeley Campanile tower replacing the vertical part of L */}
         <primitive 
           object={createCampanileGeometry()} 
-          position={[-0.75, 1, 0]}
-          scale={0.3}
+          position={[-0.75, -1, 0]}
+          scale={0.25}
         />
         
         {/* Subtle glow effect */}

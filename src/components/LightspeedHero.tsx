@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import lightspeedLogo from "@/assets/lightspeed-logo.png";
 import { useState, useEffect, useRef } from "react";
 
 export function LightspeedHero() {
@@ -64,14 +63,6 @@ export function LightspeedHero() {
       <div className="absolute inset-0 opacity-[0.015] bg-noise" />
       
       <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
-        {/* Logo/Mark - small at top */}
-        <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.2s_forwards]">
-          <img 
-            src={lightspeedLogo} 
-            alt="Lightspeed" 
-            className="h-4 w-auto mx-auto opacity-40"
-          />
-        </div>
         
         {/* Main Title - Less Nike-like */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
@@ -97,7 +88,7 @@ export function LightspeedHero() {
         <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
             {">"} A year-long fellowship for Berkeley's top{" "}
-            <span className="text-white font-medium transition-all duration-500 ease-in-out">
+            <span className="text-white font-medium">
               {descriptions[currentDescription]}
             </span>
             .
@@ -136,6 +127,13 @@ export function LightspeedHero() {
           </Button>
         </div>
       </div>
+      
+      {/* Footer */}
+      <footer className="absolute bottom-0 left-0 right-0 p-6 text-center">
+        <div className="text-xs font-mono text-white/40">
+          LIGHTSPEED © 2025
+        </div>
+      </footer>
     </div>
   );
 }

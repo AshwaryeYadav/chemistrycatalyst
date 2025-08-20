@@ -52,16 +52,25 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+				elite: {
+					gold: 'hsl(var(--elite-gold))',
+					silver: 'hsl(var(--elite-silver))',
+					accent: 'hsl(var(--elite-accent))',
 				}
+			},
+			backgroundImage: {
+				'gradient-elite': 'var(--gradient-elite)',
+				'gradient-subtle': 'var(--gradient-subtle)',
+			},
+			boxShadow: {
+				'elite': 'var(--shadow-elite)',
+				'glow': 'var(--shadow-glow)',
+			},
+			transitionTimingFunction: {
+				'elite': 'cubic-bezier(0.4, 0, 0.2, 1)',
+			},
+			fontFamily: {
+				'sans': ['Inter', 'system-ui', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

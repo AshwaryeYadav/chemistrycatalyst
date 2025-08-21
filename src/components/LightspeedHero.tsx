@@ -53,7 +53,7 @@ function SpinningL({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) {
 /** Fit the camera to the object once (and on resize) so it never crops */
 function FitCameraToObject({
   target,
-  padding = 1.25,
+  padding = 1.35,
 }: {
   target: React.RefObject<THREE.Object3D>;
   padding?: number;
@@ -67,18 +67,17 @@ function FitCameraToObject({
     box.getSize(sizeV);
     box.getCenter(center);
 
-    // compute distance from size & FOV to fit height, then pad
-    const fov = (camera as THREE.PerspectiveCamera).fov * (Math.PI / 180);
+    const persp = camera as THREE.PerspectiveCamera;
+    const fov = persp.fov * (Math.PI / 180);
     const maxDim = Math.max(sizeV.x, sizeV.y, sizeV.z);
     const dist = (maxDim / (2 * Math.tan(fov / 2))) * padding;
 
-    // place camera on its current direction at the computed distance
     const dir = new THREE.Vector3(0, 0, 1);
-    camera.getWorldDirection(dir); // current forward
-    (camera as THREE.PerspectiveCamera).position.copy(center.clone().add(dir.multiplyScalar(-dist)));
-    (camera as THREE.PerspectiveCamera).near = dist / 20;
-    (camera as THREE.PerspectiveCamera).far = dist * 20;
-    (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
+    camera.getWorldDirection(dir);
+    persp.position.copy(center.clone().add(dir.multiplyScalar(-dist)));
+    persp.near = dist / 20;
+    persp.far = dist * 20;
+    persp.updateProjectionMatrix();
     camera.lookAt(center);
   }, [camera, size.width, size.height, target, padding]);
 
@@ -91,11 +90,7 @@ const HeroL3D = memo(function HeroL3D() {
   return (
     <div
       className="mx-auto mb-6 md:mb-8"
-      style={{
-        width: "200px",          // tweak size freely
-        height: "200px",
-        overflow: "visible",     // never crop
-      }}
+      style={{ width: "200px", height: "200px", overflow: "visible" }}
       aria-hidden
     >
       <Canvas
@@ -104,13 +99,7 @@ const HeroL3D = memo(function HeroL3D() {
         shadows
         gl={{ alpha: true, antialias: true }}
         onCreated={({ gl }) => gl.setClearColor(0x000000, 0)} // transparent
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "block",
-          overflow: "visible",
-          background: "transparent",
-        }}
+        style={{ width: "100%", height: "100%", display: "block", overflow: "visible", background: "transparent" }}
       >
         <ambientLight intensity={0.28} />
         <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
@@ -121,8 +110,6 @@ const HeroL3D = memo(function HeroL3D() {
           shadow-mapSize={[1024, 1024]}
           shadow-bias={-0.0005}
         />
-
-        {/* auto-fit the camera so the mesh fully fits, then spin it */}
         <FitCameraToObject target={groupRef} padding={1.35} />
         <SpinningL groupRef={groupRef} />
       </Canvas>
@@ -173,33 +160,44 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, []);
 
-  // CSS: slightly slimmer slot and **extra headroom** so nothing clips
+  // CSS: regular I + tall Campanile state (taller than wordmark, Berkeley-esque)
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
       .i-slot{
-        --iWidth: 0.26em;       /* slimmer than default */
-        --iHeight: 1.02em;      /* a bit taller for headroom */
-        --iBaseline: -0.06em;   /* align with text baseline */
-        --towerNudgeX: 0px;
-        position: relative; display:inline-block;
+        --iWidth: 0.26em;        /* slender look */
+        --iHeight: 0.96em;       /* regular I height */
+        --iBaseline: -0.06em;    /* baseline tweak */
+        position: relative;
+        display:inline-block;
         inline-size: var(--iWidth);
         block-size: var(--iHeight);
         vertical-align: var(--iBaseline);
-        overflow: hidden;       /* keep morph contained (we gave headroom) */
+        overflow: visible;       /* allow tower to rise above line */
+        will-change: inline-size, block-size, transform;
+        transition: block-size .35s cubic-bezier(.3,.7,.2,1),
+                    inline-size .35s cubic-bezier(.3,.7,.2,1);
+      }
+      /* When morphed to the Campanile, make it taller so it stands above LIGHTSPEED */
+      .i-slot.on{
+        --iHeight: 1.36em;       /* grows taller than the cap height */
       }
       .i-layer{
-        position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
+        position:absolute; inset:0;
+        display:flex; align-items:flex-end; justify-content:center;
         will-change: opacity, transform;
         transition: opacity .28s cubic-bezier(.2,.7,.2,1),
                     transform .34s cubic-bezier(.3,.7,.2,1);
+        pointer-events:none;
       }
       .i-text  { opacity:1;  transform: translateY(0)    scale(1); }
-      .i-tower { opacity:0;  transform: translateY(3%)   scale(.985) translateX(var(--towerNudgeX)); }
-      .i-slot.on .i-text  { opacity:0; transform: translateY(-3%)  scale(.985); }
-      .i-slot.on .i-tower { opacity:1; transform: translateY(0%)   scale(1)    translateX(var(--towerNudgeX)); }
+      .i-tower { opacity:0;  transform: translateY(6%)   scale(.98); }
+      .i-slot.on .i-text  { opacity:0; transform: translateY(-4%) scale(.985); }
+      .i-slot.on .i-tower { opacity:1; transform: translateY(0%)  scale(1); }
+
       @media (prefers-reduced-motion: reduce){
         .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
+        .i-slot{ transition:none !important; }
       }
     `;
     document.head.appendChild(style);
@@ -218,7 +216,6 @@ export function LightspeedHero() {
         <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1
             className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white"
-            /* No parallax — just a light shadow */
             style={{
               display: "inline-block",
               textShadow: "0 1px 0 rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.35)",
@@ -226,52 +223,57 @@ export function LightspeedHero() {
           >
             <span>L</span>
 
-            {/* Slim, safe-fitting I / Campanile (all elements shifted DOWN to avoid clipping) */}
+            {/* Regular I ↔ Tall Campanile */}
             <span className={`i-slot ${iAsTower ? "on" : ""}`}>
-              {/* Block I */}
+              {/* Regular slim I (kept slightly shorter) */}
               <span className="i-layer i-text">
                 <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" className="text-white">
                   <g transform="translate(36,0)">
-                    {/* start lower (y=68) so there is top headroom */}
-                    <rect x={-21} y={68} width={42} height={142} fill="currentColor" />
+                    <rect x={-21} y={72} width={42} height={138} fill="currentColor" />
                   </g>
                 </svg>
               </span>
 
-              {/* Campanile I */}
+              {/* TALL, Berkeley-esque Campanile */}
               <span className="i-layer i-tower">
-                <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" className="text-white">
+                <svg width="100%" height="100%" viewBox="0 0 72 260" preserveAspectRatio="xMidYMax meet" className="text-white">
                   <g transform="translate(36,0)">
-                    {/* stem lowered to y=68, height 142 (same visual as text variant) */}
-                    <rect x={-21} y={68} width={42} height={142} fill="currentColor" />
-                    {/* cornice lowered (y=62) */}
-                    <rect x={-23} y={62} width={46} height={8} fill="currentColor" />
+                    {/* shaft (tall & slender) */}
+                    <rect x={-21} y={58} width={42} height={170} fill="currentColor" />
+
+                    {/* projecting cornice below belfry */}
+                    <rect x={-24} y={50} width={48} height={8} fill="currentColor" />
+
+                    {/* belfry band with arched openings */}
                     <defs>
-                      {/* Belfry band lowered and shortened to leave headroom */}
-                      <mask id="iBelfryMask" maskUnits="userSpaceOnUse" x={-23} y={36} width={46} height={24}>
-                        <rect x={-23} y={36} width={46} height={24} fill="white" />
+                      <mask id="campBelfryMask" maskUnits="userSpaceOnUse" x={-24} y={26} width={48} height={26}>
+                        <rect x={-24} y={26} width={48} height={26} fill="white" />
                         <g fill="black">
-                          <rect x={-18} y={40} width={8} height={16} rx={4} />
-                          <rect x={-6}  y={40} width={8} height={16} rx={4} />
-                          <rect x={6}   y={40} width={8} height={16} rx={4} />
-                          <rect x={18}  y={40} width={8} height={16} rx={4} />
+                          <!-- four arches (Berkeley-esque) -->
+                          <path d="M-18,52 v-12 a6 6 0 0 1 12 0 v12 z" />
+                          <path d="M-6,52  v-12 a6 6 0 0 1 12 0 v12 z" />
+                          <path d="M6,52   v-12 a6 6 0 0 1 12 0 v12 z" />
+                          <path d="M18,52  v-12 a6 6 0 0 1 12 0 v12 z" />
                         </g>
                       </mask>
                     </defs>
-                    <rect x={-23} y={36} width={46} height={24} fill="currentColor" mask="url(#iBelfryMask)" />
-                    {/* small clock inside the belfry band */}
-                    <g transform="translate(0,48)">
-                      <circle r={7} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={3} />
-                      <circle r={1} fill="currentColor" />
+                    <rect x={-24} y={26} width={48} height={26} fill="currentColor" mask="url(#campBelfryMask)" />
+
+                    {/* larger clock centered (Berkeley vibe) */}
+                    <g transform="translate(0,44)">
+                      <circle r={9.5} fill="rgba(0,0,0,.85)" stroke="currentColor" strokeWidth={3} />
+                      <circle r={1.2} fill="currentColor" />
                     </g>
-                    {/* Spire apex at y=34 (lower than before) with margin to top */}
+
+                    {/* pyramidal roof with tiny finial */}
                     <polygon
-                      points="0,34 23,62 -23,62"
+                      points="0,18 24,50 -24,50"
                       fill="currentColor"
                       stroke="currentColor"
                       strokeWidth={1}
                       vectorEffect="non-scaling-stroke"
                     />
+                    <rect x={-1.2} y={14} width={2.4} height={4} fill="currentColor" rx={1.2} />
                   </g>
                 </svg>
               </span>
@@ -313,7 +315,7 @@ export function LightspeedHero() {
   );
 }
 
-/** Extracted body text block to keep file tidy */
+/** Extracted body text block */
 function RotatingTextBlocks({
   descriptions,
   companyGroups,

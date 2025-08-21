@@ -357,7 +357,7 @@ export function LightspeedHero() {
 
         {/* Description - Typewriter font with cycling effect */}
         <div className="mb-12 sm:mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-3 sm:space-y-4">
-          <div className="text-sm sm:text-base lg:text-lg font-mono text-white/90 leading-relaxed tracking-wide px-2 sm:px-0">
+          <div className="text-xs sm:text-base lg:text-lg font-mono text-white/90 leading-relaxed tracking-wide px-4 sm:px-6 lg:px-0">
             {">"} A year-long fellowship for Berkeley's top{" "}
             <span className="text-white font-medium">
               {descriptions[currentDescription]}
@@ -365,7 +365,7 @@ export function LightspeedHero() {
             {"."}
           </div>
           <div 
-            className="text-xs sm:text-sm lg:text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80 whitespace-nowrap overflow-x-auto px-2 sm:px-0"
+            className="text-xs sm:text-sm lg:text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80 whitespace-nowrap overflow-x-auto px-4 sm:px-6 lg:px-0"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >

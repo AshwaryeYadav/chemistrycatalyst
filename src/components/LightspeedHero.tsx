@@ -16,7 +16,9 @@ export function LightspeedHero() {
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,23 +37,71 @@ export function LightspeedHero() {
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
 
-  // Enhanced mouse tracking for 3D rotation
+  // Enhanced unified 3D rotation system
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
-        const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
-        setMousePosition({ x: x * 30, y: y * 30 }); // Increased sensitivity for dramatic 3D effect
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        if (isDragging) {
+          const deltaX = e.clientX - dragStart.x;
+          const deltaY = e.clientY - dragStart.y;
+          
+          setRotation(prev => ({
+            ...prev,
+            y: prev.y + deltaX * 0.5,
+            x: prev.x - deltaY * 0.5
+          }));
+          
+          setDragStart({ x: e.clientX, y: e.clientY });
+        } else {
+          // Subtle hover effect when not dragging
+          const x = (e.clientX - centerX) / rect.width * 15;
+          const y = (e.clientY - centerY) / rect.height * 15;
+          
+          setRotation(prev => ({
+            ...prev,
+            x: y,
+            y: x
+          }));
+        }
       }
+    };
+
+    const handleMouseDown = (e: MouseEvent) => {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      setRotation(prev => ({
+        ...prev,
+        z: prev.z + e.deltaY * 0.1
+      }));
     };
 
     const container = containerRef.current;
     if (container) {
       container.addEventListener('mousemove', handleMouseMove);
-      return () => container.removeEventListener('mousemove', handleMouseMove);
+      container.addEventListener('mousedown', handleMouseDown);
+      document.addEventListener('mouseup', handleMouseUp);
+      container.addEventListener('wheel', handleWheel);
+      
+      return () => {
+        container.removeEventListener('mousemove', handleMouseMove);
+        container.removeEventListener('mousedown', handleMouseDown);
+        document.removeEventListener('mouseup', handleMouseUp);
+        container.removeEventListener('wheel', handleWheel);
+      };
     }
-  }, []);
+  }, [isDragging, dragStart]);
 
   // Advanced 3D Logo Styling
   useEffect(() => {
@@ -66,13 +116,27 @@ export function LightspeedHero() {
         letter-spacing: -0.02em;
       }
       
+      .unified-logo {
+        transform-style: preserve-3d;
+        transition: transform 0.1s ease-out;
+        cursor: grab;
+      }
+      
+      .unified-logo:active {
+        cursor: grabbing;
+      }
+      
       .logo-lightspeed {
         color: #ffffff;
         position: relative;
+        background: linear-gradient(135deg, #ffffff 0%, #ffffff 70%, #ED6C5C 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         text-shadow: 
-          0 2px 4px rgba(0,0,0,0.3),
-          0 4px 8px rgba(0,0,0,0.2),
-          0 8px 16px rgba(0,0,0,0.1);
+          0 2px 4px rgba(53, 58, 65, 0.4),
+          0 4px 8px rgba(53, 58, 65, 0.3),
+          0 8px 16px rgba(53, 58, 65, 0.2);
       }
       
       .logo-lightspeed::before {
@@ -81,32 +145,35 @@ export function LightspeedHero() {
         top: 0;
         left: 0;
         z-index: -1;
-        color: #6b7280;
-        transform: translateZ(-10px);
+        color: #353A41;
+        -webkit-text-fill-color: #353A41;
+        transform: translateZ(-15px);
         text-shadow: 
-          1px 1px 0 #4b5563,
-          2px 2px 0 #4b5563,
-          3px 3px 0 #6b7280,
-          4px 4px 0 #6b7280,
-          5px 5px 0 #9ca3af,
-          6px 6px 0 #9ca3af,
-          7px 7px 0 #d1d5db,
-          8px 8px 0 #d1d5db;
-      }
-      
-      .logo-lightspeed::after {
-        display: none;
+          1px 1px 0 #353A41,
+          2px 2px 0 #353A41,
+          3px 3px 0 #353A41,
+          4px 4px 0 #353A41,
+          5px 5px 0 #353A41,
+          6px 6px 0 #353A41,
+          7px 7px 0 #353A41,
+          8px 8px 0 #353A41,
+          9px 9px 0 #353A41,
+          10px 10px 0 #353A41;
       }
       
       .logo-fellows {
-        color: #9ca3af;
-        opacity: 1;
+        color: #ffffff;
+        opacity: 0.9;
         font-weight: 600;
         letter-spacing: 0.15em;
         position: relative;
+        background: linear-gradient(135deg, #ffffff 0%, #ffffff 80%, #ED6C5C 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         text-shadow: 
-          0 1px 2px rgba(0,0,0,0.4),
-          0 2px 4px rgba(0,0,0,0.3);
+          0 1px 2px rgba(53, 58, 65, 0.4),
+          0 2px 4px rgba(53, 58, 65, 0.3);
       }
       
       .logo-fellows::before {
@@ -115,17 +182,15 @@ export function LightspeedHero() {
         top: 0;
         left: 0;
         z-index: -1;
-        color: #6b7280;
-        transform: translateZ(-5px);
+        color: #353A41;
+        -webkit-text-fill-color: #353A41;
+        transform: translateZ(-8px);
         text-shadow: 
-          1px 1px 0 #4b5563,
-          2px 2px 0 #4b5563,
-          3px 3px 0 #6b7280,
-          4px 4px 0 #6b7280;
-      }
-      
-      .logo-fellows::after {
-        display: none;
+          1px 1px 0 #353A41,
+          2px 2px 0 #353A41,
+          3px 3px 0 #353A41,
+          4px 4px 0 #353A41,
+          5px 5px 0 #353A41;
       }
       
       .logo-underline {
@@ -238,24 +303,32 @@ export function LightspeedHero() {
           >
             <h1 className="text-6xl md:text-8xl font-display tracking-tight leading-tight mb-8 relative">
               <div 
-                className="logo-3d logo-lightspeed mb-4"
-                data-text="LIGHTSPEED"
+                className="unified-logo"
                 style={{
-                  transform: `rotateX(${-mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(60px)`,
+                  transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
                   transformStyle: 'preserve-3d'
                 }}
               >
-                LIGHTSPEED
-              </div>
-              <div 
-                className="logo-3d logo-fellows text-4xl md:text-6xl"
-                data-text="FELLOWS"
-                style={{
-                  transform: `rotateX(${-mousePosition.y * 0.3}deg) rotateY(${mousePosition.x * 0.3}deg) translateZ(30px)`,
-                  transformStyle: 'preserve-3d'
-                }}
-              >
-                FELLOWS
+                <div 
+                  className="logo-3d logo-lightspeed mb-4"
+                  data-text="LIGHTSPEED"
+                  style={{
+                    transform: 'translateZ(40px)',
+                    transformStyle: 'preserve-3d'
+                  }}
+                >
+                  LIGHTSPEED
+                </div>
+                <div 
+                  className="logo-3d logo-fellows text-4xl md:text-6xl"
+                  data-text="FELLOWS"
+                  style={{
+                    transform: 'translateZ(20px)',
+                    transformStyle: 'preserve-3d'
+                  }}
+                >
+                  FELLOWS
+                </div>
               </div>
               
               {/* Glowing underline */}

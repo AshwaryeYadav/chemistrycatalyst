@@ -92,18 +92,12 @@ export function LightspeedHero() {
         transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       }
       
-      /* Better positioning - align with text baseline */
-      .glyph-container {
-        transform: translateY(0px); /* Aligned with baseline */
-        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-      
       /* Hover states - seamless morphing */
       .hover-campanile-container:hover #stem {
-        transform: scaleX(0.8) scaleY(1.15) translateX(0px) translateY(-4px);
+        transform: scaleX(0.8) scaleY(1.05) translateY(-8px);
       }
       .hover-campanile-container:hover #foot {
-        transform: scaleX(0.22) scaleY(0.6) translateX(1px);
+        transform: scaleX(0.25) scaleY(0.7);
       }
       .hover-campanile-container:hover #belfry {
         opacity: 1;
@@ -122,9 +116,10 @@ export function LightspeedHero() {
         transform: scale(1) translateY(0);
       }
       
-      /* Enhanced 3D container effects with better positioning */
-      .hover-campanile-container:hover .glyph-container {
-        transform: translateY(-4px) rotateY(-8deg) scale(1.03);
+      /* Enhanced 3D container effects */
+      .hover-campanile-container:hover {
+        filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
+        transition: filter 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       
       .hover-campanile-container:hover + .campanile-rest {
@@ -150,12 +145,9 @@ export function LightspeedHero() {
       }
       
       @media (prefers-reduced-motion: reduce) {
-        #stem, #foot, #belfry, #clock, #cap, #spire, .glyph-container, .campanile-rest {
+        #stem, #foot, #belfry, #clock, #cap, #spire, .campanile-rest {
           transition: opacity 0.25s ease !important;
           transform: none !important;
-        }
-        .hover-campanile-container:hover .glyph-container {
-          transform: translateY(2px) !important;
         }
       }
     `;
@@ -178,7 +170,7 @@ export function LightspeedHero() {
       
       <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
         
-        {/* Main Title - Less Nike-like */}
+        {/* Main Title */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1 
             className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white mb-8 transition-transform duration-200 ease-out"
@@ -193,112 +185,117 @@ export function LightspeedHero() {
             }}
           >
             <span 
-              className="relative inline-block hover-campanile-container"
+              className="relative inline-block hover-campanile-container align-baseline"
               style={{ 
                 perspective: '900px',
                 display: 'inline-block',
                 width: '0.76em',
-                aspectRatio: '5 / 6.2'
+                height: '1.1em',
+                verticalAlign: 'baseline'
               }}
             >
-              <div className="glyph-container" style={{ width: '100%', height: '100%' }}>
-                <svg 
-                  id="lightspeed-logo"
-                  width="100%" 
-                  height="100%" 
-                  viewBox="0 0 200 240" 
-                  className="text-white"
-                  style={{ display: 'block' }}
+              <svg 
+                id="lightspeed-logo"
+                width="100%" 
+                height="100%" 
+                viewBox="0 0 150 200" 
+                className="text-white"
+                style={{ 
+                  display: 'block',
+                  position: 'absolute',
+                  top: '0',
+                  left: '0'
+                }}
+                preserveAspectRatio="xMidYMid meet"
+              >
+                {/* Masks for the belfry arches */}
+                <defs>
+                  <mask id="arches">
+                    <rect x="0" y="0" width="150" height="200" fill="white"/>
+                    <g fill="black">
+                      <rect x="42" y="78" width="10" height="16" rx="5"/>
+                      <rect x="55" y="78" width="10" height="16" rx="5"/>
+                      <rect x="68" y="78" width="10" height="16" rx="5"/>
+                      <rect x="81" y="78" width="10" height="16" rx="5"/>
+                    </g>
+                  </mask>
+                </defs>
+
+                {/* Vertical stem of the L -> becomes tower shaft */}
+                <rect 
+                  id="stem" 
+                  x="30" 
+                  y="30" 
+                  width="30" 
+                  height="130" 
+                  fill="currentColor"
+                  style={{
+                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                  }}
+                />
+
+                {/* Horizontal foot of the L -> slims into the shaft */}
+                <rect 
+                  id="foot" 
+                  x="30" 
+                  y="160" 
+                  width="90" 
+                  height="30" 
+                  fill="currentColor"
+                  style={{
+                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                  }}
+                />
+
+                {/* Belfry block with arches - properly centered on stem */}
+                <rect 
+                  id="belfry" 
+                  x="38" 
+                  y="65" 
+                  width="60" 
+                  height="35"
+                  fill="currentColor" 
+                  mask="url(#arches)" 
+                  style={{
+                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                  }}
+                />
+
+                {/* Clock face - centered on belfry */}
+                <g 
+                  id="clock" 
+                  transform="translate(68,90)"
+                  style={{
+                    filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))'
+                  }}
                 >
-                  {/* Masks for the belfry arches */}
-                  <defs>
-                    <mask id="arches">
-                      <rect x="0" y="0" width="200" height="240" fill="white"/>
-                      <g fill="black">
-                        <rect x="70" y="118" width="12" height="20" rx="6"/>
-                        <rect x="85" y="118" width="12" height="20" rx="6"/>
-                        <rect x="100" y="118" width="12" height="20" rx="6"/>
-                        <rect x="115" y="118" width="12" height="20" rx="6"/>
-                      </g>
-                    </mask>
-                  </defs>
+                  <circle r="8" fill="rgba(0,0,0,0.8)" stroke="currentColor" strokeWidth="2.5"/>
+                  <circle r="1" fill="currentColor"/>
+                </g>
 
-                  {/* Vertical stem of the L -> becomes tower shaft */}
-                  <rect 
-                    id="stem" 
-                    x="36" 
-                    y="40" 
-                    width="34" 
-                    height="160" 
-                    fill="currentColor"
-                    style={{
-                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                    }}
-                  />
+                {/* Cap below the spire - centered and aligned */}
+                <rect 
+                  id="cap" 
+                  x="36" 
+                  y="60" 
+                  width="64" 
+                  height="7" 
+                  fill="currentColor" 
+                  style={{
+                    filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.5))'
+                  }}
+                />
 
-                  {/* Horizontal foot of the L -> slims into the shaft */}
-                  <rect 
-                    id="foot" 
-                    x="36" 
-                    y="200" 
-                    width="120" 
-                    height="34" 
-                    fill="currentColor"
-                    style={{
-                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                    }}
-                  />
-
-                  {/* Belfry block with arches - centered */}
-                  <rect 
-                    id="belfry" 
-                    x="65" 
-                    y="100" 
-                    width="68" 
-                    height="40"
-                    fill="currentColor" 
-                    mask="url(#arches)" 
-                    style={{
-                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                    }}
-                  />
-
-                  {/* Clock face - centered */}
-                  <g 
-                    id="clock" 
-                    transform="translate(99,130)"
-                    style={{
-                      filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))'
-                    }}
-                  >
-                    <circle r="9" fill="rgba(0,0,0,0.8)" stroke="currentColor" strokeWidth="3"/>
-                    <circle r="1" fill="currentColor"/>
-                  </g>
-
-                  {/* Cap below the spire - centered */}
-                  <rect 
-                    id="cap" 
-                    x="63" 
-                    y="94" 
-                    width="72" 
-                    height="8" 
-                    fill="currentColor" 
-                    style={{
-                      filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.5))'
-                    }}
-                  />
-
-                  {/* Spire that grows upward - centered */}
-                  <polygon 
-                    id="spire"
-                    points="99,65 135,94 63,94"
-                    fill="currentColor" 
-                    style={{
-                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                    }}
-                  />
-                </svg>
-              </div>
+                {/* Spire that grows upward - properly centered */}
+                <polygon 
+                  id="spire"
+                  points="68,35 96,60 40,60"
+                  fill="currentColor" 
+                  style={{
+                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                  }}
+                />
+              </svg>
             </span><span className="campanile-rest transition-all duration-300">IGHTSPEED</span>
             <br />
             <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>

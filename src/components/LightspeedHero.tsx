@@ -51,16 +51,30 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Alignment-safe morph styles
+  // Alignment + animation styles (scoped and injected once)
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
-      /* nothing should clip the spire */
+      /* --- campanile glyph alignment --- */
+      .campanile {
+        display: inline-block;
+        width: 0.74em;            /* visual width of the L (em-based so it scales with the font) */
+        height: 1em;              /* lock to line's em box */
+        vertical-align: -0.085em; /* baseline nudge (tweak ±0.01em if your font differs) */
+        margin-right: 0.025em;    /* right side-bearing so it doesn't crowd the I */
+        perspective: 900px;
+        overflow: visible;
+      }
+      @media (min-width: 768px) {
+        .campanile { vertical-align: -0.075em; width: 0.76em; }
+      }
+
+      /* Ensure nothing clips the spire */
       .hover-campanile-container,
       .glyph-container,
       .glyph-container svg { overflow: visible; }
 
-      /* BODY = stem + foot, whose local origin is TOP-CENTER of the stem */
+      /* BODY = stem + foot, local origin: TOP-CENTER of the stem */
       #body { transform-origin: 50% 0%; transition: transform .5s cubic-bezier(.4,0,.2,1); }
 
       /* stem scales from top-center so its top NEVER moves */
@@ -69,14 +83,14 @@ export function LightspeedHero() {
       /* foot collapses into the stem: left/bottom origin keeps it welded */
       #foot { transform-origin: 0% 100%; transition: transform .5s cubic-bezier(.4,0,.2,1); }
 
-      /* tower is drawn above the same origin (negative Y); just fade/scale in */
+      /* tower pieces above the same origin (negative Y) */
       #tower { opacity: 0; transform: translateY(0) scale(.98); transform-origin: 50% 100%;
                transition: opacity .35s ease .08s, transform .45s cubic-bezier(.2,.7,.2,1) .08s; }
       #belfry,#cap { transform-origin: 50% 100%; transform: scaleY(0); transition: transform .35s ease .12s; }
       #clock       { transform-origin: 50% 50%;  transform: scale(0);   transition: transform .30s ease .18s; }
       #spire       { transform-origin: 50% 100%; transform: translateY(10px) scale(.86); transition: transform .35s ease .18s; }
 
-      /* HOVER morph (no translations needed) */
+      /* Hover morph */
       .hover-campanile-container:hover #body { transform: scaleY(1.15); }
       .hover-campanile-container:hover #stem { transform: scaleX(.82); }
       .hover-campanile-container:hover #foot { transform: scaleX(.22) scaleY(.68); }
@@ -123,11 +137,8 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* The interactive “L” */}
-            <span
-              className="relative inline-block hover-campanile-container align-baseline"
-              style={{ perspective: "900px", width: "0.76em", aspectRatio: "5 / 6.2", display: "inline-block" }}
-            >
+            {/* Interactive “L” locked to baseline */}
+            <span className="campanile hover-campanile-container align-baseline">
               <div className="glyph-container" style={{ width: "100%", height: "100%" }}>
                 <svg
                   width="100%"
@@ -135,7 +146,7 @@ export function LightspeedHero() {
                   viewBox="0 0 200 220"
                   preserveAspectRatio="xMidYMax meet"
                   className="text-white"
-                  style={{ display: "block", overflow: "visible" }}
+                  style={{ display: "block" }}
                 >
                   {/* Root group puts origin at STEM TOP-CENTER: x=36 + 34/2 = 53, y=20 */}
                   <g id="root" transform="translate(53,20)">
@@ -144,14 +155,20 @@ export function LightspeedHero() {
                       {/* Stem: centered on origin, extends downward */}
                       <rect
                         id="stem"
-                        x={-17} y={0} width={34} height={160}
+                        x={-17}
+                        y={0}
+                        width={34}
+                        height={160}
                         fill="currentColor"
                         style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
                       />
                       {/* Foot: starts at centerline and goes right; glued to bottom of stem */}
                       <rect
                         id="foot"
-                        x={0} y={160 - 34} width={120} height={34}
+                        x={0}
+                        y={160 - 34}
+                        width={120}
+                        height={34}
                         fill="currentColor"
                         style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
                       />
@@ -165,19 +182,34 @@ export function LightspeedHero() {
                           <g fill="black">
                             <rect x={-28} y={-42} width={12} height={24} rx={6} />
                             <rect x={-12} y={-42} width={12} height={24} rx={6} />
-                            <rect x={4}   y={-42} width={12} height={24} rx={6} />
-                            <rect x={20}  y={-42} width={12} height={24} rx={6} />
+                            <rect x={4} y={-42} width={12} height={24} rx={6} />
+                            <rect x={20} y={-42} width={12} height={24} rx={6} />
                           </g>
                         </mask>
                       </defs>
 
                       {/* Cap sits on the stem top */}
-                      <rect id="cap" x={-36} y={-8} width={72} height={8} fill="currentColor"
-                            style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,.5))" }} />
+                      <rect
+                        id="cap"
+                        x={-36}
+                        y={-8}
+                        width={72}
+                        height={8}
+                        fill="currentColor"
+                        style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,.5))" }}
+                      />
 
                       {/* Belfry just above cap (masked arches) */}
-                      <rect id="belfry" x={-34} y={-48} width={68} height={40} fill="currentColor" mask="url(#belfryMask)"
-                            style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }} />
+                      <rect
+                        id="belfry"
+                        x={-34}
+                        y={-48}
+                        width={68}
+                        height={40}
+                        fill="currentColor"
+                        mask="url(#belfryMask)"
+                        style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
+                      />
 
                       {/* Clock under arches */}
                       <g id="clock" transform="translate(0,-18)" style={{ filter: "drop-shadow(0 4px 12px rgba(0,0,0,.4))" }}>
@@ -190,7 +222,9 @@ export function LightspeedHero() {
                         id="spire"
                         points={`0,-77 36,-48 -36,-48`}
                         fill="currentColor"
-                        stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke"
+                        stroke="currentColor"
+                        strokeWidth={1}
+                        vectorEffect="non-scaling-stroke"
                         style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
                       />
                     </g>
@@ -198,6 +232,7 @@ export function LightspeedHero() {
                 </svg>
               </div>
             </span>
+
             <span className="campanile-rest transition-all duration-300">IGHTSPEED</span>
             <br />
             <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>

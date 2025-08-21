@@ -94,7 +94,7 @@ export function LightspeedHero() {
       
       /* Better positioning - align with text baseline */
       .glyph-container {
-        transform: translateY(2px); /* Align better with text baseline */
+        transform: translateY(8px); /* Move down to align morphed tower with baseline */
         transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       
@@ -215,10 +215,10 @@ export function LightspeedHero() {
                     <mask id="arches">
                       <rect x="0" y="0" width="200" height="220" fill="white"/>
                       <g fill="black">
-                        <rect x="70" y="78" width="16" height="26" rx="8"/>
-                        <rect x="90" y="78" width="16" height="26" rx="8"/>
-                        <rect x="110" y="78" width="16" height="26" rx="8"/>
-                        <rect x="130" y="78" width="16" height="26" rx="8"/>
+                        <rect x="70" y="118" width="16" height="26" rx="8"/>
+                        <rect x="90" y="118" width="16" height="26" rx="8"/>
+                        <rect x="110" y="118" width="16" height="26" rx="8"/>
+                        <rect x="130" y="118" width="16" height="26" rx="8"/>
                       </g>
                     </mask>
                   </defs>
@@ -253,7 +253,7 @@ export function LightspeedHero() {
                   <rect 
                     id="belfry" 
                     x="60" 
-                    y="60" 
+                    y="100" 
                     width="100" 
                     height="50"
                     fill="currentColor" 
@@ -266,7 +266,7 @@ export function LightspeedHero() {
                   {/* Clock face */}
                   <g 
                     id="clock" 
-                    transform="translate(110,115)"
+                    transform="translate(110,135)"
                     style={{
                       filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))'
                     }}
@@ -279,7 +279,7 @@ export function LightspeedHero() {
                   <rect 
                     id="cap" 
                     x="56" 
-                    y="54" 
+                    y="94" 
                     width="108" 
                     height="8" 
                     fill="currentColor" 
@@ -291,7 +291,7 @@ export function LightspeedHero() {
                   {/* Spire that grows upward */}
                   <polygon 
                     id="spire"
-                    points="100,20 164,54 36,54"
+                    points="100,60 164,94 36,94"
                     fill="currentColor" 
                     style={{
                       filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'

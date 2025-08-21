@@ -52,7 +52,7 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // CSS-based L-to-Campanile morphing that actually works
+  // Refined L-to-Campanile morphing with better positioning and seamless transformation
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -60,40 +60,50 @@ export function LightspeedHero() {
       #belfry {
         opacity: 0;
         transform: scaleY(0);
-        transform-origin: bottom center;
-        transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+        transform-origin: center bottom;
+        transition: opacity 0.4s ease 0.15s, transform 0.4s ease 0.15s;
       }
       #clock {
         opacity: 0;
         transform: scale(0);
         transform-origin: center center;
-        transition: opacity 0.45s ease 0.2s, transform 0.45s ease 0.2s;
+        transition: opacity 0.3s ease 0.25s, transform 0.3s ease 0.25s;
       }
       #cap {
         opacity: 0;
         transform: scaleY(0);
-        transform-origin: bottom center;
-        transition: opacity 0.35s ease 0.15s, transform 0.35s ease 0.15s;
+        transform-origin: center bottom;
+        transition: opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s;
       }
       #spire {
         opacity: 0;
-        transition: opacity 0.3s ease 0.25s;
-      }
-      #stem {
-        transform-origin: bottom center;
-        transition: transform 0.6s ease;
-      }
-      #foot {
-        transform-origin: left center;
-        transition: transform 0.6s ease;
+        transform: scale(0.8) translateY(10px);
+        transform-origin: center bottom;
+        transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
       }
       
-      /* Hover states - trigger the morphing */
+      /* L elements that morph smoothly */
+      #stem {
+        transform-origin: center bottom;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      #foot {
+        transform-origin: left bottom;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      /* Better positioning - align with text baseline */
+      .glyph-container {
+        transform: translateY(2px); /* Align better with text baseline */
+        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      
+      /* Hover states - seamless morphing */
       .hover-campanile-container:hover #stem {
-        transform: scaleX(0.82) scaleY(1.11);
+        transform: scaleX(0.8) scaleY(1.15) translateX(1px) translateY(-4px);
       }
       .hover-campanile-container:hover #foot {
-        transform: scaleX(0.23) scaleY(0.65);
+        transform: scaleX(0.22) scaleY(0.6) translateX(2px);
       }
       .hover-campanile-container:hover #belfry {
         opacity: 1;
@@ -109,26 +119,43 @@ export function LightspeedHero() {
       }
       .hover-campanile-container:hover #spire {
         opacity: 1;
+        transform: scale(1) translateY(0);
       }
       
-      /* 3D container effects */
+      /* Enhanced 3D container effects with better positioning */
       .hover-campanile-container:hover .glyph-container {
-        transform: rotateY(-12deg) scale(1.05) translateY(-3px);
+        transform: translateY(-1px) rotateY(-8deg) scale(1.03);
       }
-      .glyph-container {
-        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
+      
       .hover-campanile-container:hover + .campanile-rest {
         text-shadow: 0 12px 26px rgba(0,0,0,0.45);
+        transition: text-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       .campanile-rest {
         transition: text-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      
+      /* Smooth return animation */
+      .hover-campanile-container:not(:hover) #stem {
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.6, 1);
+      }
+      .hover-campanile-container:not(:hover) #foot {
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.6, 1);
+      }
+      .hover-campanile-container:not(:hover) #belfry,
+      .hover-campanile-container:not(:hover) #clock,
+      .hover-campanile-container:not(:hover) #cap,
+      .hover-campanile-container:not(:hover) #spire {
+        transition: opacity 0.3s ease, transform 0.3s ease;
       }
       
       @media (prefers-reduced-motion: reduce) {
         #stem, #foot, #belfry, #clock, #cap, #spire, .glyph-container, .campanile-rest {
           transition: opacity 0.25s ease !important;
           transform: none !important;
+        }
+        .hover-campanile-container:hover .glyph-container {
+          transform: translateY(2px) !important;
         }
       }
     `;

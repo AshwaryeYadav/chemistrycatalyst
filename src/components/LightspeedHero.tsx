@@ -67,20 +67,12 @@ export function LightspeedHero() {
       }
       
       .logo-lightspeed {
-        background: linear-gradient(135deg, 
-          #c0c0c0 0%,
-          #e8e8e8 15%,
-          #a8a8a8 30%,
-          #d4d4d4 45%,
-          #9ca3af 60%,
-          #cbd5e1 75%,
-          #b8b8b8 90%,
-          #e2e8f0 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        filter: brightness(1.1) contrast(1.2) saturate(0.9);
+        color: #ffffff;
         position: relative;
+        text-shadow: 
+          0 2px 4px rgba(0,0,0,0.3),
+          0 4px 8px rgba(0,0,0,0.2),
+          0 8px 16px rgba(0,0,0,0.1);
       }
       
       .logo-lightspeed::before {
@@ -89,65 +81,32 @@ export function LightspeedHero() {
         top: 0;
         left: 0;
         z-index: -1;
-        background: linear-gradient(135deg, 
-          #1e293b 0%, 
-          #334155 25%, 
-          #475569 50%, 
-          #64748b 75%, 
-          #94a3b8 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #6b7280;
         transform: translateZ(-10px);
         text-shadow: 
-          1px 1px 0 #0f172a,
-          2px 2px 0 #1e293b,
-          3px 3px 0 #334155,
-          4px 4px 0 #475569,
-          5px 5px 0 #64748b,
-          6px 6px 0 #94a3b8,
-          7px 7px 0 #cbd5e1,
-          8px 8px 0 #e2e8f0,
-          9px 9px 0 #f1f5f9,
-          10px 10px 0 #f8fafc,
-          0 0 80px rgba(0,0,0,0.8);
+          1px 1px 0 #4b5563,
+          2px 2px 0 #4b5563,
+          3px 3px 0 #6b7280,
+          4px 4px 0 #6b7280,
+          5px 5px 0 #9ca3af,
+          6px 6px 0 #9ca3af,
+          7px 7px 0 #d1d5db,
+          8px 8px 0 #d1d5db;
       }
       
       .logo-lightspeed::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, 
-          rgba(59,130,246,0.1) 0%,
-          rgba(147,51,234,0.1) 33%,
-          rgba(6,182,212,0.1) 66%,
-          rgba(59,130,246,0.1) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        z-index: 1;
-        animation: iridescent 6s ease-in-out infinite;
-        opacity: 0.6;
+        display: none;
       }
       
       .logo-fellows {
-        background: linear-gradient(135deg, 
-          #1a1625 0%,
-          #2d1b69 25%,
-          #1e1b4b 50%,
-          #0f0f23 75%,
-          #000000 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        opacity: 0.9;
+        color: #9ca3af;
+        opacity: 1;
         font-weight: 600;
         letter-spacing: 0.15em;
-        filter: contrast(1.3);
         position: relative;
+        text-shadow: 
+          0 1px 2px rgba(0,0,0,0.4),
+          0 2px 4px rgba(0,0,0,0.3);
       }
       
       .logo-fellows::before {
@@ -156,35 +115,17 @@ export function LightspeedHero() {
         top: 0;
         left: 0;
         z-index: -1;
-        background: linear-gradient(135deg, 
-          #4c1d95 0%, 
-          #1e1b4b 50%, 
-          #000000 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #6b7280;
         transform: translateZ(-5px);
         text-shadow: 
-          inset 0 0 10px rgba(76,29,149,0.4),
-          1px 1px 0 rgba(0,0,0,0.8),
-          2px 2px 0 rgba(0,0,0,0.6),
-          3px 3px 0 rgba(0,0,0,0.4),
-          4px 4px 0 rgba(0,0,0,0.2),
-          0 0 20px rgba(76,29,149,0.1);
+          1px 1px 0 #4b5563,
+          2px 2px 0 #4b5563,
+          3px 3px 0 #6b7280,
+          4px 4px 0 #6b7280;
       }
       
       .logo-fellows::after {
-        content: '';
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        right: 2px;
-        bottom: 2px;
-        background: radial-gradient(ellipse at center, 
-          rgba(76,29,149,0.1) 0%,
-          transparent 60%);
-        border-radius: 2px;
-        z-index: -2;
+        display: none;
       }
       
       .logo-underline {
@@ -196,14 +137,14 @@ export function LightspeedHero() {
         height: 2px;
         background: linear-gradient(90deg, 
           transparent 0%, 
-          rgba(255,255,255,0.3) 20%, 
-          rgba(147,51,234,0.6) 50%, 
-          rgba(255,255,255,0.3) 80%, 
+          rgba(255,255,255,0.2) 20%, 
+          rgba(255,255,255,0.6) 50%, 
+          rgba(255,255,255,0.2) 80%, 
           transparent 100%);
         border-radius: 1px;
         box-shadow: 
-          0 0 10px rgba(147,51,234,0.4),
-          0 0 20px rgba(147,51,234,0.2);
+          0 0 5px rgba(255,255,255,0.2),
+          0 0 10px rgba(255,255,255,0.1);
         animation: glow-pulse 3s ease-in-out infinite;
       }
       

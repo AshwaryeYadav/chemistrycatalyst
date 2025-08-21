@@ -18,6 +18,7 @@ export function LightspeedHero() {
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,6 +36,33 @@ export function LightspeedHero() {
     }, 4000);
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
+
+  // Mouse parallax effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        // Calculate offset from center (normalized to -1 to 1)
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+        
+        // Apply subtle movement (max 10px in any direction)
+        setMousePosition({
+          x: offsetX * 10,
+          y: offsetY * 10
+        });
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
 
   // Advanced 3D Logo Styling
@@ -294,8 +322,9 @@ export function LightspeedHero() {
                   className="logo-3d logo-lightspeed mb-4"
                   data-text="LIGHTSPEED"
                   style={{
-                    transform: 'translateZ(40px)',
-                    transformStyle: 'preserve-3d'
+                    transform: `translateZ(40px) translateX(${mousePosition.x}px) translateY(${mousePosition.y}px)`,
+                    transformStyle: 'preserve-3d',
+                    transition: 'transform 0.1s ease-out'
                   }}
                 >
                   LIGHTSPEED
@@ -304,8 +333,9 @@ export function LightspeedHero() {
                   className="logo-3d logo-fellows text-4xl md:text-6xl"
                   data-text="FELLOWS"
                   style={{
-                    transform: 'translateZ(20px)',
-                    transformStyle: 'preserve-3d'
+                    transform: `translateZ(20px) translateX(${mousePosition.x * 0.7}px) translateY(${mousePosition.y * 0.7}px)`,
+                    transformStyle: 'preserve-3d',
+                    transition: 'transform 0.1s ease-out'
                   }}
                 >
                   FELLOWS

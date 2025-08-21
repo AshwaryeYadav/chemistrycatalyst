@@ -3,12 +3,14 @@ import { useState, useEffect, useRef } from "react";
 
 export function LightspeedHero() {
   const companyGroups = [
-    ["Stripe", "Anthropic", "Anduril"],
-    ["Wiz", "Glean", "Rubrik"],
-    ["Anduril", "Rubrik", "Mulesoft"],
-    ["Snap", "Mulesoft", "Nest"],
-    ["AppDynamics", "Nutanix", "UiPath"],
-    ["Affirm", "MindBody", "Nicira"]
+    ["Affirm", "Anthropic", "BetterUp"],
+    ["Carta", "Epic Games", "Faire"],
+    ["Glean", "Mistral", "Pika"],
+    ["Snap", "Stripe", "Wiz"],
+    ["Abridge", "Anduril", "Calm"],
+    ["Databricks", "LMArena", "Rippling"],
+    ["Saronic", "Solana", "Thinking Machines"],
+    ["xAI", "Affirm", "Anthropic"]
   ];
 
   const descriptions = ["builders", "founders", "engineers", "hackers"];

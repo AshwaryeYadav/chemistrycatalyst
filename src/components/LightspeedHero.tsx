@@ -1,16 +1,14 @@
-import { Button } from "@/components/ui/button";
+import React from "react";
 import { useState, useEffect, useRef } from "react";
 
 export function LightspeedHero() {
   const companyGroups = [
-    ["Affirm", "Anthropic", "BetterUp"],
-    ["Carta", "Epic Games", "Faire"],
-    ["Glean", "Mistral", "Pika"],
-    ["Snap", "Stripe", "Wiz"],
-    ["Abridge", "Anduril", "Calm"],
-    ["Databricks", "LMArena", "Rippling"],
-    ["Saronic", "Solana", "Thinking Machines"],
-    ["xAI", "Affirm", "Anthropic"]
+    ["Stripe", "Anthropic", "Anduril"],
+    ["Wiz", "Glean", "Rubrik"],
+    ["Anduril", "Rubrik", "Mulesoft"],
+    ["Snap", "Mulesoft", "Nest"],
+    ["AppDynamics", "Nutanix", "UiPath"],
+    ["Affirm", "MindBody", "Nicira"]
   ];
 
   const descriptions = ["builders", "founders", "engineers", "hackers"];
@@ -37,257 +35,128 @@ export function LightspeedHero() {
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
 
-  // Mouse parallax effect
+  // Mouse tracking for 3D effects
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        
-        // Calculate offset from center (normalized to -1 to 1)
-        const offsetX = (e.clientX - centerX) / (rect.width / 2);
-        const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        
-        // Apply subtle movement (max 10px in any direction)
-        setMousePosition({
-          x: offsetX * 10,
-          y: offsetY * 10
-        });
+        const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
+        const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
+        setMousePosition({ x: x * 20, y: y * 20 }); // Scale the movement
       }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('mousemove', handleMouseMove);
+      return () => container.removeEventListener('mousemove', handleMouseMove);
+    }
   }, []);
 
-
-  // Advanced 3D Logo Styling
+  // Refined L-to-Campanile morphing with proper tower grouping
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      .logo-3d {
-        position: relative;
-        display: inline-block;
-        transform-style: preserve-3d;
-        transition: transform 0.2s ease-out;
-        font-weight: 900;
-        letter-spacing: -0.02em;
+      /* Define the lift variable - extra height when stem scales to 1.15x */
+      :root {
+        --lift: 24px; /* (1.15 - 1) * 160px = 24px */
       }
       
-      .unified-logo {
-        transform-style: preserve-3d;
+      /* Tower group starts hidden */
+      #tower {
+        opacity: 0;
+        transform: translateY(0);
+        transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) 0.1s, transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
       }
       
-      .logo-lightspeed {
-        color: #ffffff;
-        position: relative;
-        font-weight: 300;
-        background: linear-gradient(135deg, #e5e7eb 0%, #e5e7eb 70%, #ED6C5C 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 
-          0 2px 4px rgba(53, 58, 65, 0.4),
-          0 4px 8px rgba(53, 58, 65, 0.3),
-          0 8px 16px rgba(53, 58, 65, 0.2);
+      /* Individual tower elements scale in */
+      #belfry {
+        transform: scaleY(0);
+        transform-origin: center bottom;
+        transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
+      }
+      #clock {
+        transform: scale(0);
+        transform-origin: center center;
+        transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.3s;
+      }
+      #cap {
+        transform: scaleY(0);
+        transform-origin: center bottom;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s;
+      }
+      #spire {
+        transform: scale(0.8) translateY(10px);
+        transform-origin: center bottom;
+        transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s;
       }
       
-      .logo-lightspeed::before {
-        content: attr(data-text);
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1;
-        color: #353A41;
-        -webkit-text-fill-color: #353A41;
-        transform: translateZ(-15px);
-        text-shadow: 
-          1px 1px 0 #353A41,
-          2px 2px 0 #353A41,
-          3px 3px 0 #353A41,
-          4px 4px 0 #353A41,
-          5px 5px 0 #353A41,
-          6px 6px 0 #353A41,
-          7px 7px 0 #353A41,
-          8px 8px 0 #353A41,
-          9px 9px 0 #353A41,
-          10px 10px 0 #353A41;
+      /* L elements that morph smoothly */
+      #stem {
+        transform-origin: center bottom;
+        transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+      }
+      #foot {
+        transform-origin: left center;
+        transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
       }
       
-      .logo-fellows {
-        color: #ffffff
-        opacity: 0.9;
-        font-weight: 600;
-        letter-spacing: 0.15em;
-        position: relative;
-        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #ED6C5C 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-shadow: 
-          0 1px 2px rgba(53, 58, 65, 0.4),
-          0 2px 4px rgba(53, 58, 65, 0.3);
+      /* Hover states - seamless morphing */
+      .hover-campanile-container:hover #stem {
+        transform: scaleX(0.75) scaleY(1.18);
+      }
+      .hover-campanile-container:hover #foot {
+        transform: scaleX(0.2) scaleY(0.65);
       }
       
-      .logo-fellows::before {
-        content: attr(data-text);
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1;
-        color: #353A41;
-        -webkit-text-fill-color: #353A41;
-        transform: translateZ(-8px);
-        text-shadow: 
-          1px 1px 0 #353A41,
-          2px 2px 0 #353A41,
-          3px 3px 0 #353A41,
-          4px 4px 0 #353A41,
-          5px 5px 0 #353A41;
-      }
-
-      /* Enhanced 3D Fill Layers */
-      .logo-lightspeed::after {
-        content: attr(data-text);
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -2;
-        color: #2A2E34;
-        -webkit-text-fill-color: #2A2E34;
-        transform: translateZ(-30px);
-        text-shadow: 
-          1px 1px 0 #2A2E34, 2px 2px 0 #2A2E34, 3px 3px 0 #2A2E34,
-          4px 4px 0 #2A2E34, 5px 5px 0 #2A2E34, 6px 6px 0 #2A2E34,
-          7px 7px 0 #2A2E34, 8px 8px 0 #2A2E34, 9px 9px 0 #2A2E34,
-          10px 10px 0 #2A2E34, 11px 11px 0 #2A2E34, 12px 12px 0 #2A2E34,
-          13px 13px 0 #2A2E34, 14px 14px 0 #2A2E34, 15px 15px 0 #2A2E34,
-          16px 16px 0 #2A2E34, 17px 17px 0 #2A2E34, 18px 18px 0 #2A2E34,
-          19px 19px 0 #2A2E34, 20px 20px 0 #2A2E34;
-      }
-
-      .logo-fellows::after {
-        content: attr(data-text);
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -2;
-        color: #2A2E34;
-        -webkit-text-fill-color: #2A2E34;
-        transform: translateZ(-16px);
-        text-shadow: 
-          1px 1px 0 #2A2E34, 2px 2px 0 #2A2E34, 3px 3px 0 #2A2E34,
-          4px 4px 0 #2A2E34, 5px 5px 0 #2A2E34, 6px 6px 0 #2A2E34,
-          7px 7px 0 #2A2E34, 8px 8px 0 #2A2E34, 9px 9px 0 #2A2E34,
-          10px 10px 0 #2A2E34;
-      }
-
-      
-      .logo-underline {
-        position: absolute;
-        bottom: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 120%;
-        height: 2px;
-        background: linear-gradient(90deg, 
-          transparent 0%, 
-          rgba(255,255,255,0.2) 20%, 
-          rgba(255,255,255,0.6) 50%, 
-          rgba(255,255,255,0.2) 80%, 
-          transparent 100%);
-        border-radius: 1px;
-        box-shadow: 
-          0 0 5px rgba(255,255,255,0.2),
-          0 0 10px rgba(255,255,255,0.1);
-        overflow: hidden;
+      /* Tower group moves up to stay on stem top */
+      .hover-campanile-container:hover #tower {
+        opacity: 1;
+        transform: translateY(calc(-1 * var(--lift))) scale(1.02);
       }
       
-      .logo-underline::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, 
-          transparent 0%, 
-          rgba(237, 108, 92, 0.4) 20%, 
-          rgba(237, 108, 92, 0.8) 50%, 
-          rgba(237, 108, 92, 0.4) 80%, 
-          transparent 100%);
-        animation: orange-sweep 2s linear infinite;
+      /* Tower elements scale in */
+      .hover-campanile-container:hover #belfry {
+        transform: scaleY(1);
+      }
+      .hover-campanile-container:hover #clock {
+        transform: scale(1);
+      }
+      .hover-campanile-container:hover #cap {
+        transform: scaleY(1);
+      }
+      .hover-campanile-container:hover #spire {
+        transform: scale(1) translateY(0);
       }
       
-      .logo-reflection {
-        position: absolute;
-        bottom: -100px;
-        left: 0;
-        right: 0;
-        height: 50px;
-        background: linear-gradient(180deg, 
-          rgba(255,255,255,0.03) 0%, 
-          transparent 100%);
-        transform: scaleY(-1);
-        opacity: 0.3;
-        filter: blur(1px);
+      /* Enhanced shadow effects */
+      .hover-campanile-container:hover + .campanile-rest {
+        text-shadow: 0 12px 26px rgba(0,0,0,0.45);
+        transition: text-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      .campanile-rest {
+        transition: text-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       
-      @keyframes iridescent {
-        0% { 
-          background: linear-gradient(45deg, 
-            rgba(59,130,246,0.1) 0%,
-            rgba(147,51,234,0.1) 33%,
-            rgba(6,182,212,0.1) 66%,
-            rgba(59,130,246,0.1) 100%);
-        }
-        33% { 
-          background: linear-gradient(45deg, 
-            rgba(147,51,234,0.1) 0%,
-            rgba(6,182,212,0.1) 33%,
-            rgba(59,130,246,0.1) 66%,
-            rgba(147,51,234,0.1) 100%);
-        }
-        66% { 
-          background: linear-gradient(45deg, 
-            rgba(6,182,212,0.1) 0%,
-            rgba(59,130,246,0.1) 33%,
-            rgba(147,51,234,0.1) 66%,
-            rgba(6,182,212,0.1) 100%);
-        }
-        100% { 
-          background: linear-gradient(45deg, 
-            rgba(59,130,246,0.1) 0%,
-            rgba(147,51,234,0.1) 33%,
-            rgba(6,182,212,0.1) 66%,
-            rgba(59,130,246,0.1) 100%);
-        }
+      /* Smooth return animation */
+      .hover-campanile-container:not(:hover) #stem,
+      .hover-campanile-container:not(:hover) #foot {
+        transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
-      
-      @keyframes shimmer {
-        0%, 100% { opacity: 0.1; transform: scale(1); }
-        50% { opacity: 0.3; transform: scale(1.05); }
+      .hover-campanile-container:not(:hover) #tower {
+        transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
-      
-      @keyframes glow-pulse {
-        0%, 100% { opacity: 0.6; }
-        50% { opacity: 1; }
-      }
-      
-      @keyframes orange-sweep {
-        0% { left: -100%; }
-        100% { left: 100%; }
+      .hover-campanile-container:not(:hover) #belfry,
+      .hover-campanile-container:not(:hover) #clock,
+      .hover-campanile-container:not(:hover) #cap,
+      .hover-campanile-container:not(:hover) #spire {
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
       
       @media (prefers-reduced-motion: reduce) {
-        .logo-3d, .logo-lightspeed::after, .logo-underline, .logo-fellows {
-          animation: none !important;
+        #stem, #foot, #tower, #belfry, #clock, #cap, #spire, .campanile-rest {
+          transition: opacity 0.25s ease !important;
           transform: none !important;
-          transition: none !important;
         }
       }
     `;
@@ -308,97 +177,177 @@ export function LightspeedHero() {
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-30" />
       <div className="absolute inset-0 opacity-[0.015] bg-noise" />
       
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 text-center relative z-10">
+      <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
         
-        {/* Premium 3D Logo */}
+        {/* Main Title */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
-          <div 
-            className="perspective-[2000px] transform-gpu relative"
-            style={{ transformStyle: 'preserve-3d' }}
+          <h1 
+            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white mb-8 transition-transform duration-200 ease-out"
+            style={{
+              transform: `rotateX(${-mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(20px)`,
+              textShadow: `
+                0 1px 0 rgba(255,255,255,0.1),
+                0 2px 4px rgba(0,0,0,0.3),
+                ${mousePosition.x * 0.5}px ${mousePosition.y * 0.5}px 10px rgba(0,0,0,0.2)
+              `,
+              transformStyle: 'preserve-3d'
+            }}
           >
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display tracking-tight leading-tight mb-6 sm:mb-8 relative">
-              <div className="unified-logo flex flex-col items-center">
-                <div 
-                  className="logo-3d logo-lightspeed mb-2 sm:mb-4"
-                  data-text="LIGHTSPEED"
+            <span 
+              className="relative inline-block hover-campanile-container"
+              style={{ 
+                perspective: '900px',
+                display: 'inline-block',
+                width: '0.76em',
+                aspectRatio: '5 / 6.2',
+                marginRight: '0.05em'
+              }}
+            >
+              <svg 
+                id="lightspeed-logo"
+                width="100%" 
+                height="100%" 
+                viewBox="0 0 200 220" 
+                className="text-white"
+                style={{ display: 'block' }}
+              >
+                {/* Masks for the belfry arches */}
+                <defs>
+                  <mask id="arches">
+                    <rect x="0" y="0" width="200" height="220" fill="white"/>
+                    <g fill="black">
+                      <rect x="-22" y="58" width="12" height="20" rx="6"/>
+                      <rect x="-7" y="58" width="12" height="20" rx="6"/>
+                      <rect x="8" y="58" width="12" height="20" rx="6"/>
+                      <rect x="23" y="58" width="12" height="20" rx="6"/>
+                    </g>
+                  </mask>
+                </defs>
+
+                {/* Vertical stem of the L -> becomes tower shaft */}
+                <rect 
+                  id="stem" 
+                  x="83" 
+                  y="20" 
+                  width="34" 
+                  height="160" 
+                  fill="currentColor"
                   style={{
-                    transform: `translateZ(40px) translateX(${mousePosition.x}px) translateY(${mousePosition.y}px)`,
-                    transformStyle: 'preserve-3d',
-                    transition: 'transform 0.1s ease-out'
+                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
                   }}
-                >
-                  LIGHTSPEED
-                </div>
-                <div 
-                  className="logo-3d logo-fellows text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
-                  data-text="FELLOWS"
+                />
+
+                {/* Horizontal foot of the L -> shrinks from center */}
+                <rect 
+                  id="foot" 
+                  x="83" 
+                  y="180" 
+                  width="120" 
+                  height="34" 
+                  fill="currentColor"
                   style={{
-                    transform: `translateZ(20px) translateX(${mousePosition.x * 0.7}px) translateY(${mousePosition.y * 0.7}px)`,
-                    transformStyle: 'preserve-3d',
-                    transition: 'transform 0.1s ease-out'
+                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
                   }}
-                >
-                  FELLOWS
-                </div>
-              </div>
-              
-              {/* Glowing underline */}
-              <div className="logo-underline"></div>
-              
-              {/* Reflection effect */}
-              <div className="logo-reflection"></div>
-            </h1>
-            
-            {/* Geometric accent lines */}
-            <div className="hidden lg:block absolute -left-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
-            <div className="hidden lg:block absolute -right-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
-          </div>
+                />
+
+                {/* Tower group - anchored to stem center (x=100) and top (y=20) */}
+                <g id="tower" transform="translate(100,20)">
+                  {/* Belfry block with arches - relative to group origin */}
+                  <rect 
+                    id="belfry" 
+                    x="-28" 
+                    y="40" 
+                    width="68" 
+                    height="40"
+                    fill="currentColor" 
+                    mask="url(#arches)" 
+                    style={{
+                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                    }}
+                  />
+
+                  {/* Clock face - relative to group origin */}
+                  <g 
+                    id="clock" 
+                    transform="translate(6,70)"
+                    style={{
+                      filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))'
+                    }}
+                  >
+                    <circle r="9" fill="rgba(0,0,0,0.8)" stroke="currentColor" strokeWidth="3"/>
+                    <circle r="1" fill="currentColor"/>
+                  </g>
+
+                  {/* Cap below the spire - relative to group origin */}
+                  <rect 
+                    id="cap" 
+                    x="-30" 
+                    y="34" 
+                    width="72" 
+                    height="8" 
+                    fill="currentColor" 
+                    style={{
+                      filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.5))'
+                    }}
+                  />
+
+                  {/* Spire that grows upward - relative to group origin */}
+                  <polygon 
+                    id="spire"
+                    points="6,5 42,34 -30,34"
+                    fill="currentColor" 
+                    style={{
+                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                    }}
+                  />
+                </g>
+              </svg>
+            </span><span className="campanile-rest transition-all duration-300">IGHTSPEED</span>
+            <br />
+            <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>
+          </h1>
         </div>
 
         {/* Description - Typewriter font with cycling effect */}
-        <div className="mb-12 sm:mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-3 sm:space-y-4">
-          <div className="text-xs sm:text-base lg:text-lg font-mono text-white/90 leading-relaxed tracking-wide px-6 sm:px-6 lg:px-0 min-h-[3rem] sm:min-h-[2.5rem]">
-            {">"} A year-long fellowship for Berkeley's top
-            <br />
+        <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
+          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
+            {">"} A year-long fellowship for Berkeley's top{" "}
             <span className="text-white font-medium">
               {descriptions[currentDescription]}
             </span>
             {"."}
           </div>
           <div 
-            className="text-[10px] sm:text-sm lg:text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80 px-6 sm:px-6 lg:px-0 min-h-[2rem] sm:min-h-[1.5rem]"
+            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            <div className="whitespace-nowrap overflow-x-auto">
-              {">"} Backed by investors behind{" "}
-              <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
-                <span className="text-white font-medium">
-                  {companyGroups[currentGroup][0]}
-                </span>
-                {", "}
-                <span className="text-white font-medium">
-                  {companyGroups[currentGroup][1]}
-                </span>
-                {", "}
-                <span className="text-white font-medium">
-                  {companyGroups[currentGroup][2]}
-                </span>
+            {">"} Backed by investors behind{" "}
+            <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
+              <span className="text-white font-medium">
+                {companyGroups[currentGroup][0]}
               </span>
-              .
-            </div>
+              {", "}
+              <span className="text-white font-medium">
+                {companyGroups[currentGroup][1]}
+              </span>
+              {", "}
+              <span className="text-white font-medium">
+                {companyGroups[currentGroup][2]}
+              </span>
+            </span>
+            .
           </div>
         </div>
 
         {/* Glowing CTA Button */}
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
-          <Button 
-            size="xl"
-            className="w-full max-w-xs sm:max-w-sm lg:max-w-md xl:w-80 mx-auto py-4 sm:py-6 text-base sm:text-lg font-semibold text-white border border-white/20 rounded-lg backdrop-blur-lg bg-white/10 shadow-button hover:shadow-button-hover hover:bg-white/20 transition-all duration-500"
+          <button 
+            className="w-80 mx-auto py-6 text-lg font-semibold text-white border border-white/20 rounded-lg backdrop-blur-lg bg-white/10 shadow-button hover:shadow-button-hover hover:bg-white/20 transition-all duration-500"
             onClick={() => window.open('https://form.typeform.com/to/vMxYsW4Y', '_blank')}
           >
             Apply Now
-          </Button>
+          </button>
         </div>
       </div>
       

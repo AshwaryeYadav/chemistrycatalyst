@@ -37,13 +37,22 @@ function LMesh() {
   );
 }
 
-/** 3D icon wrapper: gentle auto-rotate + drag orbit (no zoom/pan) */
-const Lightspeed3DIcon = memo(function Lightspeed3DIcon() {
+/** Component that handles the rotating group - must be inside Canvas */
+function RotatingLMesh() {
   const group = useRef<THREE.Group>(null!);
   useFrame((_state, dt) => {
     if (group.current) group.current.rotation.y += dt * 0.25;
   });
 
+  return (
+    <group ref={group}>
+      <LMesh />
+    </group>
+  );
+}
+
+/** 3D icon wrapper: gentle auto-rotate + drag orbit (no zoom/pan) */
+const Lightspeed3DIcon = memo(function Lightspeed3DIcon() {
   return (
     <div className="mx-auto mb-10" style={{ width: 112, height: 112 }}>
       <Canvas dpr={[1, 2]} camera={{ position: [2.5, 2.2, 3.4], fov: 38 }} shadows>
@@ -56,9 +65,7 @@ const Lightspeed3DIcon = memo(function Lightspeed3DIcon() {
         />
         {/* TS fix: use args instead of skyColor/groundColor */}
         <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
-        <group ref={group}>
-          <LMesh />
-        </group>
+        <RotatingLMesh />
         <OrbitControls
           enablePan={false}
           enableZoom={false}

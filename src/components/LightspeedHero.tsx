@@ -42,7 +42,7 @@ export function LightspeedHero() {
         const rect = containerRef.current.getBoundingClientRect();
         const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
         const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
-        setMousePosition({ x: x * 30, y: y * 30 }); // Increased sensitivity for dramatic 3D effect
+        setMousePosition({ x: x * 35, y: y * 35 }); // Enhanced sensitivity for premium 3D rotation
       }
     };
 
@@ -53,7 +53,7 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Advanced 3D Logo Styling
+  // Premium 3D Logo Styling with LSVP Colors
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -61,18 +61,28 @@ export function LightspeedHero() {
         position: relative;
         display: inline-block;
         transform-style: preserve-3d;
-        transition: transform 0.2s ease-out;
+        transition: transform 0.15s ease-out;
         font-weight: 900;
         letter-spacing: -0.02em;
+        cursor: pointer;
       }
       
       .logo-lightspeed {
-        color: #ffffff;
+        background: linear-gradient(135deg, 
+          #ffffff 0%,
+          #f8fafc 20%,
+          #FFD166 40%,
+          #FFB347 60%,
+          #ffffff 80%,
+          #f1f5f9 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         position: relative;
+        filter: brightness(1.1) contrast(1.1);
         text-shadow: 
-          0 2px 4px rgba(0,0,0,0.3),
-          0 4px 8px rgba(0,0,0,0.2),
-          0 8px 16px rgba(0,0,0,0.1);
+          0 0 20px rgba(255, 209, 102, 0.3),
+          0 0 40px rgba(255, 179, 71, 0.2);
       }
       
       .logo-lightspeed::before {
@@ -81,32 +91,53 @@ export function LightspeedHero() {
         top: 0;
         left: 0;
         z-index: -1;
-        color: #6b7280;
-        transform: translateZ(-10px);
+        color: #1a1a1a;
+        transform: translateZ(-15px) translate(2px, 2px);
         text-shadow: 
-          1px 1px 0 #4b5563,
-          2px 2px 0 #4b5563,
-          3px 3px 0 #6b7280,
-          4px 4px 0 #6b7280,
-          5px 5px 0 #9ca3af,
-          6px 6px 0 #9ca3af,
-          7px 7px 0 #d1d5db,
-          8px 8px 0 #d1d5db;
+          1px 1px 0 #0f0f0f,
+          2px 2px 0 #1a1a1a,
+          3px 3px 0 #262626,
+          4px 4px 0 #333333,
+          5px 5px 0 #404040,
+          6px 6px 0 #4d4d4d,
+          7px 7px 0 #595959,
+          8px 8px 0 #666666,
+          9px 9px 0 #737373,
+          10px 10px 0 #808080,
+          0 0 30px rgba(0,0,0,0.8);
       }
       
       .logo-lightspeed::after {
-        display: none;
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: 0;
+        right: 0;
+        height: 30%;
+        background: linear-gradient(180deg, 
+          rgba(255,255,255,0.4) 0%,
+          rgba(255,255,255,0.2) 50%,
+          transparent 100%);
+        border-radius: 4px;
+        z-index: 1;
+        pointer-events: none;
       }
       
       .logo-fellows {
-        color: #9ca3af;
+        background: linear-gradient(135deg, 
+          #e0e0e0 0%,
+          #c0c0c0 25%,
+          #a8a8a8 50%,
+          #7a7a7a 75%,
+          #969696 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         opacity: 1;
-        font-weight: 600;
+        font-weight: 700;
         letter-spacing: 0.15em;
         position: relative;
-        text-shadow: 
-          0 1px 2px rgba(0,0,0,0.4),
-          0 2px 4px rgba(0,0,0,0.3);
+        filter: brightness(1.05) contrast(1.15);
       }
       
       .logo-fellows::before {
@@ -115,17 +146,34 @@ export function LightspeedHero() {
         top: 0;
         left: 0;
         z-index: -1;
-        color: #6b7280;
-        transform: translateZ(-5px);
+        color: #2a2a2a;
+        transform: translateZ(-12px) translate(1.5px, 1.5px);
         text-shadow: 
-          1px 1px 0 #4b5563,
-          2px 2px 0 #4b5563,
-          3px 3px 0 #6b7280,
-          4px 4px 0 #6b7280;
+          1px 1px 0 #1f1f1f,
+          2px 2px 0 #2a2a2a,
+          3px 3px 0 #353535,
+          4px 4px 0 #404040,
+          5px 5px 0 #4b4b4b,
+          6px 6px 0 #565656,
+          7px 7px 0 #616161,
+          8px 8px 0 #6c6c6c,
+          0 0 25px rgba(0,0,0,0.6);
       }
       
       .logo-fellows::after {
-        display: none;
+        content: '';
+        position: absolute;
+        top: -3px;
+        left: 0;
+        right: 0;
+        height: 25%;
+        background: linear-gradient(180deg, 
+          rgba(224,224,224,0.3) 0%,
+          rgba(192,192,192,0.2) 50%,
+          transparent 100%);
+        border-radius: 3px;
+        z-index: 1;
+        pointer-events: none;
       }
       
       .logo-underline {
@@ -137,15 +185,15 @@ export function LightspeedHero() {
         height: 2px;
         background: linear-gradient(90deg, 
           transparent 0%, 
-          rgba(255,255,255,0.2) 20%, 
-          rgba(255,255,255,0.6) 50%, 
-          rgba(255,255,255,0.2) 80%, 
+          rgba(255,209,102,0.3) 20%, 
+          rgba(255,179,71,0.8) 50%, 
+          rgba(255,209,102,0.3) 80%, 
           transparent 100%);
-        border-radius: 1px;
+        border-radius: 2px;
         box-shadow: 
-          0 0 5px rgba(255,255,255,0.2),
-          0 0 10px rgba(255,255,255,0.1);
-        animation: glow-pulse 3s ease-in-out infinite;
+          0 0 15px rgba(255,209,102,0.4),
+          0 0 30px rgba(255,179,71,0.2);
+        animation: glow-pulse 4s ease-in-out infinite;
       }
       
       .logo-reflection {
@@ -238,10 +286,10 @@ export function LightspeedHero() {
           >
             <h1 className="text-6xl md:text-8xl font-display tracking-tight leading-tight mb-8 relative">
               <div 
-                className="logo-3d logo-lightspeed mb-4"
+                className="logo-3d logo-lightspeed mb-6"
                 data-text="LIGHTSPEED"
                 style={{
-                  transform: `rotateX(${-mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(60px)`,
+                  transform: `rotateX(${-mousePosition.y * 0.8}deg) rotateY(${mousePosition.x * 0.8}deg) translateZ(80px)`,
                   transformStyle: 'preserve-3d'
                 }}
               >
@@ -251,7 +299,7 @@ export function LightspeedHero() {
                 className="logo-3d logo-fellows text-4xl md:text-6xl"
                 data-text="FELLOWS"
                 style={{
-                  transform: `rotateX(${-mousePosition.y * 0.3}deg) rotateY(${mousePosition.x * 0.3}deg) translateZ(30px)`,
+                  transform: `rotateX(${-mousePosition.y * 0.8}deg) rotateY(${mousePosition.x * 0.8}deg) translateZ(60px)`,
                   transformStyle: 'preserve-3d'
                 }}
               >

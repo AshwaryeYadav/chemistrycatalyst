@@ -316,10 +316,10 @@ export function LightspeedHero() {
             className="perspective-[2000px] transform-gpu relative"
             style={{ transformStyle: 'preserve-3d' }}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display tracking-tight leading-tight mb-6 sm:mb-8 relative">
-              <div className="unified-logo">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display tracking-tight leading-tight mb-6 sm:mb-8 relative">
+              <div className="unified-logo flex flex-col items-center">
                 <div 
-                  className="logo-3d logo-lightspeed mb-4"
+                  className="logo-3d logo-lightspeed mb-2 sm:mb-4"
                   data-text="LIGHTSPEED"
                   style={{
                     transform: `translateZ(40px) translateX(${mousePosition.x}px) translateY(${mousePosition.y}px)`,
@@ -330,7 +330,7 @@ export function LightspeedHero() {
                   LIGHTSPEED
                 </div>
                 <div 
-                  className="logo-3d logo-fellows text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
+                  className="logo-3d logo-fellows text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
                   data-text="FELLOWS"
                   style={{
                     transform: `translateZ(20px) translateX(${mousePosition.x * 0.7}px) translateY(${mousePosition.y * 0.7}px)`,

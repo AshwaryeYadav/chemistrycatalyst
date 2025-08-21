@@ -64,7 +64,7 @@ const Lightspeed3DIcon = memo(function Lightspeed3DIcon() {
           intensity={1.1}
           shadow-mapSize={[1024, 1024]}
         />
-        <hemisphereLight skyColor={"#ffffff"} groundColor={"#222222"} intensity={0.35} />
+        <hemisphereLight color={"#ffffff"} groundColor={"#222222"} intensity={0.35} />
         <group ref={group}>
           <LMesh />
         </group>
@@ -168,54 +168,49 @@ export function LightspeedHero() {
       }
     `;
     document.head.appendChild(style);
-    return () => document.head.removeChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
   }, []);
 
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden"
+      className="min-h-screen bg-black flex items-center justify-center relative overflow-hidden"
       style={{ perspective: "1000px" }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-[#ED6C5C]/10 opacity-40" />
-      <div className="absolute inset-0 opacity-[0.03] bg-noise" />
-
       <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
         {/* ---- 3D LIGHTSPEED ICON (rotatable) ---- */}
-        <Suspense fallback={<div className="mb-10 h-[112px]" />}>
+        <Suspense fallback={<div className="mb-16 h-[112px]" />}>
           <Lightspeed3DIcon />
         </Suspense>
 
-        {/* ---- wordmark with contained I morph ---- */}
-        <div className="mb-10 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
+        {/* ---- LIGHTSPEED FELLOWS with outline style ---- */}
+        <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1
-            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white"
+            className="text-6xl md:text-8xl font-display font-bold tracking-wider leading-tight"
             style={{
+              color: "transparent",
+              WebkitTextStroke: "2px #ffffff",
               transform: `rotateX(${-mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(20px)`,
-              textShadow: `
-                0 1px 0 rgba(255,255,255,0.1),
-                0 2px 4px rgba(0,0,0,0.35),
-                ${mousePosition.x * 0.5}px ${mousePosition.y * 0.5}px 14px rgba(0,0,0,0.25)
-              `,
               transformStyle: "preserve-3d",
             }}
           >
-            {/* Start at I (L is the icon above) */}
             <span className={`i-slot ${iAsTower ? "on" : ""}`}>
               {/* block I – fully inside slot */}
               <span className="i-layer i-text">
-                <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" className="text-white">
+                <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" style={{ color: "transparent", stroke: "#ffffff", strokeWidth: "8px", fill: "none" }}>
                   <g transform="translate(36,0)">
-                    <rect x={-36} y={40} width={72} height={170} fill="currentColor" />
+                    <rect x={-36} y={40} width={72} height={170} />
                   </g>
                 </svg>
               </span>
               {/* campanile I – also fully contained */}
               <span className="i-layer i-tower">
-                <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" className="text-white">
+                <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" style={{ color: "transparent", stroke: "#ffffff", strokeWidth: "8px", fill: "none" }}>
                   <g transform="translate(36,0)">
-                    <rect x={-36} y={40} width={72} height={170} fill="currentColor" />
-                    <rect x={-36} y={32} width={72} height={8} fill="currentColor" />
+                    <rect x={-36} y={40} width={72} height={170} />
+                    <rect x={-36} y={32} width={72} height={8} />
                     <defs>
                       <mask id="iBelfryMask" maskUnits="userSpaceOnUse" x={-34} y={0} width={68} height={32}>
                         <rect x={-34} y={0} width={68} height={32} fill="white" />
@@ -227,59 +222,50 @@ export function LightspeedHero() {
                         </g>
                       </mask>
                     </defs>
-                    <rect x={-34} y={0} width={68} height={32} fill="currentColor" mask="url(#iBelfryMask)" />
+                    <rect x={-34} y={0} width={68} height={32} mask="url(#iBelfryMask)" />
                     <g transform="translate(0,20)">
-                      <circle r={9} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={3} />
-                      <circle r={1} fill="currentColor" />
+                      <circle r={9} fill="rgba(0,0,0,.8)" strokeWidth={3} />
+                      <circle r={1} />
                     </g>
-                    <polygon points="0,0 36,32 -36,32" fill="currentColor" stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+                    <polygon points="0,0 36,32 -36,32" strokeWidth={1} vectorEffect="non-scaling-stroke" />
                   </g>
                 </svg>
               </span>
             </span>
             <span>GHTSPEED</span>
             <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">FELLOWS</span>
+            <span>FELLOWS</span>
           </h1>
         </div>
 
-        {/* body */}
-        <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
-          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
-            {">"} A year-long fellowship for Berkeley's top{" "}
-            <span className="text-white font-medium">{descriptions[currentDescription]}</span>.
-          </div>
-          <div
-            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-          >
-            {">"} Backed by investors behind{" "}
-            <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
-              <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
-              {", "}
-              <span className="text-white font-medium">{companyGroups[currentGroup][1]}</span>
-              {", "}
-              <span className="text-white font-medium">{companyGroups[currentGroup][2]}</span>
-            </span>
-            .
+        {/* Decorative dots pattern */}
+        <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards]">
+          <div className="flex items-center justify-center space-x-2">
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="w-6 h-0.5 bg-white"></div>
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="w-6 h-0.5 bg-white"></div>
+            <div className="w-4 h-0.5 bg-white"></div>
           </div>
         </div>
 
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-semibold text-white border border-white/15 rounded-full backdrop-blur-lg bg-white/5 hover:bg-white/10 transition-all"
+            className="w-32 mx-auto py-3 text-lg font-bold text-white border-2 border-white rounded-none bg-transparent hover:bg-white hover:text-black transition-all uppercase tracking-wider"
             onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
           >
             APPLY
           </Button>
         </div>
       </div>
-
-      <footer className="absolute bottom-0 left-0 right-0 p-6 text-center">
-        <div className="text-xs font-mono text-white/40">LIGHTSPEED © 2025</div>
-      </footer>
     </div>
   );
 }

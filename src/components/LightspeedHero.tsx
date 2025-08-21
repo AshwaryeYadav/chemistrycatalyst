@@ -54,7 +54,7 @@ function RotatingLMesh() {
 /** 3D icon wrapper: gentle auto-rotate + drag orbit (no zoom/pan) */
 const Lightspeed3DIcon = memo(function Lightspeed3DIcon() {
   return (
-    <div className="mx-auto mb-10" style={{ width: 112, height: 112 }}>
+    <div className="mx-auto mb-10" style={{ width: 128, height: 128 }}>
       <Canvas dpr={[1, 2]} camera={{ position: [2.5, 2.2, 3.4], fov: 38 }} shadows>
         <ambientLight intensity={0.25} />
         <directionalLight
@@ -145,7 +145,7 @@ export function LightspeedHero() {
     const style = document.createElement("style");
     style.textContent = `
       .i-slot{
-        --iWidth: 0.34em;
+        --iWidth: 0.28em;
         --iBaseline: -0.02em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
@@ -183,7 +183,7 @@ export function LightspeedHero() {
 
       <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
         {/* ---- 3D LIGHTSPEED ICON (rotatable) ---- */}
-        <Suspense fallback={<div className="mb-10 h-[112px]" />}>
+        <Suspense fallback={<div className="mb-10 h-[128px] w-[128px] mx-auto" />}>
           <Lightspeed3DIcon />
         </Suspense>
 
@@ -201,19 +201,18 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* Start at I (L is the 3D icon above) */}
-            <span className={`i-slot ${iAsTower ? "on" : ""}`}>
+            L<span className={`i-slot ${iAsTower ? "on" : ""}`}>
               {/* block I – fully inside slot */}
               <span className="i-layer i-text">
                 <svg
                   width="100%"
                   height="100%"
-                  viewBox="0 0 72 220"
+                  viewBox="0 0 32 220"
                   preserveAspectRatio="xMidYMax meet"
                   className="text-white"
                 >
-                  <g transform="translate(36,0)">
-                    <rect x={-36} y={40} width={72} height={170} fill="currentColor" />
+                  <g transform="translate(16,0)">
+                    <rect x={-16} y={40} width={32} height={170} fill="currentColor" />
                   </g>
                 </svg>
               </span>
@@ -223,31 +222,30 @@ export function LightspeedHero() {
                 <svg
                   width="100%"
                   height="100%"
-                  viewBox="0 0 72 220"
+                  viewBox="0 0 32 220"
                   preserveAspectRatio="xMidYMax meet"
                   className="text-white"
                 >
-                  <g transform="translate(36,0)">
-                    <rect x={-36} y={40} width={72} height={170} fill="currentColor" />
-                    <rect x={-36} y={32} width={72} height={8} fill="currentColor" />
+                  <g transform="translate(16,0)">
+                    <rect x={-16} y={40} width={32} height={170} fill="currentColor" />
+                    <rect x={-16} y={32} width={32} height={8} fill="currentColor" />
                     <defs>
-                      <mask id="iBelfryMask" maskUnits="userSpaceOnUse" x={-34} y={0} width={68} height={32}>
-                        <rect x={-34} y={0} width={68} height={32} fill="white" />
+                      <mask id="iBelfryMask" maskUnits="userSpaceOnUse" x={-14} y={0} width={28} height={32}>
+                        <rect x={-14} y={0} width={28} height={32} fill="white" />
                         <g fill="black">
-                          <rect x={-28} y={6} width={12} height={22} rx={6} />
-                          <rect x={-12} y={6} width={12} height={22} rx={6} />
-                          <rect x={4}   y={6} width={12} height={22} rx={6} />
-                          <rect x={20}  y={6} width={12} height={22} rx={6} />
+                          <rect x={-10} y={6} width={6} height={22} rx={3} />
+                          <rect x={-2} y={6} width={6} height={22} rx={3} />
+                          <rect x={6}   y={6} width={6} height={22} rx={3} />
                         </g>
                       </mask>
                     </defs>
-                    <rect x={-34} y={0} width={68} height={32} fill="currentColor" mask="url(#iBelfryMask)" />
+                    <rect x={-14} y={0} width={28} height={32} fill="currentColor" mask="url(#iBelfryMask)" />
                     <g transform="translate(0,20)">
-                      <circle r={9} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={3} />
+                      <circle r={6} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={2} />
                       <circle r={1} fill="currentColor" />
                     </g>
                     <polygon
-                      points="0,0 36,32 -36,32"
+                      points="0,0 16,32 -16,32"
                       fill="currentColor"
                       stroke="currentColor"
                       strokeWidth={1}
@@ -292,7 +290,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-semibold text-white border border-white/15 rounded-full backdrop-blur-lg bg-white/5 hover:bg-white/10 transition-all"
+            className="w-56 mx-auto py-4 text-base font-semibold text-white border border-white/15 rounded-full backdrop-blur-lg bg-white/5 hover:bg-white/10 transition-all duration-300 hover:shadow-[0_0_30px_rgba(237,108,92,0.5)] hover:border-[#ED6C5C]/30"
             onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
           >
             APPLY

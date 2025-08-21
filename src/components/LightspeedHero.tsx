@@ -110,7 +110,7 @@ export function LightspeedHero() {
       .logo-lightspeed {
         font-weight: 300;
         letter-spacing: -0.02em;
-        color: #e5e7eb;
+        color: #ffffff;
         position: relative;
         display: block;
         transform-style: preserve-3d;
@@ -119,7 +119,7 @@ export function LightspeedHero() {
       .logo-fellows {
         font-weight: 600;
         letter-spacing: 0.15em;
-        color: #e5e7eb;
+        color: #ffffff;
         position: relative;
         display: block;
         transform-style: preserve-3d;
@@ -145,19 +145,6 @@ export function LightspeedHero() {
         color: #2a2e34;
         z-index: -2;
         user-select: none;
-      }
-      
-      /* Gradient overlay for the main text */
-      .logo-gradient {
-        background: linear-gradient(135deg, 
-          #ffffff 0%, 
-          #e5e7eb 40%, 
-          #ED6C5C 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        position: relative;
-        z-index: 1;
       }
       
       /* Shadow layers for depth */
@@ -295,7 +282,7 @@ export function LightspeedHero() {
                     className="logo-lightspeed text-shadow-3d"
                     data-text="LIGHTSPEED"
                   >
-                    <span className="logo-gradient">LIGHTSPEED</span>
+                    LIGHTSPEED
                   </span>
                 </div>
                 
@@ -305,7 +292,7 @@ export function LightspeedHero() {
                     className="logo-fellows text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-shadow-3d-fellows"
                     data-text="FELLOWS"
                   >
-                    <span className="logo-gradient">FELLOWS</span>
+                    FELLOWS
                   </span>
                 </div>
               </div>

@@ -10,10 +10,10 @@ import * as THREE from "three";
 const LMesh = memo(function LMesh() {
   const geom = useMemo(() => {
     const s = new THREE.Shape();
-    // silhouette: tall stem + longer, more symmetrical foot
+    // Taller stem + longer, more symmetric foot (cleaner silhouette)
     s.moveTo(-1.5, 3.5);
     s.lineTo(-1.5, -3.5);
-    s.lineTo(2.6, -3.5); // <- extended from 1.8 to 2.6 for a longer base
+    s.lineTo(2.8, -3.5); // <- longer foot for symmetry
     s.lineTo(0.0, -1.7);
     s.lineTo(-0.6, -1.7);
     s.lineTo(-0.6, 3.5);
@@ -160,39 +160,37 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, []);
 
-  // CSS: cap-height “I” + Berkeley Campanile morph WITHOUT layout shift
+  // CSS: cap-height “I” + Berkeley Campanile morph WITHOUT layout shift.
+  // The slot size NEVER changes; both states share the same grounded stem.
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
       .i-slot{
-        --iWidth: 0.26em;        /* slender */
-        --iHeight: 0.96em;       /* cap-height; constant to avoid reflow */
-        --iBaseline: -0.06em;    /* align with text baseline */
+        --iWidth: 0.28em;        /* a touch wider so it doesn't look skinny next to 'G' */
+        --iHeight: 0.96em;       /* cap-height */
+        --iBaseline: -0.06em;    /* baseline align */
         position: relative;
         display:inline-block;
         inline-size: var(--iWidth);
         block-size: var(--iHeight);
         vertical-align: var(--iBaseline);
-        overflow: visible;       /* tower can rise above without affecting layout */
+        overflow: visible;       /* allow tower top to extend upward */
       }
       .i-layer{
         position:absolute; inset:0;
         display:flex; align-items:flex-end; justify-content:center;
         will-change: opacity, transform;
-        transition: opacity .28s cubic-bezier(.2,.7,.2,1),
-                    transform .34s cubic-bezier(.3,.7,.2,1);
+        transition: opacity .28s cubic-bezier(.2,.7,.2,1);
         pointer-events:none;
       }
-      /* Base “I”: visible; Tower: hidden & slightly compressed */
-      .i-text  { opacity:1;  transform: translateY(0%)    scale(1); }
-      .i-tower { opacity:0;  transform: translateY(0%)    scale(0.96); }
+      /* Fade only; no transforms that could shift glyph metrics */
+      .i-text  { opacity:1; }
+      .i-tower { opacity:0; }
+      .i-slot.on .i-text  { opacity:0; }
+      .i-slot.on .i-tower { opacity:1; }
 
-      /* Morph to Campanile: fade/scale only. NO size change of the slot, so no layout shift. */
-      .i-slot.on .i-text  { opacity:0; transform: translateY(0%)   scale(0.98); }
-      .i-slot.on .i-tower { opacity:1; transform: translateY(-26%) scale(1.06); } /* rise above line visually */
-      
       @media (prefers-reduced-motion: reduce){
-        .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
+        .i-layer{ transition:opacity .2s ease !important; }
       }
     `;
     document.head.appendChild(style);
@@ -218,53 +216,54 @@ export function LightspeedHero() {
           >
             <span>L</span>
 
-            {/* Cap-height I ↔ Tall Campanile with no reflow */}
+            {/* Cap-height I ↔ Campanile with a grounded stem.
+                The stem is identical in both states; only the top (cornice/belfry/roof) extends above. */}
             <span className={`i-slot ${iAsTower ? "on" : ""}`}>
-              {/* Cap-height I (uniform width) */}
+              {/* Cap-height I (grounded) */}
               <span className="i-layer i-text">
                 <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" className="text-white">
                   <g transform="translate(36,0)">
-                    {/* centered slim stem at cap-height */}
-                    <rect x={-21} y={72} width={42} height={138} fill="currentColor" />
+                    {/* stem centered; exact cap-height */}
+                    <rect x={-18} y={72} width={36} height={138} fill="currentColor" />
                   </g>
                 </svg>
               </span>
 
-              {/* Berkeley-esque Campanile (taller but rendered via transform so line height doesn't change) */}
+              {/* Campanile (same grounded stem + taller top) */}
               <span className="i-layer i-tower">
                 <svg width="100%" height="100%" viewBox="0 0 72 260" preserveAspectRatio="xMidYMax meet" className="text-white">
                   <g transform="translate(36,0)">
-                    {/* shaft (slender) */}
-                    <rect x={-21} y={58} width={42} height={170} fill="currentColor" />
-                    {/* projecting cornice */}
-                    <rect x={-24} y={50} width={48} height={8} fill="currentColor" />
-                    {/* belfry with arched openings */}
+                    {/* grounded stem: identical to base I */}
+                    <rect x={-18} y={72} width={36} height={138} fill="currentColor" />
+                    {/* cornice sitting right above cap height */}
+                    <rect x={-20} y={64} width={40} height={8} fill="currentColor" />
+                    {/* belfry band with three arched openings */}
                     <defs>
-                      <mask id="campBelfryMask" maskUnits="userSpaceOnUse" x={-24} y={26} width={48} height={26}>
-                        <rect x={-24} y={26} width={48} height={26} fill="white" />
+                      <mask id="campBelfryMask" maskUnits="userSpaceOnUse" x={-20} y={40} width={40} height={22}>
+                        <rect x={-20} y={40} width={40} height={22} fill="white" />
                         <g fill="black">
-                          {/* three arches */}
-                          <path d="M-18,52 v-12 a6 6 0 0 1 12 0 v12 z" />
-                          <path d="M-6,52  v-12 a6 6 0 0 1 12 0 v12 z" />
-                          <path d="M6,52   v-12 a6 6 0 0 1 12 0 v12 z" />
+                          {/* three arches, narrow and tall like Sather Tower */}
+                          <path d="M-12,62 v-10 a5 5 0 0 1 10 0 v10 z" />
+                          <path d="M-0,62 v-10 a5 5 0 0 1 10 0 v10 z" />
+                          <path d="M12,62 v-10 a5 5 0 0 1 10 0 v10 z" />
                         </g>
                       </mask>
                     </defs>
-                    <rect x={-24} y={26} width={48} height={26} fill="currentColor" mask="url(#campBelfryMask)" />
-                    {/* larger clock */}
-                    <g transform="translate(0,44)">
-                      <circle r={9} fill="rgba(0,0,0,.85)" stroke="currentColor" strokeWidth={3} />
+                    <rect x={-20} y={40} width={40} height={22} fill="currentColor" mask="url(#campBelfryMask)" />
+                    {/* clock centered below the roofline */}
+                    <g transform="translate(0,56)">
+                      <circle r={8.5} fill="rgba(0,0,0,.85)" stroke="currentColor" strokeWidth={3} />
                       <circle r={1.2} fill="currentColor" />
                     </g>
-                    {/* pyramidal roof + finial */}
+                    {/* pyramidal roof + finial (extends above cap height) */}
                     <polygon
-                      points="0,18 24,50 -24,50"
+                      points="0,28 20,64 -20,64"
                       fill="currentColor"
                       stroke="currentColor"
                       strokeWidth={1}
                       vectorEffect="non-scaling-stroke"
                     />
-                    <rect x={-1.2} y={14} width={2.4} height={4} fill="currentColor" rx={1.2} />
+                    <rect x={-1.1} y={24} width={2.2} height={4} fill="currentColor" rx={1.1} />
                   </g>
                 </svg>
               </span>
@@ -310,7 +309,7 @@ export function LightspeedHero() {
   );
 }
 
-/** Extracted body to keep top tidy */
+/** Body copy extracted for clarity */
 function BodyCopy({
   descriptions,
   companyGroups,

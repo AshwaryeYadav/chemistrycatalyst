@@ -4,45 +4,56 @@ import { useEffect, useRef, useState, memo } from "react";
 
 /* --------------------------- THREE: 3D Lightspeed L --------------------------- */
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
+import { memo, useMemo, useRef } from "react";
 
 /** Extruded L built from the flat silhouette; exact color #ED6C5C */
-function LMesh() {
-  const s = new THREE.Shape();
-  // silhouette: tall stem + right foot (edit points if you need a different knee)
-  s.moveTo(-1.5, 3.5);
-  s.lineTo(-1.5, -3.5);
-  s.lineTo(1.8, -3.5);
-  s.lineTo(0.0, -1.7);
-  s.lineTo(-0.6, -1.7);
-  s.lineTo(-0.6, 3.5);
-  s.closePath();
+const LMesh = memo(function LMesh() {
+  const geom = useMemo(() => {
+    const s = new THREE.Shape();
+    // silhouette: tall stem + right foot (edit points if you need a different knee)
+    s.moveTo(-1.5, 3.5);
+    s.lineTo(-1.5, -3.5);
+    s.lineTo(1.8, -3.5);
+    s.lineTo(0.0, -1.7);
+    s.lineTo(-0.6, -1.7);
+    s.lineTo(-0.6, 3.5);
+    s.closePath();
 
-  const geom = new THREE.ExtrudeGeometry(s, {
-    depth: 0.6,
-    bevelEnabled: true,
-    bevelThickness: 0.1,
-    bevelSize: 0.08,
-    bevelSegments: 4,
-    curveSegments: 12,
-  });
-  geom.center();
+    const g = new THREE.ExtrudeGeometry(s, {
+      depth: 0.6,
+      bevelEnabled: true,
+      bevelThickness: 0.1,
+      bevelSize: 0.08,
+      bevelSegments: 4,
+      curveSegments: 12,
+    });
+    g.center();
+    return g;
+  }, []);
 
   return (
     <mesh geometry={geom} castShadow receiveShadow>
       <meshStandardMaterial color={"#ED6C5C"} metalness={0.15} roughness={0.35} />
     </mesh>
   );
-}
+});
 
-/** Inline 3D L slot sized in ems so it sits like a glyph */
-const Inline3DL = memo(function Inline3DL() {
+/** Rotator lives *inside* <Canvas>, so we can safely use useFrame */
+function RotatingL() {
   const group = useRef<THREE.Group>(null!);
   useFrame((_s, dt) => {
     if (group.current) group.current.rotation.y += dt * 0.25;
   });
+  return (
+    <group ref={group}>
+      <LMesh />
+    </group>
+  );
+}
 
+/** Inline 3D L slot sized in ems so it sits like a glyph */
+export const Inline3DL = memo(function Inline3DL() {
   return (
     <span
       className="inline-block"
@@ -50,15 +61,15 @@ const Inline3DL = memo(function Inline3DL() {
         // width ≈ cap-width, height a hair taller than line box so bevel isn’t clipped
         width: "0.92em",
         height: "1.18em",
-        transform: "translateY(-0.12em)", // raise slightly so it aligns with cap-height
+        // Raise/align to cap height; tweak here if you still see drift
+        transform: "translateY(-0.12em)",
         verticalAlign: "-0.08em",
-        overflow: "visible", // allow canvas contents to breathe
+        overflow: "visible",
       }}
     >
       <Canvas
         dpr={[1, 2]}
         camera={{ position: [2.5, 2.2, 3.4], fov: 38 }}
-        // Important: ensure canvas itself doesn’t clip
         style={{ width: "100%", height: "100%", display: "block", overflow: "visible" as any }}
         shadows
       >
@@ -70,21 +81,13 @@ const Inline3DL = memo(function Inline3DL() {
           shadow-mapSize={[1024, 1024]}
         />
         <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
-        <group ref={group}>
-          <LMesh />
-        </group>
-        <OrbitControls
-          enablePan={false}
-          enableZoom={false}
-          rotateSpeed={0.7}
-          minPolarAngle={Math.PI * 0.2}
-          maxPolarAngle={Math.PI * 0.8}
-        />
+
+        {/* Rotation happens here, inside the Canvas tree */}
+        <RotatingL />
       </Canvas>
     </span>
   );
 });
-
 /* --------------------------------- Hero --------------------------------- */
 export function LightspeedHero() {
   const companyGroups = [

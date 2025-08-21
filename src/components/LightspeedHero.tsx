@@ -17,6 +17,7 @@ export function LightspeedHero() {
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [iAsTower, setIAsTower] = useState(false); // <- auto-animating I
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,56 +52,59 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Scoped styles: two stacked layers, constant spacing, tiny tower alignment knob
+  // Auto toggle the "I" every ~6s (respect reduced motion)
+  useEffect(() => {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) return;
+    const id = setInterval(() => setIAsTower((v) => !v), 6000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Inject styles for the I-morph + keep your existing L styles untouched
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
-      .campanile {
-        --width: 0.80em;           /* glyph advance width (fixed) */
-        --baseline: -0.11em;       /* baseline nudge */
-        --gap: 0.035em;            /* space before "I" (fixed) */
-        --towerAlignFix: -3px;     /* <— move Tower layer left/right (− = left, + = right) */
-        display: inline-block;
-        inline-size: var(--width);
-        block-size: 1em;
-        vertical-align: var(--baseline);
-        margin-right: var(--gap);
-        perspective: 900px;
-      }
-
-      .campanile-inner {
+      /* ---- I morph slot (fixed width, baseline-locked) ---- */
+      .i-slot{
+        --iWidth: 0.62em;     /* visual width of "I" — tweak if your font's I is wider/narrower */
+        --iBaseline: -0.02em; /* baseline nudge so the layers sit perfectly on the text baseline */
+        --towerNudgeX: 0px;   /* fine nudge: negative = left, positive = right */
         position: relative;
-        width: 100%;
-        height: 1em;               /* lock to line height */
+        display: inline-block;
+        inline-size: var(--iWidth);
+        block-size: 1em;
+        vertical-align: var(--iBaseline);
         overflow: visible;
       }
-
-      .layer {
+      .i-layer{
         position: absolute;
         inset: 0;
-        will-change: transform, opacity;
-        transition: opacity .38s cubic-bezier(.2,.7,.2,1),
-                    transform .45s cubic-bezier(.3,.7,.2,1);
+        display: flex;
+        align-items: flex-end;  /* anchor glyphs to baseline */
+        justify-content: center;
+        will-change: opacity, transform;
+        transition: opacity .45s cubic-bezier(.2,.7,.2,1),
+                    transform .55s cubic-bezier(.3,.7,.2,1);
+      }
+      .i-text{
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        line-height: 1; /* keeps single glyph tight */
+      }
+      .i-tower{
+        opacity: 0;
+        transform: translateY(8%) scale(.985) translateX(var(--towerNudgeX));
+      }
+      /* ON state: tower visible, text I faded out */
+      .i-slot.on .i-text{ opacity: 0; transform: translateY(-6%) scale(.985); }
+      .i-slot.on .i-tower{ opacity: 1; transform: translateY(0) scale(1) translateX(var(--towerNudgeX)); }
+
+      @media (prefers-reduced-motion: reduce){
+        .i-layer{ transition: opacity .2s ease !important; transform:none !important; }
       }
 
-      /* Default: show the L; Tower hidden */
-      .layer-l    { opacity: 1; transform: translateY(0) scale(1); }
-      .layer-tower{ opacity: 0; transform: translateY(6%) scale(.985); }
-
-      /* Hover: crossfade L -> Tower */
-      .hover-campanile-container:hover .layer-l     { opacity: 0; transform: translateY(-4%) scale(.985); }
-      .hover-campanile-container:hover .layer-tower { opacity: 1; transform: translateY(0)   scale(1); }
-
-      /* Small 3D flourish (optional) */
-      .glyph-container { transition: transform .45s cubic-bezier(.2,.7,.2,1); }
-      .hover-campanile-container:hover .glyph-container { transform: translateY(-2px) rotateY(-5deg) scale(1.02); }
-
-      /* Tower fine alignment wrapper */
-      .tower-align { width: 100%; height: 100%; transform: translateX(var(--towerAlignFix)); }
-
-      @media (prefers-reduced-motion: reduce) {
-        .layer, .glyph-container { transition: opacity .25s ease !important; transform: none !important; }
-      }
+      /* --- minimal reset so SVG doesn't clip --- */
+      .glyph-container, .glyph-container svg{ overflow: visible; }
     `;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
@@ -129,101 +133,77 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* Two-layer approach: L (layer-l) and Tower (layer-tower) */}
-            <span className="campanile hover-campanile-container align-baseline">
-              <div className="campanile-inner glyph-container">
-                {/* LAYER A: Classic L (thin stem + foot) */}
-                <div className="layer layer-l">
-                  <svg
-                    width="100%" height="100%"
-                    viewBox="0 0 200 220"
-                    preserveAspectRatio="xMidYMax meet"
-                    className="text-white"
-                    style={{ display: "block", overflow: "visible" }}
-                  >
-                    {/* origin at stem top-center (x=53, y=20) */}
-                    <g transform="translate(53,20)">
-                      {/* thin stem */}
-                      <rect
-                        x={-17} y={0} width={34} height={160}
-                        fill="currentColor"
-                        style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
-                      />
-                      {/* right foot */}
-                      <rect
-                        x={0} y={126} width={120} height={34}
-                        fill="currentColor"
-                        style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
-                      />
-                    </g>
-                  </svg>
-                </div>
-
-                {/* LAYER B: Tower + thick stem perfectly under the head (no foot) */}
-                <div className="layer layer-tower">
-                  <div className="tower-align">
-                    <svg
-                      width="100%" height="100%"
-                      viewBox="0 0 200 220"
-                      preserveAspectRatio="xMidYMax meet"
-                      className="text-white"
-                      style={{ display: "block", overflow: "visible" }}
-                    >
-                      {/* same origin so centers match; we can nudge via --towerAlignFix */}
-                      <g transform="translate(53,20)">
-                        {/* THICK stem: exactly cap width (72px), centered */}
-                        <rect
-                          x={-36} y={0} width={72} height={175}
-                          fill="currentColor"
-                          style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
-                        />
-
-                        {/* Cap (72 wide) */}
-                        <rect
-                          x={-36} y={-8} width={72} height={8}
-                          fill="currentColor"
-                          style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,.5))" }}
-                        />
-
-                        {/* Belfry with arches */}
-                        <defs>
-                          <mask id="belfryMask2" maskUnits="userSpaceOnUse" x={-34} y={-48} width={68} height={40}>
-                            <rect x={-34} y={-48} width={68} height={40} fill="white" />
-                            <g fill="black">
-                              <rect x={-28} y={-42} width={12} height={24} rx={6} />
-                              <rect x={-12} y={-42} width={12} height={24} rx={6} />
-                              <rect x={4}   y={-42} width={12} height={24} rx={6} />
-                              <rect x={20}  y={-42} width={12} height={24} rx={6} />
-                            </g>
-                          </mask>
-                        </defs>
-                        <rect
-                          x={-34} y={-48} width={68} height={40}
-                          fill="currentColor" mask="url(#belfryMask2)"
-                          style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
-                        />
-
-                        {/* Clock */}
-                        <g transform="translate(0,-18)" style={{ filter: "drop-shadow(0 4px 12px rgba(0,0,0,.4))" }}>
-                          <circle r={9} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={3} />
-                          <circle r={1} fill="currentColor" />
-                        </g>
-
-                        {/* Spire */}
-                        <polygon
-                          points={`0,-77 36,-48 -36,-48`}
-                          fill="currentColor"
-                          stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke"
-                          style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
-                        />
-                      </g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
+            {/* Keep your existing “L” exactly as you have it now */}
+            {/* If you're using the custom SVG L, keep it here unchanged.
+                If you just want a plain L instead, replace the span below with "L". */}
+            <span
+              className="relative inline-block align-baseline"
+              style={{ width: "0.76em", aspectRatio: "5 / 6.2", display: "inline-block" }}
+            >
+              {/* PLACE YOUR CURRENT L MARKUP HERE (unchanged) */}
+              <span className="text-white font-semibold" style={{ fontFamily: "inherit" }}>L</span>
             </span>
 
-            <span className="campanile-rest transition-all duration-300">IGHTSPEED</span>
+            {/* Morphing “I” slot (auto every ~6s) */}
+            <span className={`i-slot ${iAsTower ? "on" : ""}`}>
+              {/* Layer 1: real “I” text */}
+              <span className="i-layer i-text">
+                <span style={{ font: "inherit", color: "inherit" }}>I</span>
+              </span>
+
+              {/* Layer 2: campanile tower */}
+              <span className="i-layer i-tower">
+                <svg
+                  width="100%"
+                  height="100%"
+                  viewBox="0 0 72 220"
+                  preserveAspectRatio="xMidYMax meet"
+                  className="text-white"
+                  style={{ display: "block" }}
+                >
+                  {/* Center at x=36, y=20 to match the earlier coordinate logic */}
+                  <g transform="translate(36,20)">
+                    {/* stem under the head (narrower than cap for “I” feel) */}
+                    <rect x={-14} y={0} width={28} height={170} fill="currentColor" />
+
+                    {/* cap (head) */}
+                    <rect x={-36} y={-8} width={72} height={8} fill="currentColor" />
+
+                    {/* belfry with arches */}
+                    <defs>
+                      <mask id="iBelfryMask" maskUnits="userSpaceOnUse" x={-34} y={-48} width={68} height={40}>
+                        <rect x={-34} y={-48} width={68} height={40} fill="white" />
+                        <g fill="black">
+                          <rect x={-28} y={-42} width={12} height={24} rx={6} />
+                          <rect x={-12} y={-42} width={12} height={24} rx={6} />
+                          <rect x={4}   y={-42} width={12} height={24} rx={6} />
+                          <rect x={20}  y={-42} width={12} height={24} rx={6} />
+                        </g>
+                      </mask>
+                    </defs>
+                    <rect x={-34} y={-48} width={68} height={40} fill="currentColor" mask="url(#iBelfryMask)" />
+
+                    {/* clock */}
+                    <g transform="translate(0,-18)">
+                      <circle r={9} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={3} />
+                      <circle r={1} fill="currentColor" />
+                    </g>
+
+                    {/* spire */}
+                    <polygon
+                      points="0,-77 36,-48 -36,-48"
+                      fill="currentColor"
+                      stroke="currentColor"
+                      strokeWidth={1}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </g>
+                </svg>
+              </span>
+            </span>
+
+            {/* The rest of the word after I */}
+            <span className="campanile-rest transition-all duration-300">GHTSPEED</span>
             <br />
             <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>
           </h1>

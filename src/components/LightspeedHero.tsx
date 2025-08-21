@@ -2,16 +2,20 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState, memo } from "react";
 
+// src/components/LightspeedHero.tsx
+import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useState, memo, useMemo } from "react";
+
 /* --------------------------- THREE: 3D Lightspeed L --------------------------- */
 import { Canvas, useFrame } from "@react-three/fiber";
+// (Optional) If you still want controls, you can keep OrbitControls, it’s Canvas-safe
+// import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { memo, useMemo, useRef } from "react";
 
 /** Extruded L built from the flat silhouette; exact color #ED6C5C */
 const LMesh = memo(function LMesh() {
   const geom = useMemo(() => {
     const s = new THREE.Shape();
-    // silhouette: tall stem + right foot (edit points if you need a different knee)
     s.moveTo(-1.5, 3.5);
     s.lineTo(-1.5, -3.5);
     s.lineTo(1.8, -3.5);
@@ -34,7 +38,7 @@ const LMesh = memo(function LMesh() {
 
   return (
     <mesh geometry={geom} castShadow receiveShadow>
-      <meshStandardMaterial color={"#ED6C5C"} metalness={0.15} roughness={0.35} />
+      <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
     </mesh>
   );
 });
@@ -53,15 +57,13 @@ function RotatingL() {
 }
 
 /** Inline 3D L slot sized in ems so it sits like a glyph */
-export const Inline3DL = memo(function Inline3DL() {
+const Inline3DL = memo(function Inline3DL() {
   return (
     <span
       className="inline-block"
       style={{
-        // width ≈ cap-width, height a hair taller than line box so bevel isn’t clipped
         width: "0.92em",
         height: "1.18em",
-        // Raise/align to cap height; tweak here if you still see drift
         transform: "translateY(-0.12em)",
         verticalAlign: "-0.08em",
         overflow: "visible",
@@ -74,20 +76,19 @@ export const Inline3DL = memo(function Inline3DL() {
         shadows
       >
         <ambientLight intensity={0.25} />
-        <directionalLight
-          position={[3, 6, 5]}
-          castShadow
-          intensity={1.1}
-          shadow-mapSize={[1024, 1024]}
-        />
+        <directionalLight position={[3, 6, 5]} castShadow intensity={1.1} shadow-mapSize={[1024, 1024]} />
         <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
 
-        {/* Rotation happens here, inside the Canvas tree */}
         <RotatingL />
+
+        {/* If you want user-rotation without zoom/pan, you can uncomment this: */}
+        {/* <OrbitControls enablePan={false} enableZoom={false} rotateSpeed={0.7}
+                        minPolarAngle={Math.PI * 0.2} maxPolarAngle={Math.PI * 0.8} /> */}
       </Canvas>
     </span>
   );
 });
+
 /* --------------------------------- Hero --------------------------------- */
 export function LightspeedHero() {
   const companyGroups = [

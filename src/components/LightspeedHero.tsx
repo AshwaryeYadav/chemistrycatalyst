@@ -6,18 +6,20 @@ import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** Extruded L built from the flat silhouette; exact color #ED6C5C */
+/** Extruded L built from a flat silhouette (#ED6C5C) */
 const LMesh = memo(function LMesh() {
   const geom = useMemo(() => {
     const s = new THREE.Shape();
-    // silhouette: tall stem + right foot
-    s.moveTo(-1.5, 3.5);
-    s.lineTo(-1.5, -3.5);
-    s.lineTo(1.8, -3.5);
-    s.lineTo(0.0, -1.7);
-    s.lineTo(-0.6, -1.7);
-    s.lineTo(-0.6, 3.5);
+    // === Silhouette (units are arbitrary) =========================
+    // Taller stem; longer/symmetric foot for clearer "L"
+    s.moveTo(-1.5, 3.6);      // top-left of stem
+    s.lineTo(-1.5, -3.6);     // down stem
+    s.lineTo(2.6, -3.6);      // >>> extended foot (was 1.8)
+    s.lineTo(0.0, -1.7);      // inner knee
+    s.lineTo(-0.6, -1.7);     // back toward stem
+    s.lineTo(-0.6, 3.6);      // up inside of stem
     s.closePath();
+    // =============================================================
 
     const g = new THREE.ExtrudeGeometry(s, {
       depth: 0.6,
@@ -38,7 +40,7 @@ const LMesh = memo(function LMesh() {
   );
 });
 
-/** Continuous rotator + expose ref so camera can frame it */
+/** Continuous rotator (inside <Canvas>) */
 function SpinningL({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) {
   useFrame((_s, dt) => {
     if (groupRef.current) groupRef.current.rotation.y += dt * 0.45;
@@ -50,14 +52,11 @@ function SpinningL({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) {
   );
 }
 
-/** Fit the camera to the object once (and on resize) so it never crops */
+/** Fit camera so mesh fully fits (no cropping) */
 function FitCameraToObject({
   target,
   padding = 1.35,
-}: {
-  target: React.RefObject<THREE.Object3D>;
-  padding?: number;
-}) {
+}: { target: React.RefObject<THREE.Object3D>; padding?: number }) {
   const { camera, size } = useThree();
   useEffect(() => {
     if (!target.current) return;
@@ -80,11 +79,10 @@ function FitCameraToObject({
     persp.updateProjectionMatrix();
     camera.lookAt(center);
   }, [camera, size.width, size.height, target, padding]);
-
   return null;
 }
 
-/** Top artwork: standalone 3D L above the wordmark; transparent bg; auto-fit; no clipping */
+/** 3D L artwork above wordmark */
 const HeroL3D = memo(function HeroL3D() {
   const groupRef = useRef<THREE.Group>(null!);
   return (
@@ -137,22 +135,16 @@ export function LightspeedHero() {
   // cycles
   useEffect(() => {
     if (isPaused) return;
-    const id = setInterval(
-      () => setCurrentGroup((p) => (p + 1) % companyGroups.length),
-      2400
-    );
+    const id = setInterval(() => setCurrentGroup((p) => (p + 1) % companyGroups.length), 2400);
     return () => clearInterval(id);
   }, [isPaused, companyGroups.length]);
 
   useEffect(() => {
-    const id = setInterval(
-      () => setCurrentDescription((p) => (p + 1) % descriptions.length),
-      3600
-    );
+    const id = setInterval(() => setCurrentDescription((p) => (p + 1) % descriptions.length), 3600);
     return () => clearInterval(id);
   }, [descriptions.length]);
 
-  // morph I (every 6s), disabled for reduced motion
+  // morph I (every 6s), reduced-motion aware
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
@@ -160,44 +152,34 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, []);
 
-  // CSS: regular I + tall Campanile state (taller than wordmark, Berkeley-esque)
+  // CSS: fixed slot (no layout shift); slimmer glyphs; cross-fade only
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
       .i-slot{
-        --iWidth: 0.26em;        /* slender look */
-        --iHeight: 0.96em;       /* regular I height */
-        --iBaseline: -0.06em;    /* baseline tweak */
-        position: relative;
-        display:inline-block;
+        --iWidth: 0.26em;        /* slender I */
+        --iHeight: 0.96em;       /* fixed height -> no layout shift */
+        --iBaseline: -0.06em;
+        position: relative; display:inline-block;
         inline-size: var(--iWidth);
         block-size: var(--iHeight);
         vertical-align: var(--iBaseline);
-        overflow: visible;       /* allow tower to rise above line */
-        will-change: inline-size, block-size, transform;
-        transition: block-size .35s cubic-bezier(.3,.7,.2,1),
-                    inline-size .35s cubic-bezier(.3,.7,.2,1);
-      }
-      /* When morphed to the Campanile, make it taller so it stands above LIGHTSPEED */
-      .i-slot.on{
-        --iHeight: 1.36em;       /* grows taller than the cap height */
+        overflow: hidden;        /* both states live inside this box */
       }
       .i-layer{
-        position:absolute; inset:0;
-        display:flex; align-items:flex-end; justify-content:center;
+        position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
         will-change: opacity, transform;
-        transition: opacity .28s cubic-bezier(.2,.7,.2,1),
-                    transform .34s cubic-bezier(.3,.7,.2,1);
+        transition: opacity .26s cubic-bezier(.2,.7,.2,1),
+                    transform .30s cubic-bezier(.3,.7,.2,1);
         pointer-events:none;
       }
       .i-text  { opacity:1;  transform: translateY(0)    scale(1); }
-      .i-tower { opacity:0;  transform: translateY(6%)   scale(.98); }
-      .i-slot.on .i-text  { opacity:0; transform: translateY(-4%) scale(.985); }
-      .i-slot.on .i-tower { opacity:1; transform: translateY(0%)  scale(1); }
+      .i-tower { opacity:0;  transform: translateY(2%)   scale(.985); }
+      .i-slot.on .i-text  { opacity:0; transform: translateY(-2%) scale(.985); }
+      .i-slot.on .i-tower { opacity:1; transform: translateY(0)   scale(1); }
 
       @media (prefers-reduced-motion: reduce){
         .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
-        .i-slot{ transition:none !important; }
       }
     `;
     document.head.appendChild(style);
@@ -210,7 +192,7 @@ export function LightspeedHero() {
       <div className="absolute inset-0 opacity-[0.03] bg-noise" />
 
       <div className="max-w-2xl mx-auto px-8 py-16 md:py-20 text-center relative z-10">
-        {/* 3D L artwork ABOVE the wordmark (auto-fit, continuous spin) */}
+        {/* 3D L artwork ABOVE the wordmark */}
         <HeroL3D />
 
         <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
@@ -223,58 +205,55 @@ export function LightspeedHero() {
           >
             <span>L</span>
 
-            {/* Regular I ↔ Tall Campanile */}
+            {/* FIXED-SIZE SLOT — only inside changes */}
             <span className={`i-slot ${iAsTower ? "on" : ""}`}>
-              {/* Regular slim I (kept slightly shorter) */}
+              {/* Regular slim I — designed in a *normalized* box so baseline & cap align */}
               <span className="i-layer i-text">
-                <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" className="text-white">
+                {/* Normalized 0..100 box; cap height ~92, baseline at 100 */}
+                <svg width="100%" height="100%" viewBox="0 0 72 100" preserveAspectRatio="xMidYMax meet" className="text-white">
                   <g transform="translate(36,0)">
-                    <rect x={-21} y={72} width={42} height={138} fill="currentColor" />
+                    {/* stem from y=12 to 100 (no touching top) */}
+                    <rect x={-21} y={12} width={42} height={88} fill="currentColor" />
                   </g>
                 </svg>
               </span>
 
-              {/* TALL, Berkeley-esque Campanile */}
+              {/* Campanile — same 0..100 box; fits inside without moving layout */}
               <span className="i-layer i-tower">
-                <svg width="100%" height="100%" viewBox="0 0 72 260" preserveAspectRatio="xMidYMax meet" className="text-white">
+                <svg width="100%" height="100%" viewBox="0 0 72 100" preserveAspectRatio="xMidYMax meet" className="text-white">
                   <g transform="translate(36,0)">
-                    {/* shaft (tall & slender) */}
-                    <rect x={-21} y={58} width={42} height={170} fill="currentColor" />
-
-                    {/* projecting cornice below belfry */}
-                    <rect x={-24} y={50} width={48} height={8} fill="currentColor" />
-
-                    {/* belfry band with arched openings */}
+                    {/* shaft */}
+                    <rect x={-21} y={22} width={42} height={78} fill="currentColor" />
+                    {/* cornice */}
+                    <rect x={-24} y={18} width={48} height={4} fill="currentColor" />
+                    {/* belfry with arched openings */}
                     <defs>
-                     <mask id="campBelfryMask" maskUnits="userSpaceOnUse" x={-24} y={26} width={48} height={26}>
-  <rect x={-24} y={26} width={48} height={26} fill="white" />
-  <g fill="black">
-    {/* four arches (Berkeley-esque) */}
-    <path d="M-18,52 v-12 a6 6 0 0 1 12 0 v12 z" />
-    <path d="M-6,52  v-12 a6 6 0 0 1 12 0 v12 z" />
-    <path d="M6,52   v-12 a6 6 0 0 1 12 0 v12 z" />
-    <path d="M18,52  v-12 a6 6 0 0 1 12 0 v12 z" />
-  </g>
-</mask>
-
+                      <mask id="campBelfryMask" maskUnits="userSpaceOnUse" x={-24} y={6} width={48} height={12}>
+                        <rect x={-24} y={6} width={48} height={12} fill="white" />
+                        <g fill="black">
+                          {/* four arches */}
+                          <path d="M-18,18 v-8 a5 5 0 0 1 10 0 v8 z" />
+                          <path d="M-6,18  v-8 a5 5 0 0 1 10 0 v8 z" />
+                          <path d="M6,18   v-8 a5 5 0 0 1 10 0 v8 z" />
+                          <path d="M18,18  v-8 a5 5 0 0 1 10 0 v8 z" />
+                        </g>
+                      </mask>
                     </defs>
-                    <rect x={-24} y={26} width={48} height={26} fill="currentColor" mask="url(#campBelfryMask)" />
-
-                    {/* larger clock centered (Berkeley vibe) */}
-                    <g transform="translate(0,44)">
-                      <circle r={9.5} fill="rgba(0,0,0,.85)" stroke="currentColor" strokeWidth={3} />
+                    <rect x={-24} y={6} width={48} height={12} fill="currentColor" mask="url(#campBelfryMask)" />
+                    {/* clock */}
+                    <g transform="translate(0,14)">
+                      <circle r={8.5} fill="rgba(0,0,0,.85)" stroke="currentColor" strokeWidth={3} />
                       <circle r={1.2} fill="currentColor" />
                     </g>
-
-                    {/* pyramidal roof with tiny finial */}
+                    {/* pyramid roof + finial, all inside the 0..100 box */}
                     <polygon
-                      points="0,18 24,50 -24,50"
+                      points="0,2 24,18 -24,18"
                       fill="currentColor"
                       stroke="currentColor"
                       strokeWidth={1}
                       vectorEffect="non-scaling-stroke"
                     />
-                    <rect x={-1.2} y={14} width={2.4} height={4} fill="currentColor" rx={1.2} />
+                    <rect x={-1.1} y={0.5} width={2.2} height={1.5} fill="currentColor" rx={1.1} />
                   </g>
                 </svg>
               </span>
@@ -289,70 +268,48 @@ export function LightspeedHero() {
         </div>
 
         {/* body */}
-        <RotatingTextBlocks
-          descriptions={descriptions}
-          companyGroups={companyGroups}
-          isPaused={isPaused}
-          setIsPaused={setIsPaused}
-          currentDescription={currentDescription}
-          currentGroup={currentGroup}
-        />
-
-        <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
-          <Button
-            size="xl"
-            className="w-56 mx-auto py-4 text-base font-semibold text-white border border-white/15 rounded-full backdrop-blur-lg bg-white/5 hover:bg-white/10 transition-all"
-            onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
+        <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
+          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
+            {">"} A year-long fellowship for Berkeley's top{" "}
+            <span className="text-white font-medium">{descriptions[currentDescription]}</span>.
+          </div>
+          <div
+            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
           >
-            APPLY
-          </Button>
+            {">"} Backed by investors behind{" "}
+            <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
+              <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
+              {", "}
+              <span className="text-white font-medium">{companyGroups[currentGroup][1]}</span>
+              {", "}
+              <span className="text-white font-medium">{companyGroups[currentGroup][2]}</span>
+            </span>
+            .
+          </div>
+        </div>
+
+        {/* APPLY with orange halo on hover */}
+        <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
+          <div className="relative w-56 mx-auto group">
+            {/* glow layer */}
+            <div className="pointer-events-none absolute -inset-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                 style={{ boxShadow: "0 0 28px 8px rgba(237,108,92,0.35)" }} />
+            <Button
+              size="xl"
+              className="relative w-full py-4 text-base font-semibold text-white border border-white/15 rounded-full backdrop-blur-lg bg-white/5 hover:bg-white/10 transition"
+              onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
+            >
+              APPLY
+            </Button>
+          </div>
         </div>
       </div>
 
       <footer className="absolute bottom-0 left-0 right-0 p-6 text-center">
         <div className="text-xs font-mono text-white/40">LIGHTSPEED © 2025</div>
       </footer>
-    </div>
-  );
-}
-
-/** Extracted body text block */
-function RotatingTextBlocks({
-  descriptions,
-  companyGroups,
-  isPaused,
-  setIsPaused,
-  currentDescription,
-  currentGroup,
-}: {
-  descriptions: string[];
-  companyGroups: string[][];
-  isPaused: boolean;
-  setIsPaused: (v: boolean) => void;
-  currentDescription: number;
-  currentGroup: number;
-}) {
-  return (
-    <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
-      <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
-        {">"} A year-long fellowship for Berkeley's top{" "}
-        <span className="text-white font-medium">{descriptions[currentDescription]}</span>.
-      </div>
-      <div
-        className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
-        {">"} Backed by investors behind{" "}
-        <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
-          <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
-          {", "}
-          <span className="text-white font-medium">{companyGroups[currentGroup][1]}</span>
-          {", "}
-          <span className="text-white font-medium">{companyGroups[currentGroup][2]}</span>
-        </span>
-        .
-      </div>
     </div>
   );
 }

@@ -48,25 +48,11 @@ export function LightspeedHero() {
   useEffect(() => {
     if (!isDragging && !isSpinning) {
       const interval = setInterval(() => {
-        setIdleTime(prev => prev + 0.016); // 60fps smooth animation
-      }, 16);
+        setIdleTime(prev => prev + 0.1);
+      }, 50);
       return () => clearInterval(interval);
     }
   }, [isDragging, isSpinning]);
-
-  // Continuous idle animation when not interacting
-  useEffect(() => {
-    if (!isDragging && !isSpinning) {
-      const animationFrame = requestAnimationFrame(() => {
-        setRotation({
-          x: Math.sin(idleTime) * 2,
-          y: Math.cos(idleTime * 0.8) * 1.5,
-          z: Math.sin(idleTime * 0.6) * 0.5
-        });
-      });
-      return () => cancelAnimationFrame(animationFrame);
-    }
-  }, [idleTime, isDragging, isSpinning]);
 
   // Subtle cursor following and click-and-drag interaction
   useEffect(() => {
@@ -205,7 +191,6 @@ export function LightspeedHero() {
           0 2px 4px rgba(53, 58, 65, 0.4),
           0 4px 8px rgba(53, 58, 65, 0.3),
           0 8px 16px rgba(53, 58, 65, 0.2);
-        animation: logo-pulse 4s ease-in-out infinite;
       }
       
       .logo-lightspeed::before {
@@ -243,7 +228,6 @@ export function LightspeedHero() {
         text-shadow: 
           0 1px 2px rgba(53, 58, 65, 0.4),
           0 2px 4px rgba(53, 58, 65, 0.3);
-        animation: logo-pulse 4s ease-in-out infinite 0.5s;
       }
       
       .logo-fellows::before {
@@ -354,17 +338,6 @@ export function LightspeedHero() {
         transform: scaleY(-1);
         opacity: 0.3;
         filter: blur(1px);
-      }
-      
-      @keyframes logo-pulse {
-        0%, 100% { 
-          transform: scale(1) translateZ(40px);
-          filter: brightness(1);
-        }
-        50% { 
-          transform: scale(1.02) translateZ(40px);
-          filter: brightness(1.1);
-        }
       }
       
       @keyframes iridescent {
@@ -484,10 +457,6 @@ export function LightspeedHero() {
               {/* Reflection effect */}
               <div className="logo-reflection"></div>
             </h1>
-            
-            {/* Geometric accent lines */}
-            <div className="absolute -left-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
-            <div className="absolute -right-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
           </div>
         </div>
 

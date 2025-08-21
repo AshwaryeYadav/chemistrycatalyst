@@ -64,7 +64,7 @@ const Lightspeed3DIcon = memo(function Lightspeed3DIcon() {
           intensity={1.1}
           shadow-mapSize={[1024, 1024]}
         />
-        <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
+        <hemisphereLight skyColor={"#ffffff"} groundColor={"#222222"} intensity={0.35} />
         <group ref={group}>
           <LMesh />
         </group>
@@ -168,11 +168,7 @@ export function LightspeedHero() {
       }
     `;
     document.head.appendChild(style);
-    return () => {
-      if (document.head.contains(style)) {
-        document.head.removeChild(style);
-      }
-    };
+    return () => document.head.removeChild(style);
   }, []);
 
   return (

@@ -53,110 +53,38 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Refined L-to-Campanile morphing with proper tower grouping
+  // 3D Text Effect Styles
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      /* Define the lift variable - extra height when stem scales to 1.15x */
-      :root {
-        --lift: 24px; /* (1.15 - 1) * 160px = 24px */
+      .text-3d {
+        text-shadow: 
+          1px 1px 0px rgba(255,255,255,0.1),
+          2px 2px 0px rgba(0,0,0,0.3),
+          3px 3px 0px rgba(0,0,0,0.25),
+          4px 4px 0px rgba(0,0,0,0.2),
+          5px 5px 0px rgba(0,0,0,0.15),
+          6px 6px 10px rgba(0,0,0,0.4);
+        transform: translateZ(20px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
       
-      /* Tower group starts hidden */
-      #tower {
-        opacity: 0;
-        transform: translateY(0);
-        transition: opacity 0.4s ease 0.2s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      
-      /* Individual tower elements scale in */
-      #belfry {
-        transform: scaleY(0);
-        transform-origin: center bottom;
-        transition: transform 0.4s ease 0.15s;
-      }
-      #clock {
-        transform: scale(0);
-        transform-origin: center center;
-        transition: transform 0.3s ease 0.25s;
-      }
-      #cap {
-        transform: scaleY(0);
-        transform-origin: center bottom;
-        transition: transform 0.3s ease 0.2s;
-      }
-      #spire {
-        transform: scale(0.8) translateY(10px);
-        transform-origin: center bottom;
-        transition: transform 0.4s ease 0.3s;
-      }
-      
-      /* L elements that morph smoothly */
-      #stem {
-        transform-origin: center bottom;
-        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      #foot {
-        transform-origin: center center; /* Changed to center so it collapses inward */
-        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      
-      /* Hover states - seamless morphing */
-      .hover-campanile-container:hover #stem {
-        transform: scaleX(0.8) scaleY(1.15);
-      }
-      .hover-campanile-container:hover #foot {
-        transform: scaleX(0.25) scaleY(0.7); /* Shrinks from center */
-      }
-      
-      /* Tower group moves up to stay on stem top */
-      .hover-campanile-container:hover #tower {
-        opacity: 1;
-        transform: translateY(calc(-1 * var(--lift)));
-      }
-      
-      /* Tower elements scale in */
-      .hover-campanile-container:hover #belfry {
-        transform: scaleY(1);
-      }
-      .hover-campanile-container:hover #clock {
-        transform: scale(1);
-      }
-      .hover-campanile-container:hover #cap {
-        transform: scaleY(1);
-      }
-      .hover-campanile-container:hover #spire {
-        transform: scale(1) translateY(0);
-      }
-      
-      /* Enhanced shadow effects */
-      .hover-campanile-container:hover + .campanile-rest {
-        text-shadow: 0 12px 26px rgba(0,0,0,0.45);
-        transition: text-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-      .campanile-rest {
-        transition: text-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-      
-      /* Smooth return animation */
-      .hover-campanile-container:not(:hover) #stem,
-      .hover-campanile-container:not(:hover) #foot {
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.6, 1);
-      }
-      .hover-campanile-container:not(:hover) #tower {
-        transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.6, 1);
-      }
-      .hover-campanile-container:not(:hover) #belfry,
-      .hover-campanile-container:not(:hover) #clock,
-      .hover-campanile-container:not(:hover) #cap,
-      .hover-campanile-container:not(:hover) #spire {
-        transition: transform 0.3s ease;
+      .text-3d:hover {
+        text-shadow: 
+          2px 2px 0px rgba(255,255,255,0.1),
+          4px 4px 0px rgba(0,0,0,0.3),
+          6px 6px 0px rgba(0,0,0,0.25),
+          8px 8px 0px rgba(0,0,0,0.2),
+          10px 10px 0px rgba(0,0,0,0.15),
+          12px 12px 20px rgba(0,0,0,0.5);
+        transform: translateZ(30px) translateY(-2px);
       }
       
       @media (prefers-reduced-motion: reduce) {
-        #stem, #foot, #tower, #belfry, #clock, #cap, #spire, .campanile-rest {
-          transition: opacity 0.25s ease !important;
+        .text-3d {
+          text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
           transform: none !important;
+          transition: none !important;
         }
       }
     `;
@@ -182,128 +110,15 @@ export function LightspeedHero() {
         {/* Main Title */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1 
-            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white mb-8 transition-transform duration-200 ease-out"
+            className="text-5xl md:text-7xl font-display font-bold tracking-tight leading-tight text-white mb-8 text-3d"
             style={{
-              transform: `rotateX(${-mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(20px)`,
-              textShadow: `
-                0 1px 0 rgba(255,255,255,0.1),
-                0 2px 4px rgba(0,0,0,0.3),
-                ${mousePosition.x * 0.5}px ${mousePosition.y * 0.5}px 10px rgba(0,0,0,0.2)
-              `,
+              transform: `rotateX(${-mousePosition.y * 0.3}deg) rotateY(${mousePosition.x * 0.3}deg)`,
               transformStyle: 'preserve-3d'
             }}
           >
-            <span 
-              className="relative inline-block hover-campanile-container"
-              style={{ 
-                perspective: '900px',
-                display: 'inline-block',
-                width: '0.76em',
-                aspectRatio: '5 / 6.2'
-              }}
-            >
-              <svg 
-                id="lightspeed-logo"
-                width="100%" 
-                height="100%" 
-                viewBox="0 0 200 220" 
-                className="text-white"
-                style={{ display: 'block' }}
-              >
-                {/* Masks for the belfry arches */}
-                <defs>
-                  <mask id="arches">
-                    <rect x="0" y="0" width="200" height="220" fill="white"/>
-                    <g fill="black">
-                      <rect x="-22" y="58" width="12" height="20" rx="6"/>
-                      <rect x="-7" y="58" width="12" height="20" rx="6"/>
-                      <rect x="8" y="58" width="12" height="20" rx="6"/>
-                      <rect x="23" y="58" width="12" height="20" rx="6"/>
-                    </g>
-                  </mask>
-                </defs>
-
-                {/* Vertical stem of the L -> becomes tower shaft */}
-                <rect 
-                  id="stem" 
-                  x="36" 
-                  y="20" 
-                  width="34" 
-                  height="160" 
-                  fill="currentColor"
-                  style={{
-                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                  }}
-                />
-
-                {/* Horizontal foot of the L -> shrinks from center */}
-                <rect 
-                  id="foot" 
-                  x="36" 
-                  y="180" 
-                  width="120" 
-                  height="34" 
-                  fill="currentColor"
-                  style={{
-                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                  }}
-                />
-
-                {/* Tower group - anchored to stem center (x=53) and top (y=20) */}
-                <g id="tower" transform="translate(100,20)">
-                  {/* Belfry block with arches - relative to group origin */}
-                  <rect 
-                    id="belfry" 
-                    x="-28" 
-                    y="40" 
-                    width="68" 
-                    height="40"
-                    fill="currentColor" 
-                    mask="url(#arches)" 
-                    style={{
-                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                    }}
-                  />
-
-                  {/* Clock face - relative to group origin */}
-                  <g 
-                    id="clock" 
-                    transform="translate(6,70)"
-                    style={{
-                      filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))'
-                    }}
-                  >
-                    <circle r="9" fill="rgba(0,0,0,0.8)" stroke="currentColor" strokeWidth="3"/>
-                    <circle r="1" fill="currentColor"/>
-                  </g>
-
-                  {/* Cap below the spire - relative to group origin */}
-                  <rect 
-                    id="cap" 
-                    x="-30" 
-                    y="34" 
-                    width="72" 
-                    height="8" 
-                    fill="currentColor" 
-                    style={{
-                      filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.5))'
-                    }}
-                  />
-
-                  {/* Spire that grows upward - relative to group origin */}
-                  <polygon 
-                    id="spire"
-                    points="6,5 42,34 -30,34"
-                    fill="currentColor" 
-                    style={{
-                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                    }}
-                  />
-                </g>
-              </svg>
-            </span><span className="campanile-rest transition-all duration-300">IGHTSPEED</span>
+            LIGHTSPEED
             <br />
-            <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>
+            <span className="bg-gradient-text bg-clip-text text-transparent font-extrabold">FELLOWS</span>
           </h1>
         </div>
 

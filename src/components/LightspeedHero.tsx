@@ -335,7 +335,7 @@ export function LightspeedHero() {
             {"."}
           </div>
           <div 
-            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
+            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80 whitespace-nowrap"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >

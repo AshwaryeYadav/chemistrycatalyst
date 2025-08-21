@@ -51,52 +51,43 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Styles
+  // Styles: stem widens from center to match cap; spacing never changes.
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
-      /* fixed inline box so spacing is predictable */
       .campanile {
-        --width: 0.78em;         /* advance width of the L glyph */
-        --baseline: -0.11em;     /* baseline nudge (tweak ±0.01em if needed) */
-        --gap: 0.03em;           /* space to the I */
+        --width: 0.80em;         /* fixed advance width */
+        --baseline: -0.11em;     /* baseline nudge (tweak ±0.01em for your font) */
         display:inline-block;
         inline-size: var(--width);
         block-size: 1em;
         vertical-align: var(--baseline);
-        margin-right: var(--gap);
+        margin-right: 0.03em;    /* keep this constant on hover to avoid drift */
         perspective: 900px;
         overflow: visible;
       }
-      @media (min-width:768px){ .campanile { --width: 0.80em; } }
 
       .hover-campanile-container,
       .glyph-container,
       .glyph-container svg { overflow: visible; }
 
       /* parts */
-      #body{ transform-origin:50% 0%; transition: transform .45s cubic-bezier(.3,.7,.2,1); }
-      #stem{ transform-origin:50% 0%; transition: transform .45s cubic-bezier(.3,.7,.2,1); }
-      #foot{ transform-origin:0% 100%; transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .25s ease; }
+      #body{ transform-origin:50% 0%; transition:transform .45s cubic-bezier(.3,.7,.2,1); }
+      /* SCALE FROM CENTER so it stays under the cap */
+      #stem{ transform-origin:50% 0%; transition:transform .45s cubic-bezier(.3,.7,.2,1); }
+      #foot{ transform-origin:0% 100%; transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .25s ease; }
 
       /* tower initially hidden */
       #tower{ opacity:0; transform:translateY(-6px) scale(.96); transform-origin:50% 100%;
-              transition: opacity .35s ease .08s, transform .45s cubic-bezier(.2,.7,.2,1) .08s; }
+              transition:opacity .35s ease .08s, transform .45s cubic-bezier(.2,.7,.2,1) .08s; }
       #belfry,#cap{ transform-origin:50% 100%; transform:scaleY(0); transition:transform .35s ease .12s; }
       #clock{ transform-origin:50% 50%; transform:scale(0); transition:transform .30s ease .18s; }
       #spire{ transform-origin:50% 100%; transform:translateY(10px) scale(.9); transition:transform .35s ease .18s; }
 
-      /* HOVER:
-         - foot vanishes
-         - stem thickens to EXACTLY the cap width (34 -> 72px = 2.1176x)
-         - slight lengthening
-         - tower appears
-         - gap gets a hair tighter so the campanile stays visually connected
-      */
-      .hover-campanile-container:hover { --gap: 0.01em; }
-      .hover-campanile-container:hover #foot { transform: scaleX(0); opacity:0; }
+      /* HOVER: foot disappears; stem thickens to cap width (34 -> 72 = 2.1176x) */
+      .hover-campanile-container:hover #foot { transform: scaleX(0); opacity: 0; }
       .hover-campanile-container:hover #stem { transform: scaleX(2.1176) scaleY(1.06); }
-      .hover-campanile-container:hover #body { transform: translateY(0) scaleY(1.02); }
+      .hover-campanile-container:hover #body { transform: scaleY(1.02); }
 
       .hover-campanile-container:hover #tower { opacity:1; transform:translateY(0) scale(1); }
       .hover-campanile-container:hover #belfry,
@@ -109,7 +100,7 @@ export function LightspeedHero() {
 
       @media (prefers-reduced-motion: reduce){
         #body,#stem,#foot,#tower,#belfry,#cap,#clock,#spire,.glyph-container{
-          transition: opacity .25s ease !important; transform:none !important;
+          transition:opacity .25s ease !important; transform:none !important;
         }
       }
     `;

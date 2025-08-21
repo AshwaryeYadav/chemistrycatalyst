@@ -2,12 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState, memo, useMemo } from "react";
 
-
-
 /* --------------------------- THREE: 3D Lightspeed L --------------------------- */
 import { Canvas, useFrame } from "@react-three/fiber";
-// (Optional) If you still want controls, you can keep OrbitControls, it’s Canvas-safe
-// import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
 /** Extruded L built from the flat silhouette; exact color #ED6C5C */
@@ -54,36 +50,35 @@ function RotatingL() {
   );
 }
 
-/** Inline 3D L slot sized in ems so it sits like a glyph */
-const Inline3DL = memo(function Inline3DL() {
+/** Top artwork: standalone 3D L above the wordmark */
+const HeroL3D = memo(function HeroL3D() {
   return (
-    <span
-      className="inline-block"
+    <div
+      className="mx-auto mb-6 md:mb-8 pointer-events-none"
       style={{
-        width: "0.92em",
-        height: "1.18em",
-        transform: "translateY(-0.12em)",
-        verticalAlign: "-0.08em",
-        overflow: "visible",
+        width: "160px",
+        height: "160px",
+        // on small screens we keep it compact; tweak as desired
       }}
+      aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [2.5, 2.2, 3.4], fov: 38 }}
-        style={{ width: "100%", height: "100%", display: "block", overflow: "visible" as any }}
+        camera={{ position: [2.5, 2.2, 3.8], fov: 40 }}
+        style={{ width: "100%", height: "100%", display: "block" }}
         shadows
       >
         <ambientLight intensity={0.25} />
-        <directionalLight position={[3, 6, 5]} castShadow intensity={1.1} shadow-mapSize={[1024, 1024]} />
+        <directionalLight
+          position={[3, 6, 5]}
+          castShadow
+          intensity={1.1}
+          shadow-mapSize={[1024, 1024]}
+        />
         <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
-
         <RotatingL />
-
-        {/* If you want user-rotation without zoom/pan, you can uncomment this: */}
-        {/* <OrbitControls enablePan={false} enableZoom={false} rotateSpeed={0.7}
-                        minPolarAngle={Math.PI * 0.2} maxPolarAngle={Math.PI * 0.8} /> */}
       </Canvas>
-    </span>
+    </div>
   );
 });
 
@@ -124,7 +119,7 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, [descriptions.length]);
 
-  // mouse tilt (kept for subtle 3D feel on the whole wordmark)
+  // mouse tilt (subtle 3D feel on the whole wordmark)
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const el = containerRef.current;
@@ -148,20 +143,20 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, []);
 
-  // CSS for tighter IN-SLOT morph (shorter so nothing overflows)
+  // CSS for tighter IN-SLOT morph (unchanged)
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
       .i-slot{
-        --iWidth: 0.30em;       /* slightly narrower to match your mock */
-        --iHeight: 0.92em;      /* shorter than line box so the cap/head never touches */
-        --iBaseline: -0.04em;   /* baseline tweak to align with text */
+        --iWidth: 0.30em;
+        --iHeight: 0.92em;
+        --iBaseline: -0.04em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
         inline-size: var(--iWidth);
         block-size: var(--iHeight);
         vertical-align: var(--iBaseline);
-        overflow: hidden;       /* safe: both states live inside this box */
+        overflow: hidden;
       }
       .i-layer{
         position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
@@ -178,9 +173,7 @@ export function LightspeedHero() {
       }
     `;
     document.head.appendChild(style);
-    return () => {
-      if (style.parentNode) style.parentNode.removeChild(style);
-    };
+    return () => style.remove();
   }, []);
 
   return (
@@ -192,8 +185,11 @@ export function LightspeedHero() {
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-[#ED6C5C]/10 opacity-40" />
       <div className="absolute inset-0 opacity-[0.03] bg-noise" />
 
-      <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
-        <div className="mb-10 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
+      <div className="max-w-2xl mx-auto px-8 py-16 md:py-20 text-center relative z-10">
+        {/* 3D L artwork ABOVE the wordmark */}
+        <HeroL3D />
+
+        <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1
             className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white"
             style={{
@@ -207,58 +203,8 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* Inline 3D L (aligned & raised to avoid clipping) */}
-            <Inline3DL />
-
-            {/* Morphing I (shorter; fully contained) */}
-            <span className={`i-slot ${iAsTower ? "on" : ""}`}>
-              {/* Block I (fits inside 0..220 viewBox scaled into 0.92em) */}
-              <span className="i-layer i-text">
-                <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" className="text-white">
-                  <g transform="translate(36,0)">
-                    {/* stem placed lower so top headroom remains */}
-                    <rect x={-36} y={60} width={72} height={150} fill="currentColor" />
-                  </g>
-                </svg>
-              </span>
-
-              {/* Campanile I (all elements inside the slot) */}
-              <span className="i-layer i-tower">
-                <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" className="text-white">
-                  <g transform="translate(36,0)">
-                    <rect x={-36} y={60} width={72} height={150} fill="currentColor" />
-                    <rect x={-36} y={52} width={72} height={8} fill="currentColor" />
-                    <defs>
-                      <mask id="iBelfryMask" maskUnits="userSpaceOnUse" x={-34} y={24} width={68} height={28}>
-                        <rect x={-34} y={24} width={68} height={28} fill="white" />
-                        <g fill="black">
-                          <rect x={-28} y={28} width={12} height={18} rx={5} />
-                          <rect x={-12} y={28} width={12} height={18} rx={5} />
-                          <rect x={4}   y={28} width={12} height={18} rx={5} />
-                          <rect x={20}  y={28} width={12} height={18} rx={5} />
-                        </g>
-                      </mask>
-                    </defs>
-                    <rect x={-34} y={24} width={68} height={28} fill="currentColor" mask="url(#iBelfryMask)" />
-                    {/* small clock kept inside the belfry band */}
-                    <g transform="translate(0,36)">
-                      <circle r={8} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={3} />
-                      <circle r={1} fill="currentColor" />
-                    </g>
-                    {/* Spire kept within the 24..52 band */}
-                    <polygon
-                      points="0,24 36,52 -36,52"
-                      fill="currentColor"
-                      stroke="currentColor"
-                      strokeWidth={1}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  </g>
-                </svg>
-              </span>
-            </span>
-
-            <span>GHTSPEED</span>
+            {/* REGULAR TEXT L now */}
+            <span>LIGHTSPEED</span>
             <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
               FELLOWS

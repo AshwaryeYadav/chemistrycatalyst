@@ -18,8 +18,11 @@ export function LightspeedHero() {
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [dragRotation, setDragRotation] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
 
@@ -39,45 +42,54 @@ export function LightspeedHero() {
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
 
-  // 3D Logo rotation on mouse move (Thrive Capital style)
+  // Handle mouse down for drag
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setDragStart({ x: e.clientX, y: e.clientY });
+    e.preventDefault();
+  };
+
+  // Handle mouse move for drag
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (logoRef.current) {
-        const rect = logoRef.current.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+      if (isDragging) {
+        const deltaX = e.clientX - dragStart.x;
+        const deltaY = e.clientY - dragStart.y;
         
-        // Calculate rotation based on mouse position relative to logo center
-        const rotateY = ((e.clientX - centerX) / rect.width) * 30; // Max 30 degrees
-        const rotateX = -((e.clientY - centerY) / rect.height) * 20; // Max 20 degrees
-        
-        setRotation({ x: rotateX, y: rotateY });
-      }
-
-      // Parallax for other elements
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        
-        const offsetX = (e.clientX - centerX) / (rect.width / 2);
-        const offsetY = (e.clientY - centerY) / (rect.height / 2);
-        
-        setMousePosition({
-          x: offsetX * 5,
-          y: offsetY * 5
+        setDragRotation({
+          x: (deltaY / 2) % 360,
+          y: (deltaX / 2) % 360
         });
       }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    
+    const handleMouseUp = () => {
+      if (isDragging) {
+        setRotation(prev => ({
+          x: (prev.x + dragRotation.x) % 360,
+          y: (prev.y + dragRotation.y) % 360
+        }));
+        setDragRotation({ x: 0, y: 0 });
+        setIsDragging(false);
+      }
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'grabbing';
+    } else {
+      document.body.style.cursor = 'auto';
+    }
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'auto';
     };
-  }, []);
+  }, [isDragging, dragStart]);
 
-  // Advanced 3D Logo Styling
+  // Advanced 3D Logo Styling with depth
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -85,81 +97,112 @@ export function LightspeedHero() {
       .logo-3d-container {
         transform-style: preserve-3d;
         transition: transform 0.15s ease-out;
-        cursor: pointer;
+        cursor: grab;
+        user-select: none;
+        -webkit-user-select: none;
       }
       
-      .logo-lightspeed, .logo-fellows {
-        transform-style: preserve-3d;
-        position: relative;
-        transition: transform 0.15s ease-out;
+      .logo-3d-container.dragging {
+        cursor: grabbing;
       }
       
-      /* LIGHTSPEED text styling */
+      /* Text layers with 3D depth */
       .logo-lightspeed {
         font-weight: 300;
         letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 50%, #ED6C5C 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        transform: translateZ(60px);
+        color: #e5e7eb;
+        position: relative;
+        display: block;
+        transform-style: preserve-3d;
       }
       
-      /* FELLOWS text styling */
       .logo-fellows {
         font-weight: 600;
         letter-spacing: 0.15em;
-        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #ED6C5C 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        transform: translateZ(40px);
+        color: #e5e7eb;
+        position: relative;
+        display: block;
+        transform-style: preserve-3d;
       }
       
-      /* 3D depth layers */
+      /* Create 3D extrusion effect */
       .logo-lightspeed::before,
-      .logo-lightspeed::after,
-      .logo-fellows::before,
-      .logo-fellows::after {
+      .logo-fellows::before {
         content: attr(data-text);
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        color: #353A41;
+        z-index: -1;
+        transform: translateZ(-1px);
+      }
+      
+      /* Multiple depth layers for 3D effect */
+      .logo-depth {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #2a2e34;
+        z-index: -2;
+        user-select: none;
+      }
+      
+      /* Gradient overlay for the main text */
+      .logo-gradient {
+        background: linear-gradient(135deg, 
+          #ffffff 0%, 
+          #e5e7eb 40%, 
+          #ED6C5C 100%);
+        -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+        z-index: 1;
       }
       
-      .logo-lightspeed::before {
-        transform: translateZ(30px);
-        background: linear-gradient(135deg, #353A41 0%, #2A2E34 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        opacity: 0.3;
+      /* Shadow layers for depth */
+      .text-shadow-3d {
+        text-shadow: 
+          1px 1px 0 #353A41,
+          2px 2px 0 #353A41,
+          3px 3px 0 #353A41,
+          4px 4px 0 #2a2e34,
+          5px 5px 0 #2a2e34,
+          6px 6px 0 #2a2e34,
+          7px 7px 0 #1a1d20,
+          8px 8px 0 #1a1d20,
+          9px 9px 0 #1a1d20,
+          10px 10px 0 #0f1112,
+          11px 11px 0 #0f1112,
+          12px 12px 0 #0f1112,
+          13px 13px 20px rgba(0,0,0,0.5),
+          14px 14px 30px rgba(0,0,0,0.4),
+          15px 15px 40px rgba(0,0,0,0.3);
       }
       
-      .logo-lightspeed::after {
-        transform: translateZ(-30px);
-        background: linear-gradient(135deg, #1a1d20 0%, #0f1112 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        opacity: 0.2;
+      .text-shadow-3d-fellows {
+        text-shadow: 
+          1px 1px 0 #353A41,
+          2px 2px 0 #353A41,
+          3px 3px 0 #2a2e34,
+          4px 4px 0 #2a2e34,
+          5px 5px 0 #1a1d20,
+          6px 6px 0 #1a1d20,
+          7px 7px 0 #0f1112,
+          8px 8px 15px rgba(0,0,0,0.5),
+          9px 9px 25px rgba(0,0,0,0.4);
       }
       
-      .logo-fellows::before {
-        transform: translateZ(20px);
-        background: linear-gradient(135deg, #353A41 0%, #2A2E34 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        opacity: 0.3;
+      /* Hover rotation effect */
+      .logo-3d-container:not(.dragging):hover {
+        animation: subtle-rotate 4s ease-in-out infinite;
       }
       
-      .logo-fellows::after {
-        transform: translateZ(-20px);
-        background: linear-gradient(135deg, #1a1d20 0%, #0f1112 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        opacity: 0.2;
+      @keyframes subtle-rotate {
+        0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+        25% { transform: rotateX(5deg) rotateY(10deg); }
+        50% { transform: rotateX(-5deg) rotateY(-10deg); }
+        75% { transform: rotateX(5deg) rotateY(-10deg); }
       }
       
       /* Glowing underline */
@@ -167,7 +210,7 @@ export function LightspeedHero() {
         position: absolute;
         bottom: -20px;
         left: 50%;
-        transform: translateX(-50%) translateZ(10px);
+        transform: translateX(-50%);
         width: 120%;
         height: 2px;
         background: linear-gradient(90deg, 
@@ -176,42 +219,10 @@ export function LightspeedHero() {
           rgba(255,255,255,0.6) 50%, 
           rgba(255,255,255,0.2) 80%, 
           transparent 100%);
-        border-radius: 1px;
-        box-shadow: 
-          0 0 5px rgba(255,255,255,0.2),
-          0 0 10px rgba(255,255,255,0.1);
+        box-shadow: 0 0 10px rgba(237, 108, 92, 0.3);
       }
       
-      /* Hover effect - enhance 3D */
-      .logo-3d-container:hover {
-        transform: scale(1.02);
-      }
-      
-      .logo-3d-container:hover .logo-lightspeed {
-        transform: translateZ(80px);
-      }
-      
-      .logo-3d-container:hover .logo-fellows {
-        transform: translateZ(50px);
-      }
-      
-      /* Reflection */
-      .logo-reflection {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        height: 100%;
-        background: linear-gradient(180deg, 
-          rgba(255,255,255,0.05) 0%, 
-          transparent 30%);
-        transform: scaleY(-1) translateZ(-50px);
-        opacity: 0.2;
-        filter: blur(2px);
-        pointer-events: none;
-      }
-      
-      /* Description text - prevent wrapping */
+      /* Description text - no wrapping */
       .description-line {
         white-space: nowrap;
         display: block;
@@ -220,18 +231,27 @@ export function LightspeedHero() {
       }
       
       @media (max-width: 640px) {
-        .description-line {
-          font-size: 0.875rem;
+        .text-shadow-3d {
+          text-shadow: 
+            1px 1px 0 #353A41,
+            2px 2px 0 #2a2e34,
+            3px 3px 0 #1a1d20,
+            4px 4px 0 #0f1112,
+            5px 5px 10px rgba(0,0,0,0.5);
         }
-        .description-line-2 {
-          font-size: 0.75rem;
+        .text-shadow-3d-fellows {
+          text-shadow: 
+            1px 1px 0 #353A41,
+            2px 2px 0 #2a2e34,
+            3px 3px 0 #1a1d20,
+            4px 4px 8px rgba(0,0,0,0.5);
         }
       }
       
       @media (prefers-reduced-motion: reduce) {
-        .logo-3d-container, .logo-lightspeed, .logo-fellows {
+        .logo-3d-container {
+          animation: none !important;
           transform: none !important;
-          transition: none !important;
         }
       }
     `;
@@ -254,64 +274,55 @@ export function LightspeedHero() {
       
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 text-center relative z-10">
         
-        {/* 3D Rotatable Logo */}
+        {/* 3D Spinnable Logo */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <div 
             ref={logoRef}
-            className="logo-3d-container relative inline-block"
+            className={`logo-3d-container relative inline-block ${isDragging ? 'dragging' : ''}`}
             style={{
-              transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
+              transform: `rotateX(${rotation.x + dragRotation.x}deg) rotateY(${rotation.y + dragRotation.y}deg)`,
               transformStyle: 'preserve-3d'
             }}
+            onMouseDown={handleMouseDown}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
           >
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display tracking-tight leading-tight relative">
               <div className="flex flex-col items-center">
-                <div 
-                  className="logo-lightspeed mb-2 sm:mb-4"
-                  data-text="LIGHTSPEED"
-                  style={{
-                    transform: `translateZ(60px) translateX(${mousePosition.x * 0.5}px) translateY(${mousePosition.y * 0.5}px)`
-                  }}
-                >
-                  LIGHTSPEED
+                {/* LIGHTSPEED with 3D depth */}
+                <div className="relative mb-2 sm:mb-4">
+                  <span 
+                    className="logo-lightspeed text-shadow-3d"
+                    data-text="LIGHTSPEED"
+                  >
+                    <span className="logo-gradient">LIGHTSPEED</span>
+                  </span>
                 </div>
-                <div 
-                  className="logo-fellows text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
-                  data-text="FELLOWS"
-                  style={{
-                    transform: `translateZ(40px) translateX(${mousePosition.x * 0.3}px) translateY(${mousePosition.y * 0.3}px)`
-                  }}
-                >
-                  FELLOWS
+                
+                {/* FELLOWS with 3D depth */}
+                <div className="relative">
+                  <span 
+                    className="logo-fellows text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-shadow-3d-fellows"
+                    data-text="FELLOWS"
+                  >
+                    <span className="logo-gradient">FELLOWS</span>
+                  </span>
                 </div>
               </div>
               
-              {/* Underline with 3D depth */}
+              {/* Underline */}
               <div className="logo-underline"></div>
-              
-              {/* 3D Reflection */}
-              <div className="logo-reflection"></div>
             </h1>
             
-            {/* Side accent lines */}
-            <div 
-              className="hidden lg:block absolute -left-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
-              style={{
-                transform: `translateY(-50%) translateZ(20px) translateX(${mousePosition.x * -0.2}px)`
-              }}
-            ></div>
-            <div 
-              className="hidden lg:block absolute -right-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
-              style={{
-                transform: `translateY(-50%) translateZ(20px) translateX(${mousePosition.x * 0.2}px)`
-              }}
-            ></div>
+            {/* Side accent lines that don't rotate */}
+            <div className="hidden lg:block absolute -left-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
+            <div className="hidden lg:block absolute -right-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
           </div>
         </div>
 
-        {/* Description - Fixed height, no wrapping */}
+        {/* Description - Fixed, no rotation */}
         <div className="mb-12 sm:mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-3 sm:space-y-4">
-          {/* First line - always single line */}
+          {/* First line */}
           <div className="font-mono text-white/90 leading-relaxed tracking-wide px-4 sm:px-6 lg:px-0">
             <span className="description-line text-sm sm:text-base lg:text-lg">
               {">"} A year-long fellowship for Berkeley's top{" "}
@@ -322,13 +333,13 @@ export function LightspeedHero() {
             </span>
           </div>
           
-          {/* Second line - always single line */}
+          {/* Second line */}
           <div 
             className="font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80 px-4 sm:px-6 lg:px-0"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            <span className="description-line description-line-2 text-xs sm:text-sm lg:text-base">
+            <span className="description-line text-xs sm:text-sm lg:text-base">
               {">"} Backed by investors behind{" "}
               <span className="text-white font-medium">
                 {companyGroups[currentGroup].join(", ")}
@@ -344,9 +355,6 @@ export function LightspeedHero() {
             size="xl"
             className="w-full max-w-xs sm:max-w-sm lg:max-w-md xl:w-80 mx-auto py-4 sm:py-6 text-base sm:text-lg font-semibold text-white border border-white/20 rounded-lg backdrop-blur-lg bg-white/10 shadow-button hover:shadow-button-hover hover:bg-white/20 transition-all duration-500"
             onClick={() => window.open('https://form.typeform.com/to/vMxYsW4Y', '_blank')}
-            style={{
-              transform: `translateX(${mousePosition.x * 0.2}px) translateY(${mousePosition.y * 0.2}px)`
-            }}
           >
             Apply Now
           </Button>

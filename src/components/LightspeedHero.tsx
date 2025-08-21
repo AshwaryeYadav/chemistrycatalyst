@@ -358,7 +358,8 @@ export function LightspeedHero() {
         {/* Description - Typewriter font with cycling effect */}
         <div className="mb-12 sm:mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-3 sm:space-y-4">
           <div className="text-xs sm:text-base lg:text-lg font-mono text-white/90 leading-relaxed tracking-wide px-6 sm:px-6 lg:px-0">
-            {">"} A year-long fellowship for Berkeley's top{" "}
+            {">"} A year-long fellowship for Berkeley's top
+            <br />
             <span className="text-white font-medium">
               {descriptions[currentDescription]}
             </span>

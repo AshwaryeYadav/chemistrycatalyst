@@ -65,7 +65,7 @@ const HeroL3D = memo(function HeroL3D() {
       <Canvas
         dpr={[1, 2]}
         camera={{ position: [2.5, 2.2, 3.8], fov: 40 }}
-        style={{ width: "100%", height: "50%", display: "block" }}
+        style={{ width: "100%", height: "200%", display: "block" }}
         shadows
       >
         <ambientLight intensity={0.25} />

@@ -52,112 +52,33 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Inject true L-to-Campanile morphing styles
+  // Add subtle 3D perspective effects
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      /* L morphing keyframes */
-      @keyframes l-morph {
-        0% {
-          d: path("M22 8v104h66v-22H44V8H22Z");
-        }
-        30% {
-          d: path("M22 8v104h44v-22H44V8H22Z");
-        }
-        60% {
-          d: path("M39 8v104h22v-22H44V8H39Z");  
-        }
-        100% {
-          d: path("M43 8v104h14v-22H50V8H43Z");
-        }
-      }
-      
-      /* Tower growth keyframes */
-      @keyframes tower-grow {
-        0% {
-          opacity: 0;
-          transform: scaleY(0) translateY(20px);
-        }
-        40% {
-          opacity: 0;
-          transform: scaleY(0) translateY(20px);
-        }
-        100% {
-          opacity: 1;
-          transform: scaleY(1) translateY(0);
-        }
-      }
-      
-      /* Spire growth keyframes */
-      @keyframes spire-grow {
-        0% {
-          opacity: 0;
-          transform: scale(0) translateY(10px);
-        }
-        60% {
-          opacity: 0;
-          transform: scale(0) translateY(10px);
-        }
-        100% {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-        }
-      }
-      
-      /* Apply animations on hover */
-      .hover-campanile-container:hover .morph-l-path {
-        animation: l-morph 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-      }
-      
-      .hover-campanile-container:hover .tower-elements {
-        animation: tower-grow 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-      }
-      
-      .hover-campanile-container:hover .spire-elements {
-        animation: spire-grow 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-      }
-      
-      /* Container effects */
+      /* Subtle 3D tilt on hover */
       .hover-campanile-container:hover .glyph-container {
-        transform: scale(1.05) translateY(-3px);
-      }
-      
-      .hover-campanile-container:hover + .campanile-rest {
-        text-shadow: 0 12px 26px rgba(0,0,0,0.45);
+        transform: rotateY(-12deg) scale(1.05) translateY(-3px);
+        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       
       .glyph-container {
         transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       
-      /* Initial states */
-      .morph-l-path {
-        transition: d 0.1s ease;
+      .hover-campanile-container:hover + .campanile-rest {
+        text-shadow: 0 12px 26px rgba(0,0,0,0.45);
+        transition: text-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       
-      .tower-elements {
-        opacity: 0;
-        transform: scaleY(0) translateY(20px);
-        transform-origin: bottom center;
-        transition: all 0.1s ease;
-      }
-      
-      .spire-elements {
-        opacity: 0;
-        transform: scale(0) translateY(10px);
-        transform-origin: center bottom;
-        transition: all 0.1s ease;
+      .campanile-rest {
+        transition: text-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       
       @media (prefers-reduced-motion: reduce) {
-        .morph-l-path, .tower-elements, .spire-elements, .glyph-container {
-          animation: none !important;
+        .glyph-container, .campanile-rest {
+          transform: none !important;
           transition: opacity 0.25s ease !important;
-        }
-        .hover-campanile-container:hover .tower-elements,
-        .hover-campanile-container:hover .spire-elements {
-          opacity: 1;
-          transform: none;
         }
       }
     `;
@@ -205,62 +126,135 @@ export function LightspeedHero() {
             >
               <div className="glyph-container" style={{ width: '100%', height: '100%' }}>
                 <svg 
+                  id="lightspeed-logo"
                   width="100%" 
                   height="100%" 
-                  viewBox="0 0 100 120" 
+                  viewBox="0 0 200 220" 
                   className="text-white"
                   style={{ display: 'block' }}
                 >
-                  {/* Base L that morphs into tower shaft */}
-                  <path 
-                    className="morph-l-path fill-current"
+                  {/* Masks for the belfry arches */}
+                  <defs>
+                    <mask id="arches">
+                      <rect x="0" y="0" width="200" height="220" fill="white"/>
+                      <g fill="black">
+                        <rect x="70" y="78" width="16" height="26" rx="8"/>
+                        <rect x="90" y="78" width="16" height="26" rx="8"/>
+                        <rect x="110" y="78" width="16" height="26" rx="8"/>
+                        <rect x="130" y="78" width="16" height="26" rx="8"/>
+                      </g>
+                    </mask>
+                  </defs>
+
+                  {/* Vertical stem of the L -> becomes tower shaft */}
+                  <rect 
+                    id="stem" 
+                    x="36" 
+                    y="20" 
+                    width="34" 
+                    height="160" 
+                    fill="currentColor"
                     style={{
-                      transformBox: 'fill-box',
-                      transformOrigin: '50% 90%',
-                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                    }}
-                    d="M22 8v104h66v-22H44V8H22Z"
-                  />
-                  
-                  {/* Tower elements that grow in */}
-                  <g 
-                    className="tower-elements fill-current"
-                    style={{
-                      transformBox: 'fill-box',
-                      transformOrigin: '50% 90%',
-                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                    }}
-                  >
-                    {/* Belfry with arches */}
-                    <rect x="41" y="30" width="18" height="12" />
-                    <circle cx="46" cy="36" r="3" fill="currentColor" fillOpacity="0" stroke="currentColor" strokeWidth="1" />
-                    <circle cx="54" cy="36" r="3" fill="currentColor" fillOpacity="0" stroke="currentColor" strokeWidth="1" />
-                    
-                    {/* Clock face */}
-                    <circle cx="50" cy="50" r="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                    <circle cx="50" cy="50" r="0.8" fill="currentColor" />
-                    
-                    {/* Base cap */}
-                    <rect x="39" y="26" width="22" height="4" />
-                    
-                    {/* Tower details */}
-                    <rect x="44" y="55" width="12" height="1" opacity="0.7" />
-                    <rect x="44" y="70" width="12" height="1" opacity="0.7" />
-                    <rect x="44" y="85" width="12" height="1" opacity="0.7" />
-                  </g>
-                  
-                  {/* Spire elements that grow last */}
-                  <g 
-                    className="spire-elements fill-current"
-                    style={{
-                      transformBox: 'fill-box',
-                      transformOrigin: '50% 26px',
                       filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
                     }}
                   >
-                    {/* Pointed spire */}
-                    <polygon points="50,16 64,26 36,26" />
+                    <animate attributeName="width" begin="lightspeed-logo.mouseover" dur="600ms" to="28" fill="freeze"/>
+                    <animate attributeName="height" begin="lightspeed-logo.mouseover" dur="600ms" to="178" fill="freeze"/>
+                    <animate attributeName="width" begin="lightspeed-logo.mouseout" dur="500ms" to="34" fill="freeze"/>
+                    <animate attributeName="height" begin="lightspeed-logo.mouseout" dur="500ms" to="160" fill="freeze"/>
+                  </rect>
+
+                  {/* Horizontal foot of the L -> slims into the shaft */}
+                  <rect 
+                    id="foot" 
+                    x="36" 
+                    y="180" 
+                    width="120" 
+                    height="34" 
+                    fill="currentColor"
+                    style={{
+                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                    }}
+                  >
+                    <animate attributeName="width" begin="lightspeed-logo.mouseover" dur="600ms" to="28" fill="freeze"/>
+                    <animate attributeName="x" begin="lightspeed-logo.mouseover" dur="600ms" to="36" fill="freeze"/>
+                    <animate attributeName="height" begin="lightspeed-logo.mouseover" dur="600ms" to="22" fill="freeze"/>
+                    <animate attributeName="width" begin="lightspeed-logo.mouseout" dur="500ms" to="120" fill="freeze"/>
+                    <animate attributeName="x" begin="lightspeed-logo.mouseout" dur="500ms" to="36" fill="freeze"/>
+                    <animate attributeName="height" begin="lightspeed-logo.mouseout" dur="500ms" to="34" fill="freeze"/>
+                  </rect>
+
+                  {/* Belfry block with arches */}
+                  <rect 
+                    id="belfry" 
+                    x="60" 
+                    y="60" 
+                    width="100" 
+                    height="0"
+                    fill="currentColor" 
+                    mask="url(#arches)" 
+                    opacity="0"
+                    style={{
+                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                    }}
+                  >
+                    <animate attributeName="height" begin="lightspeed-logo.mouseover" dur="500ms" to="50" fill="freeze"/>
+                    <animate attributeName="opacity" begin="lightspeed-logo.mouseover" dur="300ms" to="1" fill="freeze"/>
+                    <animate attributeName="height" begin="lightspeed-logo.mouseout" dur="400ms" to="0" fill="freeze"/>
+                    <animate attributeName="opacity" begin="lightspeed-logo.mouseout" dur="200ms" to="0" fill="freeze"/>
+                  </rect>
+
+                  {/* Clock face */}
+                  <g 
+                    id="clock" 
+                    transform="translate(110,115) scale(0)" 
+                    opacity="0"
+                    style={{
+                      filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))'
+                    }}
+                  >
+                    <circle r="9" fill="rgba(0,0,0,0.8)" stroke="currentColor" strokeWidth="3"/>
+                    <circle r="1" fill="currentColor"/>
+                    <animateTransform attributeName="transform" type="scale" begin="lightspeed-logo.mouseover" dur="450ms" to="1" fill="freeze"/>
+                    <animate attributeName="opacity" begin="lightspeed-logo.mouseover" dur="300ms" to="1" fill="freeze"/>
+                    <animateTransform attributeName="transform" type="scale" begin="lightspeed-logo.mouseout" dur="300ms" to="0" fill="freeze"/>
+                    <animate attributeName="opacity" begin="lightspeed-logo.mouseout" dur="200ms" to="0" fill="freeze"/>
                   </g>
+
+                  {/* Cap below the spire */}
+                  <rect 
+                    id="cap" 
+                    x="56" 
+                    y="54" 
+                    width="108" 
+                    height="0" 
+                    fill="currentColor" 
+                    opacity="0"
+                    style={{
+                      filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.5))'
+                    }}
+                  >
+                    <animate attributeName="height" begin="lightspeed-logo.mouseover" dur="350ms" to="8" fill="freeze"/>
+                    <animate attributeName="opacity" begin="lightspeed-logo.mouseover" dur="350ms" to="1" fill="freeze"/>
+                    <animate attributeName="height" begin="lightspeed-logo.mouseout" dur="250ms" to="0" fill="freeze"/>
+                    <animate attributeName="opacity" begin="lightspeed-logo.mouseout" dur="250ms" to="0" fill="freeze"/>
+                  </rect>
+
+                  {/* Spire that grows upward */}
+                  <polygon 
+                    id="spire"
+                    points="100,54 100,54 100,54"
+                    fill="currentColor" 
+                    opacity="0"
+                    style={{
+                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                    }}
+                  >
+                    <animate attributeName="points" begin="lightspeed-logo.mouseover" dur="600ms" to="100,20 164,54 36,54" fill="freeze"/>
+                    <animate attributeName="opacity" begin="lightspeed-logo.mouseover" dur="300ms" to="1" fill="freeze"/>
+                    <animate attributeName="points" begin="lightspeed-logo.mouseout" dur="400ms" to="100,54 100,54 100,54" fill="freeze"/>
+                    <animate attributeName="opacity" begin="lightspeed-logo.mouseout" dur="200ms" to="0" fill="freeze"/>
+                  </polygon>
                 </svg>
               </div>
             </span><span className="campanile-rest transition-all duration-300">IGHTSPEED</span>

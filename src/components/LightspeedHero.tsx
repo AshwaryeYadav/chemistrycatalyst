@@ -52,33 +52,83 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Add subtle 3D perspective effects
+  // CSS-based L-to-Campanile morphing that actually works
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      /* Subtle 3D tilt on hover */
-      .hover-campanile-container:hover .glyph-container {
-        transform: rotateY(-12deg) scale(1.05) translateY(-3px);
-        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+      /* Set all Campanile elements to start hidden/collapsed */
+      #belfry {
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: bottom center;
+        transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+      }
+      #clock {
+        opacity: 0;
+        transform: scale(0);
+        transform-origin: center center;
+        transition: opacity 0.45s ease 0.2s, transform 0.45s ease 0.2s;
+      }
+      #cap {
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: bottom center;
+        transition: opacity 0.35s ease 0.15s, transform 0.35s ease 0.15s;
+      }
+      #spire {
+        opacity: 0;
+        transition: opacity 0.3s ease 0.25s;
+      }
+      #stem {
+        transform-origin: bottom center;
+        transition: transform 0.6s ease;
+      }
+      #foot {
+        transform-origin: left center;
+        transition: transform 0.6s ease;
       }
       
+      /* Hover states - trigger the morphing */
+      .hover-campanile-container:hover #stem {
+        transform: scaleX(0.82) scaleY(1.11);
+      }
+      .hover-campanile-container:hover #foot {
+        transform: scaleX(0.23) scaleY(0.65);
+      }
+      .hover-campanile-container:hover #belfry {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+      .hover-campanile-container:hover #clock {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .hover-campanile-container:hover #cap {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+      .hover-campanile-container:hover #spire {
+        opacity: 1;
+      }
+      
+      /* 3D container effects */
+      .hover-campanile-container:hover .glyph-container {
+        transform: rotateY(-12deg) scale(1.05) translateY(-3px);
+      }
       .glyph-container {
         transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
-      
       .hover-campanile-container:hover + .campanile-rest {
         text-shadow: 0 12px 26px rgba(0,0,0,0.45);
-        transition: text-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
-      
       .campanile-rest {
         transition: text-shadow 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       
       @media (prefers-reduced-motion: reduce) {
-        .glyph-container, .campanile-rest {
-          transform: none !important;
+        #stem, #foot, #belfry, #clock, #cap, #spire, .glyph-container, .campanile-rest {
           transition: opacity 0.25s ease !important;
+          transform: none !important;
         }
       }
     `;
@@ -157,12 +207,7 @@ export function LightspeedHero() {
                     style={{
                       filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
                     }}
-                  >
-                    <animate attributeName="width" begin="lightspeed-logo.mouseover" dur="600ms" to="28" fill="freeze"/>
-                    <animate attributeName="height" begin="lightspeed-logo.mouseover" dur="600ms" to="178" fill="freeze"/>
-                    <animate attributeName="width" begin="lightspeed-logo.mouseout" dur="500ms" to="34" fill="freeze"/>
-                    <animate attributeName="height" begin="lightspeed-logo.mouseout" dur="500ms" to="160" fill="freeze"/>
-                  </rect>
+                  />
 
                   {/* Horizontal foot of the L -> slims into the shaft */}
                   <rect 
@@ -175,14 +220,7 @@ export function LightspeedHero() {
                     style={{
                       filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
                     }}
-                  >
-                    <animate attributeName="width" begin="lightspeed-logo.mouseover" dur="600ms" to="28" fill="freeze"/>
-                    <animate attributeName="x" begin="lightspeed-logo.mouseover" dur="600ms" to="36" fill="freeze"/>
-                    <animate attributeName="height" begin="lightspeed-logo.mouseover" dur="600ms" to="22" fill="freeze"/>
-                    <animate attributeName="width" begin="lightspeed-logo.mouseout" dur="500ms" to="120" fill="freeze"/>
-                    <animate attributeName="x" begin="lightspeed-logo.mouseout" dur="500ms" to="36" fill="freeze"/>
-                    <animate attributeName="height" begin="lightspeed-logo.mouseout" dur="500ms" to="34" fill="freeze"/>
-                  </rect>
+                  />
 
                   {/* Belfry block with arches */}
                   <rect 
@@ -190,35 +228,24 @@ export function LightspeedHero() {
                     x="60" 
                     y="60" 
                     width="100" 
-                    height="0"
+                    height="50"
                     fill="currentColor" 
                     mask="url(#arches)" 
-                    opacity="0"
                     style={{
                       filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
                     }}
-                  >
-                    <animate attributeName="height" begin="lightspeed-logo.mouseover" dur="500ms" to="50" fill="freeze"/>
-                    <animate attributeName="opacity" begin="lightspeed-logo.mouseover" dur="300ms" to="1" fill="freeze"/>
-                    <animate attributeName="height" begin="lightspeed-logo.mouseout" dur="400ms" to="0" fill="freeze"/>
-                    <animate attributeName="opacity" begin="lightspeed-logo.mouseout" dur="200ms" to="0" fill="freeze"/>
-                  </rect>
+                  />
 
                   {/* Clock face */}
                   <g 
                     id="clock" 
-                    transform="translate(110,115) scale(0)" 
-                    opacity="0"
+                    transform="translate(110,115)"
                     style={{
                       filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))'
                     }}
                   >
                     <circle r="9" fill="rgba(0,0,0,0.8)" stroke="currentColor" strokeWidth="3"/>
                     <circle r="1" fill="currentColor"/>
-                    <animateTransform attributeName="transform" type="scale" begin="lightspeed-logo.mouseover" dur="450ms" to="1" fill="freeze"/>
-                    <animate attributeName="opacity" begin="lightspeed-logo.mouseover" dur="300ms" to="1" fill="freeze"/>
-                    <animateTransform attributeName="transform" type="scale" begin="lightspeed-logo.mouseout" dur="300ms" to="0" fill="freeze"/>
-                    <animate attributeName="opacity" begin="lightspeed-logo.mouseout" dur="200ms" to="0" fill="freeze"/>
                   </g>
 
                   {/* Cap below the spire */}
@@ -227,34 +254,22 @@ export function LightspeedHero() {
                     x="56" 
                     y="54" 
                     width="108" 
-                    height="0" 
+                    height="8" 
                     fill="currentColor" 
-                    opacity="0"
                     style={{
                       filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.5))'
                     }}
-                  >
-                    <animate attributeName="height" begin="lightspeed-logo.mouseover" dur="350ms" to="8" fill="freeze"/>
-                    <animate attributeName="opacity" begin="lightspeed-logo.mouseover" dur="350ms" to="1" fill="freeze"/>
-                    <animate attributeName="height" begin="lightspeed-logo.mouseout" dur="250ms" to="0" fill="freeze"/>
-                    <animate attributeName="opacity" begin="lightspeed-logo.mouseout" dur="250ms" to="0" fill="freeze"/>
-                  </rect>
+                  />
 
                   {/* Spire that grows upward */}
                   <polygon 
                     id="spire"
-                    points="100,54 100,54 100,54"
+                    points="100,20 164,54 36,54"
                     fill="currentColor" 
-                    opacity="0"
                     style={{
                       filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
                     }}
-                  >
-                    <animate attributeName="points" begin="lightspeed-logo.mouseover" dur="600ms" to="100,20 164,54 36,54" fill="freeze"/>
-                    <animate attributeName="opacity" begin="lightspeed-logo.mouseover" dur="300ms" to="1" fill="freeze"/>
-                    <animate attributeName="points" begin="lightspeed-logo.mouseout" dur="400ms" to="100,54 100,54 100,54" fill="freeze"/>
-                    <animate attributeName="opacity" begin="lightspeed-logo.mouseout" dur="200ms" to="0" fill="freeze"/>
-                  </polygon>
+                  />
                 </svg>
               </div>
             </span><span className="campanile-rest transition-all duration-300">IGHTSPEED</span>

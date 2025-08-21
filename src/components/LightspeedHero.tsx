@@ -52,25 +52,25 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Inject 3D Campanile hover styles
+  // Inject 3D Campanile morphing styles
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      .hover-campanile-container:hover .campanile-l {
-        opacity: 0 !important;
-        transform: rotateY(28deg) translateZ(-36px) scale(0.92) !important;
+      .morph-path {
+        --l-path: path("M22 8 L22 112 L88 112 L88 90 L44 90 L44 8 Z");
+        --campanile-path: path("M50 16 L36 26 L39 26 L39 30 L41 30 L41 42 L43 42 L43 110 L57 110 L57 42 L59 42 L59 30 L61 30 L61 26 L64 26 Z M46 36 A3 3 0 1 1 52 36 A3 3 0 1 1 46 36 M46 50 A4 4 0 1 1 54 50 A4 4 0 1 1 46 50 M50 48.2 A1.8 1.8 0 1 1 50 51.8 A1.8 1.8 0 1 1 50 48.2");
+        d: var(--l-path);
+        transition: d 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
-      .hover-campanile-container:hover .campanile-tower {
-        opacity: 1 !important;
-        transform: rotateY(0deg) translateZ(0px) scale(1) !important;
+      .hover-campanile-container:hover .morph-path {
+        d: var(--campanile-path);
       }
       .hover-campanile-container:hover + .campanile-rest {
         text-shadow: 0 12px 26px rgba(0,0,0,0.45) !important;
       }
       @media (prefers-reduced-motion: reduce) {
-        .campanile-l, .campanile-tower {
-          transition: opacity 0.25s ease !important;
-          transform: none !important;
+        .morph-path {
+          transition: d 0.25s ease !important;
         }
       }
     `;
@@ -123,53 +123,15 @@ export function LightspeedHero() {
                 className="text-white"
                 style={{ display: 'block' }}
               >
-                {/* Chunky block "L" */}
+                {/* Morphing path from L to Campanile */}
                 <path 
-                  className="campanile-l fill-current transition-all duration-[600ms] ease-[cubic-bezier(0.2,0.7,0.2,1)]"
+                  className="morph-path fill-current"
                   style={{
-                    opacity: 1,
-                    transform: 'rotateY(0deg) translateZ(0px) scale(1)',
                     transformBox: 'fill-box',
                     transformOrigin: '50% 60%',
                     filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
                   }}
-                  d="M22 8v104h66v-22H44V8H22Z"
                 />
-                
-                {/* Berkeley Campanile silhouette */}
-                <g 
-                  className="campanile-tower fill-current transition-all duration-[600ms] ease-[cubic-bezier(0.2,0.7,0.2,1)]"
-                  style={{
-                    opacity: 0,
-                    transform: 'rotateY(-32deg) translateZ(-36px) scale(0.92)',
-                    transformBox: 'fill-box',
-                    transformOrigin: '50% 60%',
-                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                  }}
-                >
-                  {/* Main shaft */}
-                  <rect x="43" y="38" width="14" height="72" />
-                  
-                  {/* Belfry chamber with arched openings */}
-                  <rect x="41" y="30" width="18" height="12" />
-                  <circle cx="46" cy="36" r="3" fill="#0b0b0b" />
-                  <circle cx="54" cy="36" r="3" fill="#0b0b0b" />
-                  
-                  {/* Clock face */}
-                  <circle cx="50" cy="50" r="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                  <circle cx="50" cy="50" r="0.8" fill="currentColor" />
-                  
-                  {/* Base cap */}
-                  <rect x="39" y="26" width="22" height="4" />
-                  
-                  {/* Pointed spire */}
-                  <polygon points="50,16 64,26 36,26" />
-                  
-                  {/* Architectural details */}
-                  <rect x="44" y="55" width="12" height="1" opacity="0.7" />
-                  <rect x="44" y="70" width="12" height="1" opacity="0.7" />
-                  <rect x="44" y="85" width="12" height="1" opacity="0.7" />
-                </g>
               </svg>
             </span><span className="campanile-rest transition-all duration-300">IGHTSPEED</span>
             <br />

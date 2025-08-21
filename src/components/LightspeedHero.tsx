@@ -58,18 +58,17 @@ export function LightspeedHero() {
       /* --- campanile glyph alignment --- */
       .campanile {
         display: inline-block;
-        width: 0.74em;            /* visual width of the L (em-based so it scales with the font) */
-        height: 1em;              /* lock to line's em box */
-        vertical-align: -0.085em; /* baseline nudge (tweak ±0.01em if your font differs) */
-        margin-right: 0.025em;    /* right side-bearing so it doesn't crowd the I */
+        width: 0.76em;            /* fixed inline width => spacing never changes */
+        height: 1em;
+        vertical-align: -0.08em;  /* baseline nudge (tweak ±0.01em for your font) */
+        margin-right: 0.025em;    /* right side-bearing so it doesn't crash the I */
         perspective: 900px;
         overflow: visible;
       }
       @media (min-width: 768px) {
-        .campanile { vertical-align: -0.075em; width: 0.76em; }
+        .campanile { vertical-align: -0.075em; }
       }
 
-      /* Ensure nothing clips the spire */
       .hover-campanile-container,
       .glyph-container,
       .glyph-container svg { overflow: visible; }
@@ -77,23 +76,26 @@ export function LightspeedHero() {
       /* BODY = stem + foot, local origin: TOP-CENTER of the stem */
       #body { transform-origin: 50% 0%; transition: transform .5s cubic-bezier(.4,0,.2,1); }
 
-      /* stem scales from top-center so its top NEVER moves */
-      #stem { transform-origin: 50% 0%; transition: transform .5s cubic-bezier(.4,0,.2,1); }
+      /* Stem anchored at top-center so top never shifts. */
+      #stem { transform-origin: 50% 0%; transition: transform .45s cubic-bezier(.3,.7,.2,1); }
 
-      /* foot collapses into the stem: left/bottom origin keeps it welded */
-      #foot { transform-origin: 0% 100%; transition: transform .5s cubic-bezier(.4,0,.2,1); }
+      /* Foot is welded to the bottom-left, so thickening grows up into the stem. */
+      #foot { transform-origin: 0% 100%; transition: transform .45s cubic-bezier(.3,.7,.2,1); }
 
-      /* tower pieces above the same origin (negative Y) */
+      /* Tower pieces above the same origin (negative Y) */
       #tower { opacity: 0; transform: translateY(0) scale(.98); transform-origin: 50% 100%;
                transition: opacity .35s ease .08s, transform .45s cubic-bezier(.2,.7,.2,1) .08s; }
       #belfry,#cap { transform-origin: 50% 100%; transform: scaleY(0); transition: transform .35s ease .12s; }
       #clock       { transform-origin: 50% 50%;  transform: scale(0);   transition: transform .30s ease .18s; }
       #spire       { transform-origin: 50% 100%; transform: translateY(10px) scale(.86); transition: transform .35s ease .18s; }
 
-      /* Hover morph */
-      .hover-campanile-container:hover #body { transform: scaleY(1.15); }
-      .hover-campanile-container:hover #stem { transform: scaleX(.82); }
-      .hover-campanile-container:hover #foot { transform: scaleX(.22) scaleY(.68); }
+      /* --- HOVER morph --- 
+         - Stem thickens to ~cap width (34 -> ~72) => scaleX ≈ 2.12
+         - Foot gets thicker without getting longer (keeps spacing consistent)
+      */
+      .hover-campanile-container:hover #body { transform: scaleY(1.12); }
+      .hover-campanile-container:hover #stem { transform: scaleX(2.12); }
+      .hover-campanile-container:hover #foot { transform: scaleX(1) scaleY(1.55); }
 
       .hover-campanile-container:hover #tower { opacity: 1; transform: translateY(0) scale(1); }
       .hover-campanile-container:hover #belfry,
@@ -137,7 +139,7 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* Interactive “L” locked to baseline */}
+            {/* Interactive “L” that fattens on hover while spacing stays fixed */}
             <span className="campanile hover-campanile-container align-baseline">
               <div className="glyph-container" style={{ width: "100%", height: "100%" }}>
                 <svg
@@ -182,13 +184,13 @@ export function LightspeedHero() {
                           <g fill="black">
                             <rect x={-28} y={-42} width={12} height={24} rx={6} />
                             <rect x={-12} y={-42} width={12} height={24} rx={6} />
-                            <rect x={4} y={-42} width={12} height={24} rx={6} />
-                            <rect x={20} y={-42} width={12} height={24} rx={6} />
+                            <rect x={4}   y={-42} width={12} height={24} rx={6} />
+                            <rect x={20}  y={-42} width={12} height={24} rx={6} />
                           </g>
                         </mask>
                       </defs>
 
-                      {/* Cap sits on the stem top */}
+                      {/* Cap sits on the stem top (head width = 72) */}
                       <rect
                         id="cap"
                         x={-36}

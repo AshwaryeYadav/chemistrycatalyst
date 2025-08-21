@@ -42,30 +42,35 @@ export function LightspeedHero() {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+        const logoElement = containerRef.current.querySelector('.unified-logo');
         
-        // Smooth hover rotation based on mouse position
-        const x = (e.clientY - centerY) / rect.height * 25;
-        const y = (e.clientX - centerX) / rect.width * 25;
-        
-        setRotation({
-          x: -x,
-          y: y,
-          z: (x + y) * 0.1 // Subtle Z rotation based on position
-        });
+        if (logoElement) {
+          const logoRect = logoElement.getBoundingClientRect();
+          const centerX = logoRect.left + logoRect.width / 2;
+          const centerY = logoRect.top + logoRect.height / 2;
+          
+          // Enhanced hover rotation with better sensitivity
+          const x = (e.clientY - centerY) / logoRect.height * 35;
+          const y = (e.clientX - centerX) / logoRect.width * 35;
+          
+          setRotation({
+            x: -x,
+            y: y,
+            z: (x + y) * 0.15 // More dramatic Z rotation
+          });
+        }
       }
     };
 
     const handleMouseLeave = () => {
-      // Return to neutral position when mouse leaves
+      // Smooth return to neutral position when mouse leaves
       setRotation({ x: 0, y: 0, z: 0 });
     };
 
     const handleDoubleClick = () => {
       // Double-click to start continuous spin
       setIsSpinning(true);
-      setVelocity({ x: 2, y: 3 });
+      setVelocity({ x: 3, y: 4 });
     };
 
     const container = containerRef.current;
@@ -137,15 +142,16 @@ export function LightspeedHero() {
       .logo-lightspeed {
         color: #ffffff;
         position: relative;
-        font-weight: 300;
-        background: linear-gradient(135deg, #ffffff 0%, #ffffff 70%, #ED6C5C 100%);
+        font-weight: 100;
+        background: linear-gradient(135deg, #ffffff 0%, #ffffff 85%, #ED6C5C 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-shadow: 
-          0 2px 4px rgba(53, 58, 65, 0.4),
-          0 4px 8px rgba(53, 58, 65, 0.3),
-          0 8px 16px rgba(53, 58, 65, 0.2);
+          0 2px 4px rgba(53, 58, 65, 0.3),
+          0 4px 8px rgba(53, 58, 65, 0.2),
+          0 8px 16px rgba(53, 58, 65, 0.1);
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.1));
       }
       
       .logo-lightspeed::before {
@@ -156,33 +162,51 @@ export function LightspeedHero() {
         z-index: -1;
         color: #353A41;
         -webkit-text-fill-color: #353A41;
-        transform: translateZ(-15px);
+        transform: translateZ(-12px);
         text-shadow: 
-          1px 1px 0 #353A41,
-          2px 2px 0 #353A41,
-          3px 3px 0 #353A41,
-          4px 4px 0 #353A41,
-          5px 5px 0 #353A41,
-          6px 6px 0 #353A41,
-          7px 7px 0 #353A41,
-          8px 8px 0 #353A41,
-          9px 9px 0 #353A41,
-          10px 10px 0 #353A41;
+          1px 1px 0 #353A41, 2px 2px 0 #353A41, 3px 3px 0 #353A41,
+          4px 4px 0 #353A41, 5px 5px 0 #353A41, 6px 6px 0 #353A41,
+          7px 7px 0 #353A41, 8px 8px 0 #353A41, 9px 9px 0 #353A41,
+          10px 10px 0 #353A41, 11px 11px 0 #353A41, 12px 12px 0 #353A41;
+      }
+      
+      /* Intermediate depth layer for LIGHTSPEED */
+      .logo-lightspeed::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -3;
+        color: #1A1D21;
+        -webkit-text-fill-color: #1A1D21;
+        transform: translateZ(-35px);
+        text-shadow: 
+          1px 1px 0 #1A1D21, 2px 2px 0 #1A1D21, 3px 3px 0 #1A1D21,
+          4px 4px 0 #1A1D21, 5px 5px 0 #1A1D21, 6px 6px 0 #1A1D21,
+          7px 7px 0 #1A1D21, 8px 8px 0 #1A1D21, 9px 9px 0 #1A1D21,
+          10px 10px 0 #1A1D21, 11px 11px 0 #1A1D21, 12px 12px 0 #1A1D21,
+          13px 13px 0 #1A1D21, 14px 14px 0 #1A1D21, 15px 15px 0 #1A1D21,
+          16px 16px 0 #1A1D21, 17px 17px 0 #1A1D21, 18px 18px 0 #1A1D21,
+          19px 19px 0 #1A1D21, 20px 20px 0 #1A1D21, 21px 21px 0 #1A1D21,
+          22px 22px 0 #1A1D21, 23px 23px 0 #1A1D21, 24px 24px 0 #1A1D21,
+          25px 25px 0 #1A1D21;
       }
       
       .logo-fellows {
         color: #ffffff;
-        opacity: 0.9;
+        opacity: 0.95;
         font-weight: 600;
         letter-spacing: 0.15em;
         position: relative;
-        background: linear-gradient(135deg, #ffffff 0%, #ffffff 80%, #ED6C5C 100%);
+        background: linear-gradient(135deg, #ED6C5C 0%, #ffffff 30%, #ffffff 70%, #ED6C5C 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-shadow: 
-          0 1px 2px rgba(53, 58, 65, 0.4),
-          0 2px 4px rgba(53, 58, 65, 0.3);
+          0 1px 2px rgba(237, 108, 92, 0.3),
+          0 2px 4px rgba(53, 58, 65, 0.3),
+          0 4px 8px rgba(237, 108, 92, 0.1);
+        filter: drop-shadow(0 0 6px rgba(237, 108, 92, 0.2));
       }
       
       .logo-fellows::before {
@@ -193,17 +217,16 @@ export function LightspeedHero() {
         z-index: -1;
         color: #353A41;
         -webkit-text-fill-color: #353A41;
-        transform: translateZ(-8px);
+        transform: translateZ(-10px);
         text-shadow: 
-          1px 1px 0 #353A41,
-          2px 2px 0 #353A41,
-          3px 3px 0 #353A41,
-          4px 4px 0 #353A41,
-          5px 5px 0 #353A41;
+          1px 1px 0 #353A41, 2px 2px 0 #353A41, 3px 3px 0 #353A41,
+          4px 4px 0 #353A41, 5px 5px 0 #353A41, 6px 6px 0 #353A41,
+          7px 7px 0 #353A41, 8px 8px 0 #353A41, 9px 9px 0 #353A41,
+          10px 10px 0 #353A41;
       }
-
-      /* Enhanced 3D Fill Layers */
-      .logo-lightspeed::after {
+      
+      /* Intermediate depth layer for FELLOWS */
+      .logo-fellows::after {
         content: attr(data-text);
         position: absolute;
         top: 0;
@@ -211,7 +234,7 @@ export function LightspeedHero() {
         z-index: -2;
         color: #2A2E34;
         -webkit-text-fill-color: #2A2E34;
-        transform: translateZ(-30px);
+        transform: translateZ(-20px);
         text-shadow: 
           1px 1px 0 #2A2E34, 2px 2px 0 #2A2E34, 3px 3px 0 #2A2E34,
           4px 4px 0 #2A2E34, 5px 5px 0 #2A2E34, 6px 6px 0 #2A2E34,
@@ -222,27 +245,57 @@ export function LightspeedHero() {
           19px 19px 0 #2A2E34, 20px 20px 0 #2A2E34;
       }
 
-      .logo-fellows::after {
-        content: attr(data-text);
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -2;
-        color: #2A2E34;
-        -webkit-text-fill-color: #2A2E34;
-        transform: translateZ(-16px);
-        text-shadow: 
-          1px 1px 0 #2A2E34, 2px 2px 0 #2A2E34, 3px 3px 0 #2A2E34,
-          4px 4px 0 #2A2E34, 5px 5px 0 #2A2E34, 6px 6px 0 #2A2E34,
-          7px 7px 0 #2A2E34, 8px 8px 0 #2A2E34, 9px 9px 0 #2A2E34,
-          10px 10px 0 #2A2E34;
-      }
-
       /* Smooth transitions for hover rotation */
       .unified-logo {
         transform-style: preserve-3d;
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
+      }
+      
+      /* Enhanced decorative lines with glow effects */
+      .geometric-lines {
+        position: absolute;
+        width: 24px;
+        height: 2px;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(237,108,92,0.3) 20%, 
+          rgba(255,255,255,0.8) 50%, 
+          rgba(237,108,92,0.3) 80%, 
+          transparent 100%);
+        border-radius: 1px;
+        box-shadow: 
+          0 0 8px rgba(237,108,92,0.4),
+          0 0 16px rgba(255,255,255,0.2);
+        animation: shimmer-lines 4s ease-in-out infinite;
+      }
+      
+      .geometric-lines::before {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 8px;
+        height: 8px;
+        border: 1px solid rgba(237,108,92,0.5);
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+        box-shadow: 0 0 6px rgba(237,108,92,0.3);
+      }
+      
+      .geometric-lines::after {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        border: 1px solid rgba(255,255,255,0.4);
+        border-radius: 50%;
+        background: rgba(255,255,255,0.6);
+        box-shadow: 0 0 4px rgba(255,255,255,0.3);
       }
       
       .logo-underline {
@@ -251,17 +304,19 @@ export function LightspeedHero() {
         left: 50%;
         transform: translateX(-50%);
         width: 120%;
-        height: 2px;
+        height: 3px;
         background: linear-gradient(90deg, 
           transparent 0%, 
+          rgba(237,108,92,0.2) 10%,
           rgba(255,255,255,0.2) 20%, 
-          rgba(255,255,255,0.6) 50%, 
+          rgba(255,255,255,0.8) 50%, 
           rgba(255,255,255,0.2) 80%, 
+          rgba(237,108,92,0.2) 90%,
           transparent 100%);
-        border-radius: 1px;
+        border-radius: 2px;
         box-shadow: 
-          0 0 5px rgba(255,255,255,0.2),
-          0 0 10px rgba(255,255,255,0.1);
+          0 0 8px rgba(255,255,255,0.3),
+          0 0 16px rgba(237,108,92,0.1);
         animation: glow-pulse 3s ease-in-out infinite;
       }
       
@@ -313,6 +368,23 @@ export function LightspeedHero() {
       @keyframes shimmer {
         0%, 100% { opacity: 0.1; transform: scale(1); }
         50% { opacity: 0.3; transform: scale(1.05); }
+      }
+      
+      @keyframes shimmer-lines {
+        0%, 100% { 
+          opacity: 0.6; 
+          transform: scaleX(1); 
+          box-shadow: 
+            0 0 8px rgba(237,108,92,0.2),
+            0 0 16px rgba(255,255,255,0.1);
+        }
+        50% { 
+          opacity: 1; 
+          transform: scaleX(1.1); 
+          box-shadow: 
+            0 0 12px rgba(237,108,92,0.4),
+            0 0 24px rgba(255,255,255,0.2);
+        }
       }
       
       @keyframes glow-pulse {
@@ -390,9 +462,9 @@ export function LightspeedHero() {
               <div className="logo-reflection"></div>
             </h1>
             
-            {/* Geometric accent lines */}
-            <div className="absolute -left-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
-            <div className="absolute -right-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
+            {/* Enhanced geometric accent lines */}
+            <div className="absolute geometric-lines -left-28 top-1/2 transform -translate-y-1/2"></div>
+            <div className="absolute geometric-lines -right-28 top-1/2 transform -translate-y-1/2"></div>
           </div>
         </div>
 

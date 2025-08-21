@@ -20,6 +20,8 @@ export function LightspeedHero() {
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const [isSpinning, setIsSpinning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const lightspeedRef = useRef<HTMLDivElement>(null);
+  const fellowsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isPaused) {
@@ -37,28 +39,26 @@ export function LightspeedHero() {
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
 
-  // Hover-based 3D rotation system
+  // Individual text element hover-based 3D rotation system
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        
-        // Smooth hover rotation based on mouse position
-        const x = (e.clientY - centerY) / rect.height * 25;
-        const y = (e.clientX - centerX) / rect.width * 25;
-        
-        setRotation({
-          x: -x,
-          y: y,
-          z: (x + y) * 0.1 // Subtle Z rotation based on position
-        });
-      }
+    const handleMouseMove = (e: MouseEvent, element: HTMLDivElement) => {
+      const rect = element.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      // Smooth hover rotation based on mouse position relative to the specific element
+      const x = (e.clientY - centerY) / rect.height * 25;
+      const y = (e.clientX - centerX) / rect.width * 25;
+      
+      setRotation({
+        x: -x,
+        y: y,
+        z: (x + y) * 0.1 // Subtle Z rotation based on position
+      });
     };
 
     const handleMouseLeave = () => {
-      // Return to neutral position when mouse leaves
+      // Return to neutral position when mouse leaves either element
       setRotation({ x: 0, y: 0, z: 0 });
     };
 
@@ -68,17 +68,38 @@ export function LightspeedHero() {
       setVelocity({ x: 2, y: 3 });
     };
 
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('mousemove', handleMouseMove);
-      container.addEventListener('mouseleave', handleMouseLeave);
-      container.addEventListener('dblclick', handleDoubleClick);
+    const lightspeedElement = lightspeedRef.current;
+    const fellowsElement = fellowsRef.current;
+
+    // Add event listeners to both text elements
+    if (lightspeedElement) {
+      const lightspeedMouseMove = (e: MouseEvent) => handleMouseMove(e, lightspeedElement);
+      lightspeedElement.addEventListener('mousemove', lightspeedMouseMove);
+      lightspeedElement.addEventListener('mouseleave', handleMouseLeave);
+      lightspeedElement.addEventListener('dblclick', handleDoubleClick);
       
-      return () => {
-        container.removeEventListener('mousemove', handleMouseMove);
-        container.removeEventListener('mouseleave', handleMouseLeave);
-        container.removeEventListener('dblclick', handleDoubleClick);
+      // Store cleanup functions for lightspeed element
+      const cleanupLightspeed = () => {
+        lightspeedElement.removeEventListener('mousemove', lightspeedMouseMove);
+        lightspeedElement.removeEventListener('mouseleave', handleMouseLeave);
+        lightspeedElement.removeEventListener('dblclick', handleDoubleClick);
       };
+
+      if (fellowsElement) {
+        const fellowsMouseMove = (e: MouseEvent) => handleMouseMove(e, fellowsElement);
+        fellowsElement.addEventListener('mousemove', fellowsMouseMove);
+        fellowsElement.addEventListener('mouseleave', handleMouseLeave);
+        fellowsElement.addEventListener('dblclick', handleDoubleClick);
+        
+        return () => {
+          cleanupLightspeed();
+          fellowsElement.removeEventListener('mousemove', fellowsMouseMove);
+          fellowsElement.removeEventListener('mouseleave', handleMouseLeave);
+          fellowsElement.removeEventListener('dblclick', handleDoubleClick);
+        };
+      }
+      
+      return cleanupLightspeed;
     }
   }, []);
 
@@ -176,11 +197,7 @@ export function LightspeedHero() {
         font-weight: 600;
         letter-spacing: 0.15em;
         position: relative;
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-
-
+        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #ffffff 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -366,6 +383,7 @@ export function LightspeedHero() {
                 }}
               >
                 <div 
+                  ref={lightspeedRef}
                   className="logo-3d logo-lightspeed mb-4"
                   data-text="LIGHTSPEED"
                   style={{
@@ -376,6 +394,7 @@ export function LightspeedHero() {
                   LIGHTSPEED
                 </div>
                 <div 
+                  ref={fellowsRef}
                   className="logo-3d logo-fellows text-4xl md:text-6xl"
                   data-text="FELLOWS"
                   style={{

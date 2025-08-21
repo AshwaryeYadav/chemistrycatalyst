@@ -18,7 +18,9 @@ export function LightspeedHero() {
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [parallax, setParallax] = useState({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
+  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
+  const [isSpinning, setIsSpinning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const lightspeedRef = useRef<HTMLDivElement>(null);
   const fellowsRef = useRef<HTMLDivElement>(null);
@@ -39,37 +41,98 @@ export function LightspeedHero() {
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
 
-  // Parallax movement system
+  // Individual text element hover-based 3D rotation system
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = containerRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      
+    const handleMouseMove = (e: MouseEvent, element: HTMLDivElement) => {
+      const rect = element.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       
-      // Subtle parallax movement
-      const x = (e.clientX - centerX) / rect.width * 10;
-      const y = (e.clientY - centerY) / rect.height * 10;
+      // Smooth hover rotation based on mouse position relative to the specific element
+      const x = (e.clientY - centerY) / rect.height * 25;
+      const y = (e.clientX - centerX) / rect.width * 25;
       
-      setParallax({ x, y });
+      setRotation({
+        x: -x,
+        y: y,
+        z: (x + y) * 0.1 // Subtle Z rotation based on position
+      });
     };
 
     const handleMouseLeave = () => {
-      setParallax({ x: 0, y: 0 });
+      // Return to neutral position when mouse leaves either element
+      setRotation({ x: 0, y: 0, z: 0 });
     };
 
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('mousemove', handleMouseMove);
-      container.addEventListener('mouseleave', handleMouseLeave);
+    const handleDoubleClick = () => {
+      // Double-click to start continuous spin
+      setIsSpinning(true);
+      setVelocity({ x: 2, y: 3 });
+    };
+
+    const lightspeedElement = lightspeedRef.current;
+    const fellowsElement = fellowsRef.current;
+
+    // Add event listeners to both text elements
+    if (lightspeedElement) {
+      const lightspeedMouseMove = (e: MouseEvent) => handleMouseMove(e, lightspeedElement);
+      lightspeedElement.addEventListener('mousemove', lightspeedMouseMove);
+      lightspeedElement.addEventListener('mouseleave', handleMouseLeave);
+      lightspeedElement.addEventListener('dblclick', handleDoubleClick);
       
-      return () => {
-        container.removeEventListener('mousemove', handleMouseMove);
-        container.removeEventListener('mouseleave', handleMouseLeave);
+      // Store cleanup functions for lightspeed element
+      const cleanupLightspeed = () => {
+        lightspeedElement.removeEventListener('mousemove', lightspeedMouseMove);
+        lightspeedElement.removeEventListener('mouseleave', handleMouseLeave);
+        lightspeedElement.removeEventListener('dblclick', handleDoubleClick);
       };
+
+      if (fellowsElement) {
+        const fellowsMouseMove = (e: MouseEvent) => handleMouseMove(e, fellowsElement);
+        fellowsElement.addEventListener('mousemove', fellowsMouseMove);
+        fellowsElement.addEventListener('mouseleave', handleMouseLeave);
+        fellowsElement.addEventListener('dblclick', handleDoubleClick);
+        
+        return () => {
+          cleanupLightspeed();
+          fellowsElement.removeEventListener('mousemove', fellowsMouseMove);
+          fellowsElement.removeEventListener('mouseleave', handleMouseLeave);
+          fellowsElement.removeEventListener('dblclick', handleDoubleClick);
+        };
+      }
+      
+      return cleanupLightspeed;
     }
   }, []);
+
+  // Momentum and continuous rotation system
+  useEffect(() => {
+    if (isSpinning) {
+      const animationFrame = requestAnimationFrame(() => {
+        setRotation(prev => ({
+          x: prev.x + velocity.x,
+          y: prev.y + velocity.y,
+          z: prev.z + velocity.y * 0.1 // Add subtle Z rotation during spin
+        }));
+        
+        // Gradually reduce velocity (friction)
+        setVelocity(prev => {
+          const newVelX = prev.x * 0.98;
+          const newVelY = prev.y * 0.98;
+          
+          // Stop spinning when velocity is very low
+          if (Math.abs(newVelX) < 0.1 && Math.abs(newVelY) < 0.1) {
+            setIsSpinning(false);
+            return { x: 0, y: 0 };
+          }
+          
+          return { x: newVelX, y: newVelY };
+        });
+      });
+      
+      return () => cancelAnimationFrame(animationFrame);
+    }
+  }, [isSpinning, velocity]);
 
   // Advanced 3D Logo Styling
   useEffect(() => {
@@ -338,7 +401,7 @@ export function LightspeedHero() {
               <div 
                 className="unified-logo"
                 style={{
-                  transform: `translate3d(${parallax.x}px, ${parallax.y}px, 0)`,
+                  transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
                   transformStyle: 'preserve-3d'
                 }}
               >
@@ -347,7 +410,7 @@ export function LightspeedHero() {
                   className="logo-3d logo-lightspeed mb-4"
                   data-text="LIGHTSPEED"
                   style={{
-                    transform: `translateZ(40px) translate3d(${parallax.x * 0.5}px, ${parallax.y * 0.5}px, 0)`,
+                    transform: 'translateZ(40px)',
                     transformStyle: 'preserve-3d'
                   }}
                 >
@@ -358,7 +421,7 @@ export function LightspeedHero() {
                   className="logo-3d logo-fellows text-4xl md:text-6xl"
                   data-text="FELLOWS"
                   style={{
-                    transform: `translateZ(20px) translate3d(${parallax.x * 0.3}px, ${parallax.y * 0.3}px, 0)`,
+                    transform: 'translateZ(20px)',
                     transformStyle: 'preserve-3d'
                   }}
                 >
@@ -389,11 +452,11 @@ export function LightspeedHero() {
             {"."}
           </div>
           <div 
-            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80 flex items-center justify-center whitespace-nowrap"
+            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            <span>{">"} Backed by investors behind </span>
+            {">"} Backed by investors behind{" "}
             <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
               <span className="text-white font-medium">
                 {companyGroups[currentGroup][0]}
@@ -406,8 +469,8 @@ export function LightspeedHero() {
               <span className="text-white font-medium">
                 {companyGroups[currentGroup][2]}
               </span>
-              {"."}
             </span>
+            .
           </div>
         </div>
 

@@ -18,12 +18,7 @@ export function LightspeedHero() {
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
-  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
-  const [isSpinning, setIsSpinning] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [idleTime, setIdleTime] = useState(0);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const lightspeedRef = useRef<HTMLDivElement>(null);
   const fellowsRef = useRef<HTMLDivElement>(null);
@@ -44,117 +39,35 @@ export function LightspeedHero() {
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
 
-  // Idle animation for continuous gentle motion
-  useEffect(() => {
-    if (!isDragging && !isSpinning) {
-      const interval = setInterval(() => {
-        setIdleTime(prev => prev + 0.1);
-      }, 50);
-      return () => clearInterval(interval);
-    }
-  }, [isDragging, isSpinning]);
-
-  // Subtle cursor following and click-and-drag interaction
+  // Subtle parallax mouse tracking for 3D extrusion effect
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        // Drag rotation
-        const deltaX = e.clientX - dragStart.x;
-        const deltaY = e.clientY - dragStart.y;
-        
-        setRotation(prev => ({
-          x: prev.x + deltaY * 0.5,
-          y: prev.y + deltaX * 0.5,
-          z: prev.z + (deltaX + deltaY) * 0.1
-        }));
-        
-        setDragStart({ x: e.clientX, y: e.clientY });
-      } else if (!isSpinning) {
-        // Subtle cursor following
-        const rect = container.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        
-        const x = (e.clientY - centerY) / rect.height * 3; // Very subtle
-        const y = (e.clientX - centerX) / rect.width * 3;
-        
-        setRotation(prev => ({
-          x: Math.sin(idleTime) * 2 + x, // Combine idle animation with cursor following
-          y: Math.cos(idleTime * 0.8) * 1.5 + y,
-          z: Math.sin(idleTime * 0.6) * 0.5
-        }));
-      }
-    };
-
-    const handleMouseDown = (e: MouseEvent) => {
-      setIsDragging(true);
-      setDragStart({ x: e.clientX, y: e.clientY });
-    };
-
-    const handleMouseUp = () => {
-      if (isDragging) {
-        setIsDragging(false);
-        // Start momentum spinning
-        setIsSpinning(true);
-        setVelocity({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1 });
-      }
+      const rect = container.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      // Calculate mouse position relative to center (-1 to 1)
+      const x = (e.clientX - centerX) / (rect.width / 2);
+      const y = (e.clientY - centerY) / (rect.height / 2);
+      
+      setMousePosition({ x, y });
     };
 
     const handleMouseLeave = () => {
-      if (!isDragging && !isSpinning) {
-        // Just idle animation when mouse leaves
-        setRotation(prev => ({
-          x: Math.sin(idleTime) * 2,
-          y: Math.cos(idleTime * 0.8) * 1.5,
-          z: Math.sin(idleTime * 0.6) * 0.5
-        }));
-      }
+      setMousePosition({ x: 0, y: 0 });
     };
 
     container.addEventListener('mousemove', handleMouseMove);
-    container.addEventListener('mousedown', handleMouseDown);
-    container.addEventListener('mouseup', handleMouseUp);
     container.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
       container.removeEventListener('mousemove', handleMouseMove);
-      container.removeEventListener('mousedown', handleMouseDown);
-      container.removeEventListener('mouseup', handleMouseUp);
       container.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [isDragging, dragStart, isSpinning, idleTime]);
-
-  // Momentum spinning system (updated from existing)
-  useEffect(() => {
-    if (isSpinning) {
-      const animationFrame = requestAnimationFrame(() => {
-        setRotation(prev => ({
-          x: prev.x + velocity.x,
-          y: prev.y + velocity.y,
-          z: prev.z + velocity.y * 0.1
-        }));
-        
-        // Gradually reduce velocity (friction)
-        setVelocity(prev => {
-          const newVelX = prev.x * 0.98;
-          const newVelY = prev.y * 0.98;
-          
-          // Stop spinning when velocity is very low
-          if (Math.abs(newVelX) < 0.1 && Math.abs(newVelY) < 0.1) {
-            setIsSpinning(false);
-            return { x: 0, y: 0 };
-          }
-          
-          return { x: newVelX, y: newVelY };
-        });
-      });
-      
-      return () => cancelAnimationFrame(animationFrame);
-    }
-  }, [isSpinning, velocity]);
+  }, []);
 
   // Advanced 3D Logo Styling
   useEffect(() => {
@@ -171,12 +84,8 @@ export function LightspeedHero() {
       
       .unified-logo {
         transform-style: preserve-3d;
-        transition: transform 0.1s ease-out;
-        cursor: grab;
-      }
-      
-      .unified-logo:active {
-        cursor: grabbing;
+        transition: transform 0.2s ease-out;
+        cursor: default;
       }
       
       .logo-lightspeed {
@@ -201,7 +110,7 @@ export function LightspeedHero() {
         z-index: -1;
         color: #353A41;
         -webkit-text-fill-color: #353A41;
-        transform: translateZ(-15px);
+        transform: translateZ(-15px) translateX(var(--shadow-offset-x, 0px)) translateY(var(--shadow-offset-y, 0px));
         text-shadow: 
           1px 1px 0 #353A41,
           2px 2px 0 #353A41,
@@ -213,6 +122,7 @@ export function LightspeedHero() {
           8px 8px 0 #353A41,
           9px 9px 0 #353A41,
           10px 10px 0 #353A41;
+        transition: transform 0.2s ease-out;
       }
       
       .logo-fellows {
@@ -238,13 +148,14 @@ export function LightspeedHero() {
         z-index: -1;
         color: #353A41;
         -webkit-text-fill-color: #353A41;
-        transform: translateZ(-8px);
+        transform: translateZ(-8px) translateX(var(--shadow-offset-x, 0px)) translateY(var(--shadow-offset-y, 0px));
         text-shadow: 
           1px 1px 0 #353A41,
           2px 2px 0 #353A41,
           3px 3px 0 #353A41,
           4px 4px 0 #353A41,
           5px 5px 0 #353A41;
+        transition: transform 0.2s ease-out;
       }
 
       /* Enhanced 3D Fill Layers */
@@ -283,11 +194,11 @@ export function LightspeedHero() {
           10px 10px 0 #2A2E34;
       }
 
-      /* Smooth transitions for hover rotation */
+      /* Glass plate effect */
       .unified-logo {
         transform-style: preserve-3d;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        cursor: pointer;
+        transition: transform 0.2s ease-out;
+        cursor: default;
       }
       
       .logo-underline {
@@ -411,6 +322,12 @@ export function LightspeedHero() {
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-30" />
       <div className="absolute inset-0 opacity-[0.015] bg-noise" />
       
+      {/* Decorative lines */}
+      <div className="absolute top-1/2 left-8 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2" />
+      <div className="absolute top-1/2 right-8 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2" />
+      <div className="absolute top-1/3 left-16 w-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-y-1/2" />
+      <div className="absolute bottom-1/3 right-16 w-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-y-1/2" />
+      
       <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
         
         {/* Premium 3D Logo */}
@@ -423,7 +340,7 @@ export function LightspeedHero() {
               <div 
                 className="unified-logo"
                 style={{
-                  transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`,
+                  transform: `translateX(${mousePosition.x * 2}px) translateY(${mousePosition.y * 2}px)`,
                   transformStyle: 'preserve-3d'
                 }}
               >
@@ -433,8 +350,10 @@ export function LightspeedHero() {
                   data-text="LIGHTSPEED"
                   style={{
                     transform: 'translateZ(40px)',
-                    transformStyle: 'preserve-3d'
-                  }}
+                    transformStyle: 'preserve-3d',
+                    '--shadow-offset-x': `${mousePosition.x * 5}px`,
+                    '--shadow-offset-y': `${mousePosition.y * 5}px`
+                  } as React.CSSProperties}
                 >
                   LIGHTSPEED
                 </div>
@@ -444,8 +363,10 @@ export function LightspeedHero() {
                   data-text="FELLOWS"
                   style={{
                     transform: 'translateZ(20px)',
-                    transformStyle: 'preserve-3d'
-                  }}
+                    transformStyle: 'preserve-3d',
+                    '--shadow-offset-x': `${mousePosition.x * 3}px`,
+                    '--shadow-offset-y': `${mousePosition.y * 3}px`
+                  } as React.CSSProperties}
                 >
                   FELLOWS
                 </div>

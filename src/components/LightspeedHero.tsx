@@ -131,7 +131,7 @@ export function LightspeedHero() {
       }
       
       .logo-fellows {
-        color: #ffffff
+        color: #ffffff;
         opacity: 0.9;
         font-weight: 600;
         letter-spacing: 0.15em;

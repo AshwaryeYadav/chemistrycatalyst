@@ -53,58 +53,181 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // 3D Text Styling
+  // Advanced 3D Logo Styling
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      .text-3d {
+      .logo-3d {
         position: relative;
         display: inline-block;
         transform-style: preserve-3d;
-        transition: transform 0.1s ease-out;
+        transition: transform 0.2s ease-out;
+        font-weight: 900;
+        letter-spacing: -0.02em;
       }
       
-      .text-3d::before {
+      .logo-lightspeed {
+        background: linear-gradient(135deg, 
+          #e5e7eb 0%, 
+          #f8fafc 25%, 
+          #cbd5e1 50%, 
+          #f1f5f9 75%, 
+          #e2e8f0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: brightness(1.2) contrast(1.1);
+        text-shadow: 
+          0 0 20px rgba(255,255,255,0.3),
+          0 0 40px rgba(255,255,255,0.1),
+          0 0 60px rgba(255,255,255,0.05);
+      }
+      
+      .logo-lightspeed::before {
         content: attr(data-text);
         position: absolute;
         top: 0;
         left: 0;
-        color: inherit;
         z-index: -1;
+        background: linear-gradient(135deg, 
+          #1e293b 0%, 
+          #334155 25%, 
+          #475569 50%, 
+          #64748b 75%, 
+          #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        transform: translateZ(-10px);
         text-shadow: 
-          1px 1px 0 rgba(0,0,0,0.8),
-          2px 2px 0 rgba(0,0,0,0.7),
-          3px 3px 0 rgba(0,0,0,0.6),
-          4px 4px 0 rgba(0,0,0,0.5),
-          5px 5px 0 rgba(0,0,0,0.4),
-          6px 6px 0 rgba(0,0,0,0.3),
-          7px 7px 0 rgba(0,0,0,0.2),
-          8px 8px 0 rgba(0,0,0,0.1),
-          0 0 40px rgba(255,255,255,0.1);
+          1px 1px 0 #0f172a,
+          2px 2px 0 #1e293b,
+          3px 3px 0 #334155,
+          4px 4px 0 #475569,
+          5px 5px 0 #64748b,
+          6px 6px 0 #94a3b8,
+          7px 7px 0 #cbd5e1,
+          8px 8px 0 #e2e8f0,
+          9px 9px 0 #f1f5f9,
+          10px 10px 0 #f8fafc,
+          0 0 80px rgba(0,0,0,0.8);
       }
       
-      .text-3d-fellows {
+      .logo-lightspeed::after {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: radial-gradient(ellipse at center, 
+          rgba(255,255,255,0.1) 0%, 
+          transparent 70%);
+        z-index: -2;
+        border-radius: 50%;
+        animation: shimmer 4s ease-in-out infinite;
+      }
+      
+      .logo-fellows {
         background: linear-gradient(135deg, 
-          hsl(var(--primary)) 0%, 
-          hsl(var(--primary-glow)) 50%, 
-          hsl(var(--accent)) 100%);
+          rgba(255,255,255,0.4) 0%, 
+          rgba(255,255,255,0.6) 25%, 
+          rgba(147,51,234,0.3) 50%, 
+          rgba(59,130,246,0.3) 75%, 
+          rgba(16,185,129,0.3) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        opacity: 0.8;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-shadow: 
+          0 0 10px rgba(255,255,255,0.2),
+          0 0 20px rgba(147,51,234,0.1),
+          0 0 30px rgba(59,130,246,0.1);
       }
       
-      .text-3d-fellows::before {
+      .logo-fellows::before {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
         background: linear-gradient(135deg, 
-          rgba(255,255,255,0.8) 0%, 
-          rgba(255,255,255,0.6) 50%, 
-          rgba(255,255,255,0.4) 100%);
+          rgba(255,255,255,0.1) 0%, 
+          rgba(147,51,234,0.1) 50%, 
+          rgba(59,130,246,0.1) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        transform: translateZ(-5px);
+        text-shadow: 
+          1px 1px 0 rgba(0,0,0,0.3),
+          2px 2px 0 rgba(0,0,0,0.25),
+          3px 3px 0 rgba(0,0,0,0.2),
+          4px 4px 0 rgba(0,0,0,0.15),
+          5px 5px 0 rgba(0,0,0,0.1);
+      }
+      
+      .logo-underline {
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120%;
+        height: 2px;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(255,255,255,0.3) 20%, 
+          rgba(147,51,234,0.6) 50%, 
+          rgba(255,255,255,0.3) 80%, 
+          transparent 100%);
+        border-radius: 1px;
+        box-shadow: 
+          0 0 10px rgba(147,51,234,0.4),
+          0 0 20px rgba(147,51,234,0.2);
+        animation: glow-pulse 3s ease-in-out infinite;
+      }
+      
+      .logo-reflection {
+        position: absolute;
+        bottom: -100px;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background: linear-gradient(180deg, 
+          rgba(255,255,255,0.03) 0%, 
+          transparent 100%);
+        transform: scaleY(-1);
+        opacity: 0.3;
+        filter: blur(1px);
+      }
+      
+      @keyframes shimmer {
+        0%, 100% { opacity: 0.1; transform: scale(1); }
+        50% { opacity: 0.3; transform: scale(1.05); }
+      }
+      
+      @keyframes glow-pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+      }
+      
+      @keyframes holographic {
+        0% { filter: hue-rotate(0deg); }
+        25% { filter: hue-rotate(90deg); }
+        50% { filter: hue-rotate(180deg); }
+        75% { filter: hue-rotate(270deg); }
+        100% { filter: hue-rotate(360deg); }
+      }
+      
+      .logo-fellows {
+        animation: holographic 8s linear infinite;
       }
       
       @media (prefers-reduced-motion: reduce) {
-        .text-3d {
+        .logo-3d, .logo-lightspeed::after, .logo-underline, .logo-fellows {
+          animation: none !important;
           transform: none !important;
           transition: none !important;
         }
@@ -129,35 +252,44 @@ export function LightspeedHero() {
       
       <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
         
-        {/* Main Title - 3D Interactive Text */}
+        {/* Premium 3D Logo */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <div 
-            className="perspective-[2000px] transform-gpu"
+            className="perspective-[2000px] transform-gpu relative"
             style={{ transformStyle: 'preserve-3d' }}
           >
-            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight leading-tight mb-8">
+            <h1 className="text-6xl md:text-8xl font-display tracking-tight leading-tight mb-8 relative">
               <div 
-                className="text-3d text-white"
+                className="logo-3d logo-lightspeed mb-4"
                 data-text="LIGHTSPEED"
                 style={{
-                  transform: `rotateX(${-mousePosition.y * 0.8}deg) rotateY(${mousePosition.x * 0.8}deg) translateZ(50px)`,
+                  transform: `rotateX(${-mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(60px)`,
                   transformStyle: 'preserve-3d'
                 }}
               >
                 LIGHTSPEED
               </div>
-              <br />
               <div 
-                className="text-3d text-3d-fellows"
+                className="logo-3d logo-fellows text-4xl md:text-6xl"
                 data-text="FELLOWS"
                 style={{
-                  transform: `rotateX(${-mousePosition.y * 0.6}deg) rotateY(${mousePosition.x * 0.6}deg) translateZ(30px)`,
+                  transform: `rotateX(${-mousePosition.y * 0.3}deg) rotateY(${mousePosition.x * 0.3}deg) translateZ(30px)`,
                   transformStyle: 'preserve-3d'
                 }}
               >
                 FELLOWS
               </div>
+              
+              {/* Glowing underline */}
+              <div className="logo-underline"></div>
+              
+              {/* Reflection effect */}
+              <div className="logo-reflection"></div>
             </h1>
+            
+            {/* Geometric accent lines */}
+            <div className="absolute -left-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
+            <div className="absolute -right-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
           </div>
         </div>
 

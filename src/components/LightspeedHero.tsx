@@ -51,64 +51,53 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Alignment + animation styles (scoped and injected once)
+  // Scoped CSS: fixed em-box + hover thickening with CSS vars (easy to tweak)
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
-      /* --- campanile glyph alignment --- */
       .campanile {
-        display: inline-block;
-        width: 0.76em;            /* fixed inline width => spacing never changes */
-        height: 1em;
-        vertical-align: -0.08em;  /* baseline nudge (tweak ±0.01em for your font) */
-        margin-right: 0.025em;    /* right side-bearing so it doesn't crash the I */
-        perspective: 900px;
-        overflow: visible;
+        --stemScaleX: 1;         /* default thickness */
+        --bodyScaleY: 1;         /* slight vertical swell */
+        --footScaleY: 1;         /* base thickness */
+        display:inline-block;
+        width:0.78em;            /* fixed glyph advance -> spacing never changes */
+        height:1em;
+        vertical-align:-0.08em;  /* baseline nudge (adjust ±0.01em if needed) */
+        margin-right:0.03em;     /* right side-bearing before the I */
+        perspective:900px;
+        overflow:visible;
       }
-      @media (min-width: 768px) {
-        .campanile { vertical-align: -0.075em; }
-      }
+      @media (min-width:768px){ .campanile{ vertical-align:-0.075em; } }
 
       .hover-campanile-container,
       .glyph-container,
-      .glyph-container svg { overflow: visible; }
+      .glyph-container svg { overflow:visible; }
 
-      /* BODY = stem + foot, local origin: TOP-CENTER of the stem */
-      #body { transform-origin: 50% 0%; transition: transform .5s cubic-bezier(.4,0,.2,1); }
+      #body  { transform-origin:50% 0%; transform:scaleY(var(--bodyScaleY)); transition:transform .45s cubic-bezier(.3,.7,.2,1); }
+      #stem  { transform-origin:50% 0%; transform:scaleX(var(--stemScaleX)); transition:transform .45s cubic-bezier(.3,.7,.2,1); }
+      #foot  { transform-origin:0% 100%; transform:scaleY(var(--footScaleY)); transition:transform .45s cubic-bezier(.3,.7,.2,1); }
 
-      /* Stem anchored at top-center so top never shifts. */
-      #stem { transform-origin: 50% 0%; transition: transform .45s cubic-bezier(.3,.7,.2,1); }
+      #tower { opacity:0; transform:translateY(0) scale(.98); transform-origin:50% 100%;
+               transition:opacity .35s ease .08s, transform .45s cubic-bezier(.2,.7,.2,1) .08s; }
+      #belfry,#cap { transform-origin:50% 100%; transform:scaleY(0); transition:transform .35s ease .12s; }
+      #clock       { transform-origin:50% 50%;  transform:scale(0);   transition:transform .30s ease .18s; }
+      #spire       { transform-origin:50% 100%; transform:translateY(10px) scale(.9); transition:transform .35s ease .18s; }
 
-      /* Foot is welded to the bottom-left, so thickening grows up into the stem. */
-      #foot { transform-origin: 0% 100%; transition: transform .45s cubic-bezier(.3,.7,.2,1); }
-
-      /* Tower pieces above the same origin (negative Y) */
-      #tower { opacity: 0; transform: translateY(0) scale(.98); transform-origin: 50% 100%;
-               transition: opacity .35s ease .08s, transform .45s cubic-bezier(.2,.7,.2,1) .08s; }
-      #belfry,#cap { transform-origin: 50% 100%; transform: scaleY(0); transition: transform .35s ease .12s; }
-      #clock       { transform-origin: 50% 50%;  transform: scale(0);   transition: transform .30s ease .18s; }
-      #spire       { transform-origin: 50% 100%; transform: translateY(10px) scale(.86); transition: transform .35s ease .18s; }
-
-      /* --- HOVER morph --- 
-         - Stem thickens to ~cap width (34 -> ~72) => scaleX ≈ 2.12
-         - Foot gets thicker without getting longer (keeps spacing consistent)
-      */
-      .hover-campanile-container:hover #body { transform: scaleY(1.12); }
-      .hover-campanile-container:hover #stem { transform: scaleX(2.12); }
-      .hover-campanile-container:hover #foot { transform: scaleX(1) scaleY(1.55); }
-
-      .hover-campanile-container:hover #tower { opacity: 1; transform: translateY(0) scale(1); }
+      /* Hover: fatten stem & base, keep same em width. 
+         34 * 1.75 ≈ 59px -> visually close to 68-72px head without becoming a block. */
+      .hover-campanile-container:hover { --stemScaleX: 1.75; --bodyScaleY: 1.10; --footScaleY: 1.35; }
+      .hover-campanile-container:hover #tower { opacity:1; transform:translateY(0) scale(1); }
       .hover-campanile-container:hover #belfry,
-      .hover-campanile-container:hover #cap   { transform: scaleY(1); }
-      .hover-campanile-container:hover #clock { transform: scale(1); }
-      .hover-campanile-container:hover #spire { transform: translateY(0) scale(1); }
+      .hover-campanile-container:hover #cap   { transform:scaleY(1); }
+      .hover-campanile-container:hover #clock { transform:scale(1); }
+      .hover-campanile-container:hover #spire { transform:translateY(0) scale(1); }
 
-      .glyph-container { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
-      .hover-campanile-container:hover .glyph-container { transform: translateY(-4px) rotateY(-8deg) scale(1.03); }
+      .glyph-container { transition:transform .6s cubic-bezier(.2,.7,.2,1); }
+      .hover-campanile-container:hover .glyph-container { transform:translateY(-4px) rotateY(-8deg) scale(1.03); }
 
-      @media (prefers-reduced-motion: reduce) {
-        #body,#stem,#foot,#tower,#belfry,#cap,#clock,#spire,.glyph-container {
-          transition: opacity .25s ease !important; transform: none !important;
+      @media (prefers-reduced-motion: reduce){
+        #body,#stem,#foot,#tower,#belfry,#cap,#clock,#spire,.glyph-container{
+          transition:opacity .25s ease !important; transform:none !important;
         }
       }
     `;
@@ -139,7 +128,7 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* Interactive “L” that fattens on hover while spacing stays fixed */}
+            {/* L glyph (spacing locked) */}
             <span className="campanile hover-campanile-container align-baseline">
               <div className="glyph-container" style={{ width: "100%", height: "100%" }}>
                 <svg
@@ -150,11 +139,9 @@ export function LightspeedHero() {
                   className="text-white"
                   style={{ display: "block" }}
                 >
-                  {/* Root group puts origin at STEM TOP-CENTER: x=36 + 34/2 = 53, y=20 */}
+                  {/* origin at stem top-center: x = 53, y = 20 */}
                   <g id="root" transform="translate(53,20)">
-                    {/* BODY (scales as one from top-center) */}
                     <g id="body">
-                      {/* Stem: centered on origin, extends downward */}
                       <rect
                         id="stem"
                         x={-17}
@@ -164,11 +151,11 @@ export function LightspeedHero() {
                         fill="currentColor"
                         style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
                       />
-                      {/* Foot: starts at centerline and goes right; glued to bottom of stem */}
+                      {/* base length unchanged; thickness grows upward on hover */}
                       <rect
                         id="foot"
                         x={0}
-                        y={160 - 34}
+                        y={126}
                         width={120}
                         height={34}
                         fill="currentColor"
@@ -176,7 +163,7 @@ export function LightspeedHero() {
                       />
                     </g>
 
-                    {/* TOWER (drawn above origin in negative Y) */}
+                    {/* tower above the cap */}
                     <g id="tower">
                       <defs>
                         <mask id="belfryMask" maskUnits="userSpaceOnUse" x={-34} y={-48} width={68} height={40}>
@@ -190,45 +177,19 @@ export function LightspeedHero() {
                         </mask>
                       </defs>
 
-                      {/* Cap sits on the stem top (head width = 72) */}
-                      <rect
-                        id="cap"
-                        x={-36}
-                        y={-8}
-                        width={72}
-                        height={8}
-                        fill="currentColor"
-                        style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,.5))" }}
-                      />
+                      <rect id="cap" x={-36} y={-8} width={72} height={8} fill="currentColor"
+                        style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,.5))" }} />
+                      <rect id="belfry" x={-34} y={-48} width={68} height={40} fill="currentColor" mask="url(#belfryMask)"
+                        style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }} />
 
-                      {/* Belfry just above cap (masked arches) */}
-                      <rect
-                        id="belfry"
-                        x={-34}
-                        y={-48}
-                        width={68}
-                        height={40}
-                        fill="currentColor"
-                        mask="url(#belfryMask)"
-                        style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
-                      />
-
-                      {/* Clock under arches */}
                       <g id="clock" transform="translate(0,-18)" style={{ filter: "drop-shadow(0 4px 12px rgba(0,0,0,.4))" }}>
                         <circle r={9} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={3} />
                         <circle r={1} fill="currentColor" />
                       </g>
 
-                      {/* Spire */}
-                      <polygon
-                        id="spire"
-                        points={`0,-77 36,-48 -36,-48`}
-                        fill="currentColor"
-                        stroke="currentColor"
-                        strokeWidth={1}
-                        vectorEffect="non-scaling-stroke"
-                        style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
-                      />
+                      <polygon id="spire" points={`0,-77 36,-48 -36,-48`} fill="currentColor"
+                        stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke"
+                        style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }} />
                     </g>
                   </g>
                 </svg>

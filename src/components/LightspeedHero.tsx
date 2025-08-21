@@ -94,16 +94,16 @@ export function LightspeedHero() {
       
       /* Better positioning - align with text baseline */
       .glyph-container {
-        transform: translateY(8px); /* Move down to align morphed tower with baseline */
+        transform: translateY(0px); /* Aligned with baseline */
         transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       
       /* Hover states - seamless morphing */
       .hover-campanile-container:hover #stem {
-        transform: scaleX(0.8) scaleY(1.15) translateX(1px) translateY(-4px);
+        transform: scaleX(0.8) scaleY(1.15) translateX(0px) translateY(-4px);
       }
       .hover-campanile-container:hover #foot {
-        transform: scaleX(0.22) scaleY(0.6) translateX(2px);
+        transform: scaleX(0.22) scaleY(0.6) translateX(1px);
       }
       .hover-campanile-container:hover #belfry {
         opacity: 1;
@@ -124,7 +124,7 @@ export function LightspeedHero() {
       
       /* Enhanced 3D container effects with better positioning */
       .hover-campanile-container:hover .glyph-container {
-        transform: translateY(-1px) rotateY(-8deg) scale(1.03);
+        transform: translateY(-4px) rotateY(-8deg) scale(1.03);
       }
       
       .hover-campanile-container:hover + .campanile-rest {
@@ -206,19 +206,19 @@ export function LightspeedHero() {
                   id="lightspeed-logo"
                   width="100%" 
                   height="100%" 
-                  viewBox="0 0 200 220" 
+                  viewBox="0 0 200 240" 
                   className="text-white"
                   style={{ display: 'block' }}
                 >
                   {/* Masks for the belfry arches */}
                   <defs>
                     <mask id="arches">
-                      <rect x="0" y="0" width="200" height="220" fill="white"/>
+                      <rect x="0" y="0" width="200" height="240" fill="white"/>
                       <g fill="black">
-                        <rect x="45" y="98" width="12" height="20" rx="6"/>
-                        <rect x="60" y="98" width="12" height="20" rx="6"/>
-                        <rect x="75" y="98" width="12" height="20" rx="6"/>
-                        <rect x="90" y="98" width="12" height="20" rx="6"/>
+                        <rect x="70" y="118" width="12" height="20" rx="6"/>
+                        <rect x="85" y="118" width="12" height="20" rx="6"/>
+                        <rect x="100" y="118" width="12" height="20" rx="6"/>
+                        <rect x="115" y="118" width="12" height="20" rx="6"/>
                       </g>
                     </mask>
                   </defs>
@@ -227,7 +227,7 @@ export function LightspeedHero() {
                   <rect 
                     id="stem" 
                     x="36" 
-                    y="20" 
+                    y="40" 
                     width="34" 
                     height="160" 
                     fill="currentColor"
@@ -240,7 +240,7 @@ export function LightspeedHero() {
                   <rect 
                     id="foot" 
                     x="36" 
-                    y="180" 
+                    y="200" 
                     width="120" 
                     height="34" 
                     fill="currentColor"
@@ -249,11 +249,11 @@ export function LightspeedHero() {
                     }}
                   />
 
-                  {/* Belfry block with arches */}
+                  {/* Belfry block with arches - centered */}
                   <rect 
                     id="belfry" 
-                    x="40" 
-                    y="80" 
+                    x="65" 
+                    y="100" 
                     width="68" 
                     height="40"
                     fill="currentColor" 
@@ -263,10 +263,10 @@ export function LightspeedHero() {
                     }}
                   />
 
-                  {/* Clock face */}
+                  {/* Clock face - centered */}
                   <g 
                     id="clock" 
-                    transform="translate(74,110)"
+                    transform="translate(99,130)"
                     style={{
                       filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))'
                     }}
@@ -275,11 +275,11 @@ export function LightspeedHero() {
                     <circle r="1" fill="currentColor"/>
                   </g>
 
-                  {/* Cap below the spire */}
+                  {/* Cap below the spire - centered */}
                   <rect 
                     id="cap" 
-                    x="38" 
-                    y="74" 
+                    x="63" 
+                    y="94" 
                     width="72" 
                     height="8" 
                     fill="currentColor" 
@@ -288,10 +288,10 @@ export function LightspeedHero() {
                     }}
                   />
 
-                  {/* Spire that grows upward */}
+                  {/* Spire that grows upward - centered */}
                   <polygon 
                     id="spire"
-                    points="74,45 110,74 38,74"
+                    points="99,65 135,94 63,94"
                     fill="currentColor" 
                     style={{
                       filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'

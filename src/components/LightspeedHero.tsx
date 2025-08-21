@@ -8,7 +8,7 @@ export function LightspeedHero() {
     ["Anduril", "Rubrik", "Mulesoft"],
     ["Snap", "Mulesoft", "Nest"],
     ["AppDynamics", "Nutanix", "UiPath"],
-    ["Affirm", "MindBody", "Nicira"]
+    ["Affirm", "MindBody", "Nicira"],
   ];
 
   const descriptions = ["builders", "founders", "engineers", "hackers"];
@@ -42,136 +42,69 @@ export function LightspeedHero() {
         const rect = containerRef.current.getBoundingClientRect();
         const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
         const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
-        setMousePosition({ x: x * 20, y: y * 20 }); // Scale the movement
+        setMousePosition({ x: x * 20, y: y * 20 });
       }
     };
-
     const container = containerRef.current;
     if (container) {
-      container.addEventListener('mousemove', handleMouseMove);
-      return () => container.removeEventListener('mousemove', handleMouseMove);
+      container.addEventListener("mousemove", handleMouseMove);
+      return () => container.removeEventListener("mousemove", handleMouseMove);
     }
   }, []);
 
-  // 3D Text Effect Styles
+  // Morph styles (fixed alignment)
   useEffect(() => {
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = `
-      .text-3d {
-        text-shadow: 
-          1px 1px 0px rgba(255,255,255,0.1),
-          2px 2px 0px rgba(0,0,0,0.3),
-          3px 3px 0px rgba(0,0,0,0.25),
-          4px 4px 0px rgba(0,0,0,0.2),
-          5px 5px 0px rgba(0,0,0,0.15),
-          6px 6px 10px rgba(0,0,0,0.4);
-        transform: translateZ(20px);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      
-      .text-3d:hover {
-        text-shadow: 
-          2px 2px 0px rgba(255,255,255,0.1),
-          4px 4px 0px rgba(0,0,0,0.3),
-          6px 6px 0px rgba(0,0,0,0.25),
-          8px 8px 0px rgba(0,0,0,0.2),
-          10px 10px 0px rgba(0,0,0,0.15),
-          12px 12px 20px rgba(0,0,0,0.5);
-        transform: translateZ(30px) translateY(-2px);
-      }
-      
+      /* How much higher the stem top moves on hover: 160px * (1.15 - 1) */
+      .hover-campanile-container { --lift: 24px; }
+
+      /* Make sure nothing gets clipped when the head rises */
+      .hover-campanile-container,
+      .glyph-container,
+      .glyph-container svg { overflow: visible; }
+
+      /* L pieces */
+      #stem { transform-origin: 50% 100%; transition: transform .5s cubic-bezier(.4,0,.2,1); }
+      #foot { transform-origin: 50% 100%; transition: transform .5s cubic-bezier(.4,0,.2,1); }
+
+      /* Tower rides with the stem's top-center */
+      #tower { transform: translateY(0); transition: transform .5s cubic-bezier(.4,0,.2,1), opacity .35s ease; opacity: 0; }
+
+      /* Tower parts grow in place (from the stem top) */
+      #belfry, #cap { transform-origin: 50% 100%; transform: scaleY(0); transition: transform .35s ease .1s; }
+      #clock        { transform-origin: 50% 50%;  transform: scale(0);   transition: transform .3s ease .18s; }
+      #spire        { transform-origin: 50% 100%; transform: translateY(10px) scale(.85); transition: transform .35s ease .2s; }
+
+      /* Hover state */
+      .hover-campanile-container:hover #stem { transform: scaleX(.82) scaleY(1.15) translateY(calc(-1 * var(--lift))); }
+      .hover-campanile-container:hover #foot { transform: scaleX(.24) scaleY(.65); }
+      .hover-campanile-container:hover #tower { transform: translateY(calc(-1 * var(--lift))); opacity: 1; }
+      .hover-campanile-container:hover #belfry,
+      .hover-campanile-container:hover #cap   { transform: scaleY(1); }
+      .hover-campanile-container:hover #clock { transform: scale(1); }
+      .hover-campanile-container:hover #spire { transform: translateY(0) scale(1); }
+
+      /* Tilt polish */
+      .glyph-container { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+      .hover-campanile-container:hover .glyph-container { transform: translateY(-4px) rotateY(-8deg) scale(1.03); }
+
       @media (prefers-reduced-motion: reduce) {
-        .text-3d {
-          text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
-          transform: none !important;
-          transition: none !important;
-        }
+        #stem,#foot,#tower,#belfry,#cap,#clock,#spire,.glyph-container { transition: opacity .25s ease !important; transform: none !important; }
       }
     `;
     document.head.appendChild(style);
-    
-    return () => {
-      document.head.removeChild(style);
-    };
+    return () => document.head.removeChild(style);
   }, []);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden"
-      style={{ perspective: '1000px' }}
+      style={{ perspective: "1000px" }}
     >
-      {/* Subtle tech atmosphere with noise texture */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-30" />
       <div className="absolute inset-0 opacity-[0.015] bg-noise" />
-      
+
       <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
-        
-        {/* Main Title */}
-        <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
-          <h1 
-            className="text-5xl md:text-7xl font-display font-bold tracking-tight leading-tight text-white mb-8 text-3d"
-            style={{
-              transform: `rotateX(${-mousePosition.y * 0.3}deg) rotateY(${mousePosition.x * 0.3}deg)`,
-              transformStyle: 'preserve-3d'
-            }}
-          >
-            LIGHTSPEED
-            <br />
-            <span className="bg-gradient-text bg-clip-text text-transparent font-extrabold">FELLOWS</span>
-          </h1>
-        </div>
-
-        {/* Description - Typewriter font with cycling effect */}
-        <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
-          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
-            {">"} A year-long fellowship for Berkeley's top{" "}
-            <span className="text-white font-medium">
-              {descriptions[currentDescription]}
-            </span>
-            {"."}
-          </div>
-          <div 
-            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-          >
-            {">"} Backed by investors behind{" "}
-            <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
-              <span className="text-white font-medium">
-                {companyGroups[currentGroup][0]}
-              </span>
-              {", "}
-              <span className="text-white font-medium">
-                {companyGroups[currentGroup][1]}
-              </span>
-              {", "}
-              <span className="text-white font-medium">
-                {companyGroups[currentGroup][2]}
-              </span>
-            </span>
-            .
-          </div>
-        </div>
-
-        {/* Glowing CTA Button */}
-        <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
-          <Button 
-            size="xl"
-            className="w-80 mx-auto py-6 text-lg font-semibold text-white border border-white/20 rounded-lg backdrop-blur-lg bg-white/10 shadow-button hover:shadow-button-hover hover:bg-white/20 transition-all duration-500"
-            onClick={() => window.open('https://form.typeform.com/to/vMxYsW4Y', '_blank')}
-          >
-            Apply Now
-          </Button>
-        </div>
-      </div>
-      
-      {/* Footer */}
-      <footer className="absolute bottom-0 left-0 right-0 p-6 text-center">
-        <div className="text-xs font-mono text-white/40">
-          LIGHTSPEED © 2025
-        </div>
-      </footer>
-    </div>
-  );
-}
+        <div className="mb-12 opacity-

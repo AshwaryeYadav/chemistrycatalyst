@@ -51,53 +51,57 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Scoped CSS: fixed em-box + hover thickening with CSS vars (easy to tweak)
+  // Scoped CSS (alignment + morph). Tune only --baseline / --width if needed.
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
       .campanile {
-        --stemScaleX: 1;         /* default thickness */
-        --bodyScaleY: 1;         /* slight vertical swell */
-        --footScaleY: 1;         /* base thickness */
+        --width: 0.76em;     /* glyph advance width (spacing) */
+        --baseline: -0.165em;/* baseline correction; make less negative if it sits too high */
+        --stemX: 1;          /* default stem thickness */
+        --footY: 1;          /* default base thickness */
+        --bodyY: 1;          /* default vertical swell */
         display:inline-block;
-        width:0.78em;            /* fixed glyph advance -> spacing never changes */
-        height:1em;
-        vertical-align:-0.08em;  /* baseline nudge (adjust ±0.01em if needed) */
-        margin-right:0.03em;     /* right side-bearing before the I */
-        perspective:900px;
-        overflow:visible;
+        inline-size: var(--width);
+        block-size: 1em;
+        vertical-align: var(--baseline);
+        margin-right: 0.035em;   /* right side-bearing so it doesn't crash the I */
+        perspective: 900px;
+        overflow: visible;
       }
-      @media (min-width:768px){ .campanile{ vertical-align:-0.075em; } }
+      @media (min-width:768px){
+        .campanile { --width: 0.78em; }
+      }
 
       .hover-campanile-container,
-      .glyph-container,
-      .glyph-container svg { overflow:visible; }
+      .glyph-container, .glyph-container svg { overflow: visible; }
 
-      #body  { transform-origin:50% 0%; transform:scaleY(var(--bodyScaleY)); transition:transform .45s cubic-bezier(.3,.7,.2,1); }
-      #stem  { transform-origin:50% 0%; transform:scaleX(var(--stemScaleX)); transition:transform .45s cubic-bezier(.3,.7,.2,1); }
-      #foot  { transform-origin:0% 100%; transform:scaleY(var(--footScaleY)); transition:transform .45s cubic-bezier(.3,.7,.2,1); }
+      #body { transform-origin: 50% 0%; transform: scaleY(var(--bodyY)); transition: transform .45s cubic-bezier(.3,.7,.2,1); }
+      #stem { transform-origin: 50% 0%; transform: scaleX(var(--stemX)); transition: transform .45s cubic-bezier(.3,.7,.2,1); }
+      #foot { transform-origin: 0% 100%; transform: scaleY(var(--footY)); transition: transform .45s cubic-bezier(.3,.7,.2,1); }
 
-      #tower { opacity:0; transform:translateY(0) scale(.98); transform-origin:50% 100%;
-               transition:opacity .35s ease .08s, transform .45s cubic-bezier(.2,.7,.2,1) .08s; }
-      #belfry,#cap { transform-origin:50% 100%; transform:scaleY(0); transition:transform .35s ease .12s; }
-      #clock       { transform-origin:50% 50%;  transform:scale(0);   transition:transform .30s ease .18s; }
-      #spire       { transform-origin:50% 100%; transform:translateY(10px) scale(.9); transition:transform .35s ease .18s; }
+      /* tower (appears on hover) */
+      #tower { opacity: 0; transform: translateY(0) scale(.98); transform-origin: 50% 100%;
+               transition: opacity .35s ease .08s, transform .45s cubic-bezier(.2,.7,.2,1) .08s; }
+      #belfry,#cap { transform-origin: 50% 100%; transform: scaleY(0); transition: transform .35s ease .12s; }
+      #clock       { transform-origin: 50% 50%;  transform: scale(0);   transition: transform .30s ease .18s; }
+      #spire       { transform-origin: 50% 100%; transform: translateY(10px) scale(.9); transition: transform .35s ease .18s; }
 
-      /* Hover: fatten stem & base, keep same em width. 
-         34 * 1.75 ≈ 59px -> visually close to 68-72px head without becoming a block. */
-      .hover-campanile-container:hover { --stemScaleX: 1.75; --bodyScaleY: 1.10; --footScaleY: 1.35; }
-      .hover-campanile-container:hover #tower { opacity:1; transform:translateY(0) scale(1); }
+      /* Hover: fatten stem to ~cap width, thicken base upward, keep spacing fixed */
+      /* cap width = 72, stem = 34 -> 34 * 2.1 ≈ 71.4 */
+      .hover-campanile-container:hover { --stemX: 2.1; --footY: 1.55; --bodyY: 1.08; }
+      .hover-campanile-container:hover #tower { opacity: 1; transform: translateY(0) scale(1); }
       .hover-campanile-container:hover #belfry,
-      .hover-campanile-container:hover #cap   { transform:scaleY(1); }
-      .hover-campanile-container:hover #clock { transform:scale(1); }
-      .hover-campanile-container:hover #spire { transform:translateY(0) scale(1); }
+      .hover-campanile-container:hover #cap   { transform: scaleY(1); }
+      .hover-campanile-container:hover #clock { transform: scale(1); }
+      .hover-campanile-container:hover #spire { transform: translateY(0) scale(1); }
 
-      .glyph-container { transition:transform .6s cubic-bezier(.2,.7,.2,1); }
-      .hover-campanile-container:hover .glyph-container { transform:translateY(-4px) rotateY(-8deg) scale(1.03); }
+      .glyph-container { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+      .hover-campanile-container:hover .glyph-container { transform: translateY(-4px) rotateY(-8deg) scale(1.03); }
 
-      @media (prefers-reduced-motion: reduce){
-        #body,#stem,#foot,#tower,#belfry,#cap,#clock,#spire,.glyph-container{
-          transition:opacity .25s ease !important; transform:none !important;
+      @media (prefers-reduced-motion: reduce) {
+        #body,#stem,#foot,#tower,#belfry,#cap,#clock,#spire,.glyph-container {
+          transition: opacity .25s ease !important; transform: none !important;
         }
       }
     `;
@@ -128,7 +132,7 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* L glyph (spacing locked) */}
+            {/* Baseline-locked “L” */}
             <span className="campanile hover-campanile-container align-baseline">
               <div className="glyph-container" style={{ width: "100%", height: "100%" }}>
                 <svg
@@ -139,7 +143,7 @@ export function LightspeedHero() {
                   className="text-white"
                   style={{ display: "block" }}
                 >
-                  {/* origin at stem top-center: x = 53, y = 20 */}
+                  {/* origin at stem top-center (x=53,y=20) */}
                   <g id="root" transform="translate(53,20)">
                     <g id="body">
                       <rect
@@ -151,7 +155,7 @@ export function LightspeedHero() {
                         fill="currentColor"
                         style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
                       />
-                      {/* base length unchanged; thickness grows upward on hover */}
+                      {/* Base length fixed; thickness grows upward on hover */}
                       <rect
                         id="foot"
                         x={0}
@@ -163,7 +167,7 @@ export function LightspeedHero() {
                       />
                     </g>
 
-                    {/* tower above the cap */}
+                    {/* Tower above the cap (appears on hover) */}
                     <g id="tower">
                       <defs>
                         <mask id="belfryMask" maskUnits="userSpaceOnUse" x={-34} y={-48} width={68} height={40}>

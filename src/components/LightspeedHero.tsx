@@ -10,31 +10,12 @@ import * as THREE from "three";
 const LMesh = memo(function LMesh() {
   const geom = useMemo(() => {
     const s = new THREE.Shape();
-    // Perfectly symmetric L shape
-    const stemWidth = 0.9;  // Half width of vertical stem
-    const footLength = 3.5; // Length of horizontal foot
-    const thickness = 0.9;  // Thickness of both stem and foot
-    
-    // Start at top-left of vertical stem
-    s.moveTo(-stemWidth, 3.5);
-    // Go down to junction
-    s.lineTo(-stemWidth, -2.6 + thickness);
-    // Go right to start of foot extension
-    s.lineTo(stemWidth, -2.6 + thickness);
-    // Go down to bottom of foot
-    s.lineTo(stemWidth, -2.6);
-    // Go right to end of foot
-    s.lineTo(footLength, -2.6);
-    // Go down to bottom edge
-    s.lineTo(footLength, -3.5);
-    // Go back left to stem
-    s.lineTo(-stemWidth, -3.5);
-    // Go up to junction
-    s.lineTo(-stemWidth, -2.6);
-    // Go up stem to top
-    s.lineTo(-stemWidth, 3.5);
-    // Complete shape by going right to top-right of stem
-    s.lineTo(stemWidth, 3.5);
+    s.moveTo(-1.5, 3.5);
+    s.lineTo(-1.5, -3.5);
+    s.lineTo(1.8, -3.5);
+    s.lineTo(0.0, -1.7);
+    s.lineTo(-0.6, -1.7);
+    s.lineTo(-0.6, 3.5);
     s.closePath();
 
     const g = new THREE.ExtrudeGeometry(s, {
@@ -75,16 +56,16 @@ const HeroL3D = memo(function HeroL3D() {
     <div
       className="mx-auto mb-6 md:mb-8 pointer-events-none"
       style={{
-        width: "240px",
-        height: "200px",
-        // Larger container to prevent clipping during rotation
+        width: "160px",
+        height: "160px",
+        // on small screens we keep it compact; tweak as desired
       }}
       aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [3.2, 2.8, 4.5], fov: 35 }}
-        style={{ width: "100%", height: "100%", display: "block" }}
+        camera={{ position: [2.5, 2.2, 3.8], fov: 40 }}
+        style={{ width: "100%", height: "50%", display: "block" }}
         shadows
       >
         <ambientLight intensity={0.25} />

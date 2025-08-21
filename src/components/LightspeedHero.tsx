@@ -215,10 +215,10 @@ export function LightspeedHero() {
                     <mask id="arches">
                       <rect x="0" y="0" width="200" height="220" fill="white"/>
                       <g fill="black">
-                        <rect x="70" y="118" width="16" height="26" rx="8"/>
-                        <rect x="90" y="118" width="16" height="26" rx="8"/>
-                        <rect x="110" y="118" width="16" height="26" rx="8"/>
-                        <rect x="130" y="118" width="16" height="26" rx="8"/>
+                        <rect x="45" y="98" width="12" height="20" rx="6"/>
+                        <rect x="60" y="98" width="12" height="20" rx="6"/>
+                        <rect x="75" y="98" width="12" height="20" rx="6"/>
+                        <rect x="90" y="98" width="12" height="20" rx="6"/>
                       </g>
                     </mask>
                   </defs>
@@ -252,10 +252,10 @@ export function LightspeedHero() {
                   {/* Belfry block with arches */}
                   <rect 
                     id="belfry" 
-                    x="60" 
-                    y="100" 
-                    width="100" 
-                    height="50"
+                    x="40" 
+                    y="80" 
+                    width="68" 
+                    height="40"
                     fill="currentColor" 
                     mask="url(#arches)" 
                     style={{
@@ -266,7 +266,7 @@ export function LightspeedHero() {
                   {/* Clock face */}
                   <g 
                     id="clock" 
-                    transform="translate(110,135)"
+                    transform="translate(74,110)"
                     style={{
                       filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))'
                     }}
@@ -278,9 +278,9 @@ export function LightspeedHero() {
                   {/* Cap below the spire */}
                   <rect 
                     id="cap" 
-                    x="56" 
-                    y="94" 
-                    width="108" 
+                    x="38" 
+                    y="74" 
+                    width="72" 
                     height="8" 
                     fill="currentColor" 
                     style={{
@@ -291,7 +291,7 @@ export function LightspeedHero() {
                   {/* Spire that grows upward */}
                   <polygon 
                     id="spire"
-                    points="100,60 164,94 36,94"
+                    points="74,45 110,74 38,74"
                     fill="currentColor" 
                     style={{
                       filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'

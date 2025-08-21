@@ -107,4 +107,154 @@ export function LightspeedHero() {
       <div className="absolute inset-0 opacity-[0.015] bg-noise" />
 
       <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
-        <div className="mb-12 opacity-
+        <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
+          <h1
+            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white mb-8 transition-transform duration-200 ease-out"
+            style={{
+              transform: `rotateX(${-mousePosition.y * 0.5}deg) rotateY(${mousePosition.x * 0.5}deg) translateZ(20px)`,
+              textShadow: `
+                0 1px 0 rgba(255,255,255,0.1),
+                0 2px 4px rgba(0,0,0,0.3),
+                ${mousePosition.x * 0.5}px ${mousePosition.y * 0.5}px 10px rgba(0,0,0,0.2)
+              `,
+              transformStyle: "preserve-3d",
+            }}
+          >
+            {/* THE "L" */}
+            <span
+              className="relative inline-block hover-campanile-container align-baseline"
+              style={{ perspective: "900px", width: "0.76em", aspectRatio: "5 / 6.2", display: "inline-block" }}
+            >
+              <div className="glyph-container" style={{ width: "100%", height: "100%" }}>
+                <svg
+                  width="100%"
+                  height="100%"
+                  viewBox="0 0 200 220"
+                  preserveAspectRatio="xMidYMax meet"
+                  className="text-white"
+                  style={{ display: "block", overflow: "visible" }}
+                >
+                  {/* L (unchanged geometry) */}
+                  <rect
+                    id="stem"
+                    x="36"
+                    y="20"
+                    width="34"
+                    height="160"
+                    fill="currentColor"
+                    style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
+                  />
+                  <rect
+                    id="foot"
+                    x="36"
+                    y="180"
+                    width="120"
+                    height="34"
+                    fill="currentColor"
+                    style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
+                  />
+
+                  {/* TOWER: origin = (stem center, stem top) = (53, 20) */}
+                  <g id="tower" transform="translate(53,20)">
+                    {/* Mask in TOWER LOCAL COORDS */}
+                    <defs>
+                      <mask id="belfryMask" maskUnits="userSpaceOnUse" x="-34" y="-48" width="68" height="40">
+                        <rect x="-34" y="-48" width="68" height="40" fill="white" />
+                        <g fill="black">
+                          <rect x="-28" y="-42" width="12" height="24" rx="6" />
+                          <rect x="-12" y="-42" width="12" height="24" rx="6" />
+                          <rect x="4"   y="-42" width="12" height="24" rx="6" />
+                          <rect x="20"  y="-42" width="12" height="24" rx="6" />
+                        </g>
+                      </mask>
+                    </defs>
+
+                    {/* Cap sits ON the stem top */}
+                    <rect
+                      id="cap"
+                      x="-36"
+                      y="-8"
+                      width="72"
+                      height="8"
+                      fill="currentColor"
+                      style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,.5))" }}
+                    />
+
+                    {/* Belfry just above the cap */}
+                    <rect
+                      id="belfry"
+                      x="-34"
+                      y="-48"
+                      width="68"
+                      height="40"
+                      fill="currentColor"
+                      mask="url(#belfryMask)"
+                      style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
+                    />
+
+                    {/* Clock under the arches */}
+                    <g id="clock" transform="translate(0,-18)" style={{ filter: "drop-shadow(0 4px 12px rgba(0,0,0,.4))" }}>
+                      <circle r="9" fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth="3" />
+                      <circle r="1" fill="currentColor" />
+                    </g>
+
+                    {/* Spire above the belfry */}
+                    <polygon
+                      id="spire"
+                      points="0,-77 36,-48 -36,-48"
+                      fill="currentColor"
+                      stroke="currentColor"
+                      strokeWidth="1"
+                      vectorEffect="non-scaling-stroke"
+                      style={{ filter: "drop-shadow(0 8px 24px rgba(0,0,0,.55))" }}
+                    />
+                  </g>
+                </svg>
+              </div>
+            </span>
+            <span className="campanile-rest transition-all duration-300">IGHTSPEED</span>
+            <br />
+            <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>
+          </h1>
+        </div>
+
+        {/* Description */}
+        <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
+          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
+            {">"} A year-long fellowship for Berkeley's top{" "}
+            <span className="text-white font-medium">{descriptions[currentDescription]}</span>.
+          </div>
+          <div
+            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            {">"} Backed by investors behind{" "}
+            <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
+              <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
+              {", "}
+              <span className="text-white font-medium">{companyGroups[currentGroup][1]}</span>
+              {", "}
+              <span className="text-white font-medium">{companyGroups[currentGroup][2]}</span>
+            </span>
+            .
+          </div>
+        </div>
+
+        <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
+          <Button
+            size="xl"
+            className="w-80 mx-auto py-6 text-lg font-semibold text-white border border-white/20 rounded-lg backdrop-blur-lg bg-white/10 shadow-button hover:shadow-button-hover hover:bg-white/20 transition-all duration-500"
+            onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
+          >
+            Apply Now
+          </Button>
+        </div>
+      </div>
+
+      <footer className="absolute bottom-0 left-0 right-0 p-6 text-center">
+        <div className="text-xs font-mono text-white/40">LIGHTSPEED © 2025</div>
+      </footer>
+    </div>
+  );
+}

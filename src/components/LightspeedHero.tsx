@@ -2,9 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState, memo } from "react";
 
-// src/components/LightspeedHero.tsx
-import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState, memo, useMemo } from "react";
 
 /* --------------------------- THREE: 3D Lightspeed L --------------------------- */
 import { Canvas, useFrame } from "@react-three/fiber";

@@ -52,25 +52,42 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Inject 3D Campanile morphing styles
+  // Inject enhanced 3D Campanile transformation styles
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      .morph-path {
-        --l-path: path("M22 8 L22 112 L88 112 L88 90 L44 90 L44 8 Z");
-        --campanile-path: path("M50 16 L36 26 L39 26 L39 30 L41 30 L41 42 L43 42 L43 110 L57 110 L57 42 L59 42 L59 30 L61 30 L61 26 L64 26 Z M46 36 A3 3 0 1 1 52 36 A3 3 0 1 1 46 36 M46 50 A4 4 0 1 1 54 50 A4 4 0 1 1 46 50 M50 48.2 A1.8 1.8 0 1 1 50 51.8 A1.8 1.8 0 1 1 50 48.2");
-        d: var(--l-path);
-        transition: d 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+      .campanile-l {
+        opacity: 1;
+        transform: rotateY(0deg) translateZ(0px) scale(1);
+        transition: all 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
-      .hover-campanile-container:hover .morph-path {
-        d: var(--campanile-path);
+      .campanile-tower {
+        opacity: 0;
+        transform: rotateY(-35deg) translateZ(-40px) scale(0.85);
+        transition: all 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+      .hover-campanile-container:hover .campanile-l {
+        opacity: 0;
+        transform: rotateY(35deg) translateZ(-40px) scale(0.85);
+      }
+      .hover-campanile-container:hover .campanile-tower {
+        opacity: 1;
+        transform: rotateY(0deg) translateZ(0px) scale(1.05);
       }
       .hover-campanile-container:hover + .campanile-rest {
-        text-shadow: 0 12px 26px rgba(0,0,0,0.45) !important;
+        text-shadow: 0 12px 26px rgba(0,0,0,0.45);
+      }
+      /* Add morphing-like effects */
+      .hover-campanile-container:hover .glyph-container {
+        transform: scale(1.1) translateY(-2px);
+      }
+      .glyph-container {
+        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
       }
       @media (prefers-reduced-motion: reduce) {
-        .morph-path {
-          transition: d 0.25s ease !important;
+        .campanile-l, .campanile-tower, .glyph-container {
+          transition: opacity 0.25s ease !important;
+          transform: none !important;
         }
       }
     `;
@@ -116,23 +133,66 @@ export function LightspeedHero() {
                 aspectRatio: '5 / 6.2'
               }}
             >
-              <svg 
-                width="100%" 
-                height="100%" 
-                viewBox="0 0 100 120" 
-                className="text-white"
-                style={{ display: 'block' }}
-              >
-                {/* Morphing path from L to Campanile */}
-                <path 
-                  className="morph-path fill-current"
-                  style={{
-                    transformBox: 'fill-box',
-                    transformOrigin: '50% 60%',
-                    filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
-                  }}
-                />
-              </svg>
+              <div className="glyph-container" style={{ width: '100%', height: '100%' }}>
+                <svg 
+                  width="100%" 
+                  height="100%" 
+                  viewBox="0 0 100 120" 
+                  className="text-white"
+                  style={{ display: 'block', position: 'absolute', top: 0, left: 0 }}
+                >
+                  {/* Chunky block "L" */}
+                  <path 
+                    className="campanile-l fill-current"
+                    style={{
+                      transformBox: 'fill-box',
+                      transformOrigin: '50% 60%',
+                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                    }}
+                    d="M22 8v104h66v-22H44V8H22Z"
+                  />
+                </svg>
+                <svg 
+                  width="100%" 
+                  height="100%" 
+                  viewBox="0 0 100 120" 
+                  className="text-white"
+                  style={{ display: 'block', position: 'absolute', top: 0, left: 0 }}
+                >
+                  {/* Berkeley Campanile */}
+                  <g 
+                    className="campanile-tower fill-current"
+                    style={{
+                      transformBox: 'fill-box',
+                      transformOrigin: '50% 60%',
+                      filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.55))'
+                    }}
+                  >
+                    {/* Main shaft */}
+                    <rect x="43" y="38" width="14" height="72" />
+                    
+                    {/* Belfry with arches */}
+                    <rect x="41" y="30" width="18" height="12" />
+                    <circle cx="46" cy="36" r="3" fill="currentColor" fillOpacity="0" stroke="currentColor" strokeWidth="1" />
+                    <circle cx="54" cy="36" r="3" fill="currentColor" fillOpacity="0" stroke="currentColor" strokeWidth="1" />
+                    
+                    {/* Clock face */}
+                    <circle cx="50" cy="50" r="4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                    <circle cx="50" cy="50" r="0.8" fill="currentColor" />
+                    
+                    {/* Base cap */}
+                    <rect x="39" y="26" width="22" height="4" />
+                    
+                    {/* Pointed spire */}
+                    <polygon points="50,16 64,26 36,26" />
+                    
+                    {/* Details */}
+                    <rect x="44" y="55" width="12" height="1" opacity="0.7" />
+                    <rect x="44" y="70" width="12" height="1" opacity="0.7" />
+                    <rect x="44" y="85" width="12" height="1" opacity="0.7" />
+                  </g>
+                </svg>
+              </div>
             </span><span className="campanile-rest transition-all duration-300">IGHTSPEED</span>
             <br />
             <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>

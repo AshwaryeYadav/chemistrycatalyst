@@ -17,42 +17,42 @@ export function LightspeedHero() {
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [iAsTower, setIAsTower] = useState(false); // <- auto-animating I
+  const [iAsTower, setIAsTower] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isPaused) {
-      const interval = setInterval(() => {
-        setCurrentGroup((prev) => (prev + 1) % companyGroups.length);
-      }, 2500);
+      const interval = setInterval(
+        () => setCurrentGroup((p) => (p + 1) % companyGroups.length),
+        2500
+      );
       return () => clearInterval(interval);
     }
   }, [isPaused, companyGroups.length]);
 
   useEffect(() => {
-    const descInterval = setInterval(() => {
-      setCurrentDescription((prev) => (prev + 1) % descriptions.length);
-    }, 4000);
-    return () => clearInterval(descInterval);
+    const id = setInterval(
+      () => setCurrentDescription((p) => (p + 1) % descriptions.length),
+      4000
+    );
+    return () => clearInterval(id);
   }, [descriptions.length]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
-        const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
-        setMousePosition({ x: x * 20, y: y * 20 });
-      }
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
+      const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
+      setMousePosition({ x: x * 20, y: y * 20 });
     };
     const el = containerRef.current;
-    if (el) {
-      el.addEventListener("mousemove", handleMouseMove);
-      return () => el.removeEventListener("mousemove", handleMouseMove);
-    }
+    if (!el) return;
+    el.addEventListener("mousemove", handleMouseMove);
+    return () => el.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // Auto toggle the "I" every ~6s (respect reduced motion)
+  // Auto morph the “I” every ~6s (no layout changes)
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
@@ -60,15 +60,17 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, []);
 
-  // Inject styles for the I-morph + keep your existing L styles untouched
+  // Styles for the I crossfade (stem width == tower cap width)
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
-      /* ---- I morph slot (fixed width, baseline-locked) ---- */
+      /* ---- Morphing I slot ---- */
       .i-slot{
-        --iWidth: 0.62em;     /* visual width of "I" — tweak if your font's I is wider/narrower */
-        --iBaseline: -0.02em; /* baseline nudge so the layers sit perfectly on the text baseline */
-        --towerNudgeX: 0px;   /* fine nudge: negative = left, positive = right */
+        /* slot width equals the tower/cap visual width (72 / 220 ≈ 0.327em).
+           A touch wider looks better alongside tracking, so default 0.34em. */
+        --iWidth: 0.34em;
+        --iBaseline: -0.02em; /* tiny baseline nudge */
+        --towerNudgeX: 0px;   /* fine adjust: -left / +right */
         position: relative;
         display: inline-block;
         inline-size: var(--iWidth);
@@ -77,34 +79,24 @@ export function LightspeedHero() {
         overflow: visible;
       }
       .i-layer{
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: flex-end;  /* anchor glyphs to baseline */
-        justify-content: center;
+        position:absolute; inset:0;
+        display:flex; align-items:flex-end; justify-content:center;
         will-change: opacity, transform;
-        transition: opacity .45s cubic-bezier(.2,.7,.2,1),
-                    transform .55s cubic-bezier(.3,.7,.2,1);
+        transition: opacity .38s cubic-bezier(.2,.7,.2,1),
+                    transform .45s cubic-bezier(.3,.7,.2,1);
       }
-      .i-text{
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        line-height: 1; /* keeps single glyph tight */
-      }
-      .i-tower{
-        opacity: 0;
-        transform: translateY(8%) scale(.985) translateX(var(--towerNudgeX));
-      }
-      /* ON state: tower visible, text I faded out */
-      .i-slot.on .i-text{ opacity: 0; transform: translateY(-6%) scale(.985); }
-      .i-slot.on .i-tower{ opacity: 1; transform: translateY(0) scale(1) translateX(var(--towerNudgeX)); }
+      /* Layer A: wide I — same width as tower stem (cap width) so only head appears on morph */
+      .i-text  { opacity:1;  transform: translateY(0) scale(1); }
+      /* Layer B: tower */
+      .i-tower { opacity:0;  transform: translateY(6%) scale(.985) translateX(var(--towerNudgeX)); }
+
+      /* ON state = tower visible */
+      .i-slot.on .i-text  { opacity:0; transform: translateY(-4%) scale(.985); }
+      .i-slot.on .i-tower { opacity:1; transform: translateY(0)   scale(1)    translateX(var(--towerNudgeX)); }
 
       @media (prefers-reduced-motion: reduce){
-        .i-layer{ transition: opacity .2s ease !important; transform:none !important; }
+        .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
       }
-
-      /* --- minimal reset so SVG doesn't clip --- */
-      .glyph-container, .glyph-container svg{ overflow: visible; }
     `;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
@@ -133,42 +125,37 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* Keep your existing “L” exactly as you have it now */}
-            {/* If you're using the custom SVG L, keep it here unchanged.
-                If you just want a plain L instead, replace the span below with "L". */}
-            <span
-              className="relative inline-block align-baseline"
-              style={{ width: "0.76em", aspectRatio: "5 / 6.2", display: "inline-block" }}
-            >
-              {/* PLACE YOUR CURRENT L MARKUP HERE (unchanged) */}
-              <span className="text-white font-semibold" style={{ fontFamily: "inherit" }}>L</span>
-            </span>
+            {/* Keep your L exactly as you have it (replace this text L with your SVG if desired) */}
+            <span className="text-white">L</span>
 
-            {/* Morphing “I” slot (auto every ~6s) */}
+            {/* Morphing I (stem width == tower cap width; only the head appears) */}
             <span className={`i-slot ${iAsTower ? "on" : ""}`}>
-              {/* Layer 1: real “I” text */}
+              {/* Layer A: block “I” — a vertical bar matching the tower's stem width */}
               <span className="i-layer i-text">
-                <span style={{ font: "inherit", color: "inherit" }}>I</span>
+                <svg
+                  width="100%" height="100%"
+                  viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet"
+                  className="text-white"
+                >
+                  <g transform="translate(36,20)">
+                    {/* stem width = 72 (cap width), centered */}
+                    <rect x={-36} y={0} width={72} height={170} fill="currentColor" />
+                  </g>
+                </svg>
               </span>
 
-              {/* Layer 2: campanile tower */}
+              {/* Layer B: Campanile — same stem, plus head */}
               <span className="i-layer i-tower">
                 <svg
-                  width="100%"
-                  height="100%"
-                  viewBox="0 0 72 220"
-                  preserveAspectRatio="xMidYMax meet"
+                  width="100%" height="100%"
+                  viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet"
                   className="text-white"
-                  style={{ display: "block" }}
                 >
-                  {/* Center at x=36, y=20 to match the earlier coordinate logic */}
                   <g transform="translate(36,20)">
-                    {/* stem under the head (narrower than cap for “I” feel) */}
-                    <rect x={-14} y={0} width={28} height={170} fill="currentColor" />
-
-                    {/* cap (head) */}
+                    {/* same stem width & position */}
+                    <rect x={-36} y={0} width={72} height={170} fill="currentColor" />
+                    {/* cap */}
                     <rect x={-36} y={-8} width={72} height={8} fill="currentColor" />
-
                     {/* belfry with arches */}
                     <defs>
                       <mask id="iBelfryMask" maskUnits="userSpaceOnUse" x={-34} y={-48} width={68} height={40}>
@@ -182,28 +169,24 @@ export function LightspeedHero() {
                       </mask>
                     </defs>
                     <rect x={-34} y={-48} width={68} height={40} fill="currentColor" mask="url(#iBelfryMask)" />
-
                     {/* clock */}
                     <g transform="translate(0,-18)">
                       <circle r={9} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={3} />
                       <circle r={1} fill="currentColor" />
                     </g>
-
                     {/* spire */}
                     <polygon
                       points="0,-77 36,-48 -36,-48"
                       fill="currentColor"
-                      stroke="currentColor"
-                      strokeWidth={1}
-                      vectorEffect="non-scaling-stroke"
+                      stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke"
                     />
                   </g>
                 </svg>
               </span>
             </span>
 
-            {/* The rest of the word after I */}
-            <span className="campanile-rest transition-all duration-300">GHTSPEED</span>
+            {/* Rest of the word */}
+            <span>GHTSPEED</span>
             <br />
             <span className="bg-gradient-text bg-clip-text text-transparent">FELLOWS</span>
           </h1>

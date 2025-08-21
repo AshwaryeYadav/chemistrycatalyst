@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState, memo, useMemo } from "react";
 
 /* --------------------------- THREE: 3D Lightspeed L --------------------------- */
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 /** Extruded L built from the flat silhouette; exact color #ED6C5C */
 const LMesh = memo(function LMesh() {
   const geom = useMemo(() => {
     const s = new THREE.Shape();
-    // silhouette: tall stem + right foot
+    // silhouette: tall stem + right foot (edit points if you need a different knee)
     s.moveTo(-1.5, 3.5);
     s.lineTo(-1.5, -3.5);
     s.lineTo(1.8, -3.5);
@@ -38,75 +38,58 @@ const LMesh = memo(function LMesh() {
   );
 });
 
-/** Click & drag rotator that lives *inside* <Canvas> (no useFrame auto-spin) */
-function DragRotatableL() {
+/** Continuous rotator (inside <Canvas>) */
+function SpinningL() {
   const group = useRef<THREE.Group>(null!);
-  const dragging = useRef(false);
-  const last = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-
-  const onDown = (e: any) => {
-    dragging.current = true;
-    last.current = { x: e.clientX, y: e.clientY };
-    e.stopPropagation?.();
-  };
-  const onUp = (e: any) => {
-    dragging.current = false;
-    e.stopPropagation?.();
-  };
-  const onMove = (e: any) => {
-    if (!dragging.current || !group.current) return;
-    const dx = e.clientX - last.current.x;
-    const dy = e.clientY - last.current.y;
-    last.current = { x: e.clientX, y: e.clientY };
-
-    // yaw from horizontal drag; pitch from vertical drag (clamped)
-    group.current.rotation.y += dx * 0.01;
-    group.current.rotation.x = Math.max(
-      -Math.PI / 3,
-      Math.min(Math.PI / 3, group.current.rotation.x + dy * 0.01)
-    );
-    e.stopPropagation?.();
-  };
-
+  useFrame((_s, dt) => {
+    if (!group.current) return;
+    group.current.rotation.y += dt * 0.45; // continuous, smooth spin
+  });
   return (
-    <>
-      {/* generous invisible hit area to make grabbing easy */}
-      <mesh
-        onPointerDown={onDown}
-        onPointerUp={onUp}
-        onPointerOut={onUp}
-        onPointerMove={onMove}
-      >
-        <sphereGeometry args={[5, 16, 16]} />
-        <meshBasicMaterial transparent opacity={0} />
-      </mesh>
-
-      <group ref={group}>
-        <LMesh />
-      </group>
-    </>
+    <group ref={group}>
+      <LMesh />
+    </group>
   );
 }
 
-/** Top artwork: standalone 3D L above the wordmark (click & drag to rotate) */
+/** Top artwork: standalone 3D L above the wordmark; transparent bg; no clipping */
 const HeroL3D = memo(function HeroL3D() {
   return (
     <div
       className="mx-auto mb-6 md:mb-8"
-      style={{ width: "160px", height: "160px", cursor: "grab" }}
+      style={{
+        width: "180px",
+        height: "180px",
+        overflow: "visible", // let any shadow “breathe”
+      }}
       aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [2.5, 2.2, 3.8], fov: 40 }}
-        style={{ width: "100%", height: "100%", display: "block" }}
+        camera={{ position: [2.6, 2.2, 3.9], fov: 40, near: 0.1, far: 100 }}
         shadows
+        gl={{ alpha: true, antialias: true }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0); // transparent background
+        }}
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "block",
+          overflow: "visible",
+          background: "transparent",
+        }}
       >
-        <ambientLight intensity={0.25} />
-        <directionalLight position={[3, 6, 5]} castShadow intensity={1.1} shadow-mapSize={[1024, 1024]} />
+        <ambientLight intensity={0.28} />
         <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
-
-        <DragRotatableL />
+        <directionalLight
+          position={[3, 6, 5]}
+          castShadow
+          intensity={1.1}
+          shadow-mapSize={[1024, 1024]}
+          shadow-bias={-0.0005}
+        />
+        <SpinningL />
       </Canvas>
     </div>
   );
@@ -127,7 +110,6 @@ export function LightspeedHero() {
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [iAsTower, setIAsTower] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -149,22 +131,6 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, [descriptions.length]);
 
-  // mouse tilt (subtle 3D feel on the whole wordmark)
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const el = containerRef.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left - r.width / 2) / r.width;
-      const y = (e.clientY - r.top - r.height / 2) / r.height;
-      setMousePosition({ x: x * 20, y: y * 20 });
-    };
-    const el = containerRef.current;
-    if (!el) return;
-    el.addEventListener("mousemove", handleMouseMove);
-    return () => el.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
   // morph I (every 6s)
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -173,12 +139,12 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, []);
 
-  // CSS for tighter IN-SLOT morph (I ↔ Campanile)
+  // CSS for skinnier & uniform I/Campanile (slot width ↓; SVG stems narrower)
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
       .i-slot{
-        --iWidth: 0.30em;
+        --iWidth: 0.26em;       /* narrower than before */
         --iHeight: 0.92em;
         --iBaseline: -0.04em;
         --towerNudgeX: 0px;
@@ -191,8 +157,8 @@ export function LightspeedHero() {
       .i-layer{
         position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
         will-change: opacity, transform;
-        transition: opacity .32s cubic-bezier(.2,.7,.2,1),
-                    transform .38s cubic-bezier(.3,.7,.2,1);
+        transition: opacity .28s cubic-bezier(.2,.7,.2,1),
+                    transform .34s cubic-bezier(.3,.7,.2,1);
       }
       .i-text  { opacity:1;  transform: translateY(0)    scale(1); }
       .i-tower { opacity:0;  transform: translateY(3%)   scale(.985) translateX(var(--towerNudgeX)); }
@@ -216,58 +182,62 @@ export function LightspeedHero() {
       <div className="absolute inset-0 opacity-[0.03] bg-noise" />
 
       <div className="max-w-2xl mx-auto px-8 py-16 md:py-20 text-center relative z-10">
-        {/* 3D L artwork ABOVE the wordmark (drag to rotate) */}
+        {/* 3D L artwork ABOVE the wordmark (continuous spin, transparent bg) */}
         <HeroL3D />
 
         <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1
             className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white"
+            /* PARALLAX REMOVED: no mouse-based transform */
             style={{
               display: "inline-block",
-              transform: `rotateX(${-mousePosition.y * 0.45}deg) rotateY(${mousePosition.x * 0.45}deg) translateZ(18px)`,
               textShadow: `
                 0 1px 0 rgba(255,255,255,0.1),
-                0 2px 4px rgba(0,0,0,0.35),
-                ${mousePosition.x * 0.5}px ${mousePosition.y * 0.5}px 14px rgba(0,0,0,0.25)
+                0 2px 4px rgba(0,0,0,0.35)
               `,
-              transformStyle: "preserve-3d",
             }}
           >
-            {/* Regular text L + morphing I + rest of word */}
+            {/* Regular text L + slimmer morphing I + rest of word */}
             <span>L</span>
             <span className={`i-slot ${iAsTower ? "on" : ""}`}>
-              {/* Block I */}
+              {/* Slim Block I (uniform with tower) */}
               <span className="i-layer i-text">
+                {/* Keep viewBox large, but draw a skinnier stem centered */}
                 <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" className="text-white">
                   <g transform="translate(36,0)">
-                    <rect x={-36} y={60} width={72} height={150} fill="currentColor" />
+                    {/* 56px → 42px width for a slimmer, uniform stem */}
+                    <rect x={-21} y={60} width={42} height={150} fill="currentColor" />
                   </g>
                 </svg>
               </span>
-              {/* Campanile I */}
+
+              {/* Slim Campanile I (all proportions matched to 42px stem) */}
               <span className="i-layer i-tower">
                 <svg width="100%" height="100%" viewBox="0 0 72 220" preserveAspectRatio="xMidYMax meet" className="text-white">
                   <g transform="translate(36,0)">
-                    <rect x={-36} y={60} width={72} height={150} fill="currentColor" />
-                    <rect x={-36} y={52} width={72} height={8} fill="currentColor" />
+                    <rect x={-21} y={60} width={42} height={150} fill="currentColor" />
+                    <rect x={-23} y={52} width={46} height={8} fill="currentColor" />
                     <defs>
-                      <mask id="iBelfryMask" maskUnits="userSpaceOnUse" x={-34} y={24} width={68} height={28}>
-                        <rect x={-34} y={24} width={68} height={28} fill="white" />
+                      <mask id="iBelfryMask" maskUnits="userSpaceOnUse" x={-23} y={24} width={46} height={28}>
+                        <rect x={-23} y={24} width={46} height={28} fill="white" />
                         <g fill="black">
-                          <rect x={-28} y={28} width={12} height={18} rx={5} />
-                          <rect x={-12} y={28} width={12} height={18} rx={5} />
-                          <rect x={4}   y={28} width={12} height={18} rx={5} />
-                          <rect x={20}  y={28} width={12} height={18} rx={5} />
+                          {/* 4 narrower windows, evenly spaced */}
+                          <rect x={-18} y={28} width={8} height={18} rx={4} />
+                          <rect x={-6}  y={28} width={8} height={18} rx={4} />
+                          <rect x={6}   y={28} width={8} height={18} rx={4} />
+                          <rect x={18}  y={28} width={8} height={18} rx={4} />
                         </g>
                       </mask>
                     </defs>
-                    <rect x={-34} y={24} width={68} height={28} fill="currentColor" mask="url(#iBelfryMask)" />
+                    <rect x={-23} y={24} width={46} height={28} fill="currentColor" mask="url(#iBelfryMask)" />
+                    {/* small clock kept inside the belfry band */}
                     <g transform="translate(0,36)">
-                      <circle r={8} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={3} />
+                      <circle r={7} fill="rgba(0,0,0,.8)" stroke="currentColor" strokeWidth={3} />
                       <circle r={1} fill="currentColor" />
                     </g>
+                    {/* Spire matched to slimmer width */}
                     <polygon
-                      points="0,24 36,52 -36,52"
+                      points="0,24 23,52 -23,52"
                       fill="currentColor"
                       stroke="currentColor"
                       strokeWidth={1}

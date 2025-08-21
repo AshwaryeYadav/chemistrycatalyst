@@ -246,16 +246,17 @@ export function LightspeedHero() {
 
                     {/* belfry band with arched openings */}
                     <defs>
-                      <mask id="campBelfryMask" maskUnits="userSpaceOnUse" x={-24} y={26} width={48} height={26}>
-                        <rect x={-24} y={26} width={48} height={26} fill="white" />
-                        <g fill="black">
-                          <!-- four arches (Berkeley-esque) -->
-                          <path d="M-18,52 v-12 a6 6 0 0 1 12 0 v12 z" />
-                          <path d="M-6,52  v-12 a6 6 0 0 1 12 0 v12 z" />
-                          <path d="M6,52   v-12 a6 6 0 0 1 12 0 v12 z" />
-                          <path d="M18,52  v-12 a6 6 0 0 1 12 0 v12 z" />
-                        </g>
-                      </mask>
+                     <mask id="campBelfryMask" maskUnits="userSpaceOnUse" x={-24} y={26} width={48} height={26}>
+  <rect x={-24} y={26} width={48} height={26} fill="white" />
+  <g fill="black">
+    {/* four arches (Berkeley-esque) */}
+    <path d="M-18,52 v-12 a6 6 0 0 1 12 0 v12 z" />
+    <path d="M-6,52  v-12 a6 6 0 0 1 12 0 v12 z" />
+    <path d="M6,52   v-12 a6 6 0 0 1 12 0 v12 z" />
+    <path d="M18,52  v-12 a6 6 0 0 1 12 0 v12 z" />
+  </g>
+</mask>
+
                     </defs>
                     <rect x={-24} y={26} width={48} height={26} fill="currentColor" mask="url(#campBelfryMask)" />
 

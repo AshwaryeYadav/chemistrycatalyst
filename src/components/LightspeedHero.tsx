@@ -1,4 +1,4 @@
-=import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
 
 export function LightspeedHero() {
@@ -51,21 +51,18 @@ export function LightspeedHero() {
     }
   }, []);
 
-  // Styles: spacing fixed; small right-bias on hover so stem sits under the head
+  // Styles: stem widens from center to match cap; spacing never changes.
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
       .campanile {
-        --width: 0.80em;           /* glyph advance width (fixed) */
-        --baseline: -0.11em;       /* baseline nudge */
-        --gap: 0.035em;            /* constant spacing before the I */
-        --stemHover: 1.86;         /* hover thickness (34 * 1.86 ≈ 63px) */
-        --stemOriginX: 50%;        /* transform-origin X for stem */
+        --width: 0.80em;         /* fixed advance width */
+        --baseline: -0.11em;     /* baseline nudge (tweak ±0.01em for your font) */
         display:inline-block;
         inline-size: var(--width);
         block-size: 1em;
         vertical-align: var(--baseline);
-        margin-right: var(--gap);
+        margin-right: 0.03em;    /* keep this constant on hover to avoid drift */
         perspective: 900px;
         overflow: visible;
       }
@@ -76,7 +73,8 @@ export function LightspeedHero() {
 
       /* parts */
       #body{ transform-origin:50% 0%; transition:transform .45s cubic-bezier(.3,.7,.2,1); }
-      #stem{ transform-origin: var(--stemOriginX) 0%; transition:transform .45s cubic-bezier(.3,.7,.2,1); }
+      /* SCALE FROM CENTER so it stays under the cap */
+      #stem{ transform-origin:50% 0%; transition:transform .45s cubic-bezier(.3,.7,.2,1); }
       #foot{ transform-origin:0% 100%; transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .25s ease; }
 
       /* tower initially hidden */
@@ -86,13 +84,9 @@ export function LightspeedHero() {
       #clock{ transform-origin:50% 50%; transform:scale(0); transition:transform .30s ease .18s; }
       #spire{ transform-origin:50% 100%; transform:translateY(10px) scale(.9); transition:transform .35s ease .18s; }
 
-      /* HOVER:
-         - tiny right-bias (48.5%) so thickening shifts slightly right
-         - foot disappears; stem thickens; tower appears
-      */
-      .hover-campanile-container:hover { --stemOriginX: 48.5%; }
+      /* HOVER: foot disappears; stem thickens to cap width (34 -> 72 = 2.1176x) */
       .hover-campanile-container:hover #foot { transform: scaleX(0); opacity: 0; }
-      .hover-campanile-container:hover #stem { transform: scaleX(var(--stemHover)) scaleY(1.06); }
+      .hover-campanile-container:hover #stem { transform: scaleX(2.1176) scaleY(1.06); }
       .hover-campanile-container:hover #body { transform: scaleY(1.02); }
 
       .hover-campanile-container:hover #tower { opacity:1; transform:translateY(0) scale(1); }

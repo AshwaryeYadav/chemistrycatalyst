@@ -18,12 +18,8 @@ export function LightspeedHero() {
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [rotation, setRotation] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [dragRotation, setDragRotation] = useState({ x: 0, y: 0 });
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isPaused) {
@@ -41,244 +37,257 @@ export function LightspeedHero() {
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
 
-  // Handle mouse down for drag
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX, y: e.clientY });
-    e.preventDefault();
-  };
-
-  // Handle mouse move for drag
+  // Mouse parallax effect
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        const deltaX = e.clientX - dragStart.x;
-        const deltaY = e.clientY - dragStart.y;
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
         
-        setDragRotation({
-          x: (deltaY / 2) % 360,
-          y: (deltaX / 2) % 360
+        // Calculate offset from center (normalized to -1 to 1)
+        const offsetX = (e.clientX - centerX) / (rect.width / 2);
+        const offsetY = (e.clientY - centerY) / (rect.height / 2);
+        
+        // Apply subtle movement (max 10px in any direction)
+        setMousePosition({
+          x: offsetX * 10,
+          y: offsetY * 10
         });
       }
     };
 
-    const handleMouseUp = () => {
-      if (isDragging) {
-        setRotation(prev => ({
-          x: (prev.x + dragRotation.x) % 360,
-          y: (prev.y + dragRotation.y) % 360
-        }));
-        setDragRotation({ x: 0, y: 0 });
-        setIsDragging(false);
-      }
-    };
-
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-      document.body.style.cursor = 'grabbing';
-    } else {
-      document.body.style.cursor = 'auto';
-    }
-
+    window.addEventListener('mousemove', handleMouseMove);
+    
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-      document.body.style.cursor = 'auto';
     };
-  }, [isDragging, dragStart]);
+  }, []);
 
-  // 3D Logo and animation styles
+
+  // Advanced 3D Logo Styling
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      /* 3D L Logo Container */
-      .logo-3d-container {
-        transform-style: preserve-3d;
-        transition: transform 0.15s ease-out;
-        cursor: grab;
-        user-select: none;
-        -webkit-user-select: none;
-      }
-      
-      .logo-3d-container.dragging {
-        cursor: grabbing;
-      }
-      
-      /* 3D L Icon */
-      .l-icon-3d {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 2rem;
-        transform-style: preserve-3d;
-        animation: float-rotate 8s ease-in-out infinite;
-      }
-      
-      @keyframes float-rotate {
-        0%, 100% { 
-          transform: translateY(0px) rotateX(25deg) rotateY(45deg);
-        }
-        25% { 
-          transform: translateY(-10px) rotateX(25deg) rotateY(135deg);
-        }
-        50% { 
-          transform: translateY(0px) rotateX(25deg) rotateY(225deg);
-        }
-        75% { 
-          transform: translateY(-10px) rotateX(25deg) rotateY(315deg);
-        }
-      }
-      
-      .l-face {
-        position: absolute;
-        opacity: 0.95;
-      }
-      
-      /* L shape faces */
-      .l-front {
-        width: 120px;
-        height: 120px;
-        background: linear-gradient(135deg, #ED6C5C 0%, #ff8a75 100%);
-        clip-path: polygon(0 0, 40% 0, 40% 60%, 100% 60%, 100% 100%, 0 100%);
-        transform: translateZ(20px);
-      }
-      
-      .l-back {
-        width: 120px;
-        height: 120px;
-        background: linear-gradient(135deg, #c44d3f 0%, #ED6C5C 100%);
-        clip-path: polygon(0 0, 40% 0, 40% 60%, 100% 60%, 100% 100%, 0 100%);
-        transform: translateZ(-20px) rotateY(180deg);
-      }
-      
-      /* Side faces for depth */
-      .l-side-1 {
-        width: 40px;
-        height: 120px;
-        background: linear-gradient(to bottom, #d45547 0%, #a63e32 100%);
-        transform: translateX(20px) rotateY(90deg);
-        left: -20px;
-      }
-      
-      .l-side-2 {
-        width: 40px;
-        height: 40px;
-        background: #b84436;
-        transform: translateX(80px) translateY(80px) rotateY(90deg);
-        left: 20px;
-      }
-      
-      .l-side-3 {
-        width: 120px;
-        height: 40px;
-        background: linear-gradient(to right, #c44d3f 0%, #d45547 100%);
-        transform: translateY(100px) rotateX(90deg);
-        top: -20px;
-      }
-      
-      .l-side-4 {
-        width: 80px;
-        height: 40px;
-        background: #d45547;
-        transform: translateX(40px) translateY(60px) translateZ(0) rotateX(90deg);
-        top: 20px;
-      }
-      
-      /* Text with animated gradient */
-      .logo-text {
-        font-weight: 900;
-        background: linear-gradient(270deg, #ffffff, #e5e7eb, #ED6C5C, #ffffff);
-        background-size: 400% 400%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        animation: gradient-shift 6s ease infinite;
+      .logo-3d {
         position: relative;
         display: inline-block;
-        letter-spacing: -0.03em;
+        transform-style: preserve-3d;
+        transition: transform 0.2s ease-out;
+        font-weight: 900;
+        letter-spacing: -0.02em;
       }
       
-      .logo-text-fellows {
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        background: linear-gradient(270deg, #ffffff, #f1f5f9, #ED6C5C, #ffffff);
-        background-size: 400% 400%;
+      .unified-logo {
+        transform-style: preserve-3d;
+      }
+      
+      .logo-lightspeed {
+        color: #ffffff;
+        position: relative;
+        font-weight: 300;
+        background: linear-gradient(135deg, #e5e7eb 0%, #e5e7eb 70%, #ED6C5C 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        animation: gradient-shift 6s ease infinite;
-        animation-delay: 0.5s;
+        text-shadow: 
+          0 2px 4px rgba(53, 58, 65, 0.4),
+          0 4px 8px rgba(53, 58, 65, 0.3),
+          0 8px 16px rgba(53, 58, 65, 0.2);
       }
       
-      @keyframes gradient-shift {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-      }
-      
-      /* Depth shadow for text */
-      .text-depth {
+      .logo-lightspeed::before {
+        content: attr(data-text);
         position: absolute;
-        top: 2px;
-        left: 2px;
+        top: 0;
+        left: 0;
         z-index: -1;
-        color: rgba(0,0,0,0.1);
-        font-weight: inherit;
-        letter-spacing: inherit;
+        color: #353A41;
+        -webkit-text-fill-color: #353A41;
+        transform: translateZ(-15px);
+        text-shadow: 
+          1px 1px 0 #353A41,
+          2px 2px 0 #353A41,
+          3px 3px 0 #353A41,
+          4px 4px 0 #353A41,
+          5px 5px 0 #353A41,
+          6px 6px 0 #353A41,
+          7px 7px 0 #353A41,
+          8px 8px 0 #353A41,
+          9px 9px 0 #353A41,
+          10px 10px 0 #353A41;
       }
       
-      /* Glowing underline */
+      .logo-fellows {
+        color: #ffffff
+        opacity: 0.9;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        position: relative;
+        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #ED6C5C 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 
+          0 1px 2px rgba(53, 58, 65, 0.4),
+          0 2px 4px rgba(53, 58, 65, 0.3);
+      }
+      
+      .logo-fellows::before {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        color: #353A41;
+        -webkit-text-fill-color: #353A41;
+        transform: translateZ(-8px);
+        text-shadow: 
+          1px 1px 0 #353A41,
+          2px 2px 0 #353A41,
+          3px 3px 0 #353A41,
+          4px 4px 0 #353A41,
+          5px 5px 0 #353A41;
+      }
+
+      /* Enhanced 3D Fill Layers */
+      .logo-lightspeed::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -2;
+        color: #2A2E34;
+        -webkit-text-fill-color: #2A2E34;
+        transform: translateZ(-30px);
+        text-shadow: 
+          1px 1px 0 #2A2E34, 2px 2px 0 #2A2E34, 3px 3px 0 #2A2E34,
+          4px 4px 0 #2A2E34, 5px 5px 0 #2A2E34, 6px 6px 0 #2A2E34,
+          7px 7px 0 #2A2E34, 8px 8px 0 #2A2E34, 9px 9px 0 #2A2E34,
+          10px 10px 0 #2A2E34, 11px 11px 0 #2A2E34, 12px 12px 0 #2A2E34,
+          13px 13px 0 #2A2E34, 14px 14px 0 #2A2E34, 15px 15px 0 #2A2E34,
+          16px 16px 0 #2A2E34, 17px 17px 0 #2A2E34, 18px 18px 0 #2A2E34,
+          19px 19px 0 #2A2E34, 20px 20px 0 #2A2E34;
+      }
+
+      .logo-fellows::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -2;
+        color: #2A2E34;
+        -webkit-text-fill-color: #2A2E34;
+        transform: translateZ(-16px);
+        text-shadow: 
+          1px 1px 0 #2A2E34, 2px 2px 0 #2A2E34, 3px 3px 0 #2A2E34,
+          4px 4px 0 #2A2E34, 5px 5px 0 #2A2E34, 6px 6px 0 #2A2E34,
+          7px 7px 0 #2A2E34, 8px 8px 0 #2A2E34, 9px 9px 0 #2A2E34,
+          10px 10px 0 #2A2E34;
+      }
+
+      
       .logo-underline {
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120%;
         height: 2px;
         background: linear-gradient(90deg, 
           transparent 0%, 
-          rgba(237, 108, 92, 0.3) 20%, 
-          rgba(237, 108, 92, 0.8) 50%, 
-          rgba(237, 108, 92, 0.3) 80%, 
+          rgba(255,255,255,0.2) 20%, 
+          rgba(255,255,255,0.6) 50%, 
+          rgba(255,255,255,0.2) 80%, 
           transparent 100%);
-        animation: underline-glow 3s ease-in-out infinite;
-        margin: 1rem auto;
-        width: 200px;
-      }
-      
-      @keyframes underline-glow {
-        0%, 100% { opacity: 0.5; transform: scaleX(0.8); }
-        50% { opacity: 1; transform: scaleX(1); }
-      }
-      
-      /* Hover pause animation */
-      .logo-3d-container:hover .l-icon-3d {
-        animation-play-state: paused;
-      }
-      
-      /* Description text - no wrapping */
-      .description-line {
-        white-space: nowrap;
-        display: block;
+        border-radius: 1px;
+        box-shadow: 
+          0 0 5px rgba(255,255,255,0.2),
+          0 0 10px rgba(255,255,255,0.1);
         overflow: hidden;
-        text-overflow: ellipsis;
       }
       
-      @media (max-width: 640px) {
-        .l-icon-3d {
-          width: 80px;
-          height: 80px;
+      .logo-underline::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(237, 108, 92, 0.4) 20%, 
+          rgba(237, 108, 92, 0.8) 50%, 
+          rgba(237, 108, 92, 0.4) 80%, 
+          transparent 100%);
+        animation: orange-sweep 2s linear infinite;
+      }
+      
+      .logo-reflection {
+        position: absolute;
+        bottom: -100px;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background: linear-gradient(180deg, 
+          rgba(255,255,255,0.03) 0%, 
+          transparent 100%);
+        transform: scaleY(-1);
+        opacity: 0.3;
+        filter: blur(1px);
+      }
+      
+      @keyframes iridescent {
+        0% { 
+          background: linear-gradient(45deg, 
+            rgba(59,130,246,0.1) 0%,
+            rgba(147,51,234,0.1) 33%,
+            rgba(6,182,212,0.1) 66%,
+            rgba(59,130,246,0.1) 100%);
         }
-        .l-front, .l-back {
-          width: 80px;
-          height: 80px;
+        33% { 
+          background: linear-gradient(45deg, 
+            rgba(147,51,234,0.1) 0%,
+            rgba(6,182,212,0.1) 33%,
+            rgba(59,130,246,0.1) 66%,
+            rgba(147,51,234,0.1) 100%);
         }
-        .l-side-1 {
-          width: 30px;
-          height: 80px;
+        66% { 
+          background: linear-gradient(45deg, 
+            rgba(6,182,212,0.1) 0%,
+            rgba(59,130,246,0.1) 33%,
+            rgba(147,51,234,0.1) 66%,
+            rgba(6,182,212,0.1) 100%);
         }
+        100% { 
+          background: linear-gradient(45deg, 
+            rgba(59,130,246,0.1) 0%,
+            rgba(147,51,234,0.1) 33%,
+            rgba(6,182,212,0.1) 66%,
+            rgba(59,130,246,0.1) 100%);
+        }
+      }
+      
+      @keyframes shimmer {
+        0%, 100% { opacity: 0.1; transform: scale(1); }
+        50% { opacity: 0.3; transform: scale(1.05); }
+      }
+      
+      @keyframes glow-pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+      }
+      
+      @keyframes orange-sweep {
+        0% { left: -100%; }
+        100% { left: 100%; }
       }
       
       @media (prefers-reduced-motion: reduce) {
-        .l-icon-3d,
-        .logo-text,
-        .logo-text-fellows,
-        .logo-underline {
+        .logo-3d, .logo-lightspeed::after, .logo-underline, .logo-fellows {
           animation: none !important;
+          transform: none !important;
+          transition: none !important;
         }
       }
     `;
@@ -292,91 +301,96 @@ export function LightspeedHero() {
   return (
     <div 
       ref={containerRef}
-      className="min-h-screen flex items-center justify-center relative overflow-hidden"
-      style={{ 
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #fbc2eb 75%, #ffecd2 100%)'
-      }}
+      className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden"
+      style={{ perspective: '1000px' }}
     >
-      {/* Subtle overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
+      {/* Subtle tech atmosphere with noise texture */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-30" />
+      <div className="absolute inset-0 opacity-[0.015] bg-noise" />
       
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 text-center relative z-10">
         
-        {/* 3D L Logo and Text */}
+        {/* Premium 3D Logo */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <div 
-            ref={logoRef}
-            className={`logo-3d-container relative inline-block ${isDragging ? 'dragging' : ''}`}
-            style={{
-              transform: `rotateX(${rotation.x + dragRotation.x}deg) rotateY(${rotation.y + dragRotation.y}deg)`,
-              transformStyle: 'preserve-3d'
-            }}
-            onMouseDown={handleMouseDown}
+            className="perspective-[2000px] transform-gpu relative"
+            style={{ transformStyle: 'preserve-3d' }}
           >
-            {/* 3D L Icon */}
-            <div className="l-icon-3d relative">
-              <div className="l-face l-front"></div>
-              <div className="l-face l-back"></div>
-              <div className="l-face l-side-1"></div>
-              <div className="l-face l-side-2"></div>
-              <div className="l-face l-side-3"></div>
-              <div className="l-face l-side-4"></div>
-            </div>
-            
-            {/* Animated Text */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tight leading-tight">
-              <div className="flex flex-col items-center">
-                {/* LIGHTSPEED */}
-                <div className="relative mb-2 sm:mb-4">
-                  <span className="text-depth">LIGHTSPEED</span>
-                  <span className="logo-text">
-                    LIGHTSPEED
-                  </span>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display tracking-tight leading-tight mb-6 sm:mb-8 relative">
+              <div className="unified-logo flex flex-col items-center">
+                <div 
+                  className="logo-3d logo-lightspeed mb-2 sm:mb-4"
+                  data-text="LIGHTSPEED"
+                  style={{
+                    transform: `translateZ(40px) translateX(${mousePosition.x}px) translateY(${mousePosition.y}px)`,
+                    transformStyle: 'preserve-3d',
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  LIGHTSPEED
                 </div>
-                
-                {/* FELLOWS */}
-                <div className="relative">
-                  <span className="text-depth text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">FELLOWS</span>
-                  <span className="logo-text-fellows text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-                    FELLOWS
-                  </span>
+                <div 
+                  className="logo-3d logo-fellows text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
+                  data-text="FELLOWS"
+                  style={{
+                    transform: `translateZ(20px) translateX(${mousePosition.x * 0.7}px) translateY(${mousePosition.y * 0.7}px)`,
+                    transformStyle: 'preserve-3d',
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                >
+                  FELLOWS
                 </div>
               </div>
               
-              {/* Animated underline */}
+              {/* Glowing underline */}
               <div className="logo-underline"></div>
+              
+              {/* Reflection effect */}
+              <div className="logo-reflection"></div>
             </h1>
+            
+            {/* Geometric accent lines */}
+            <div className="hidden lg:block absolute -left-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
+            <div className="hidden lg:block absolute -right-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
           </div>
         </div>
 
-        {/* Description - Fixed, no rotation */}
+        {/* Description - Typewriter font with cycling effect */}
         <div className="mb-12 sm:mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-3 sm:space-y-4">
-          <div className="font-mono text-white/90 leading-relaxed tracking-wide px-4 sm:px-6 lg:px-0">
-            <span className="description-line text-sm sm:text-base lg:text-lg">
-              {">"} A year-long fellowship for Berkeley's top{" "}
-              <span className="text-white font-medium">
-                {descriptions[currentDescription]}
-              </span>
-              {"."}
+          <div className="text-xs sm:text-base lg:text-lg font-mono text-white/90 leading-relaxed tracking-wide px-6 sm:px-6 lg:px-0 min-h-[3rem] sm:min-h-[2.5rem]">
+            {">"} A year-long fellowship for Berkeley's top
+            <br />
+            <span className="text-white font-medium">
+              {descriptions[currentDescription]}
             </span>
+            {"."}
           </div>
-          
           <div 
-            className="font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80 px-4 sm:px-6 lg:px-0"
+            className="text-[10px] sm:text-sm lg:text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80 px-6 sm:px-6 lg:px-0 min-h-[2rem] sm:min-h-[1.5rem]"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            <span className="description-line text-xs sm:text-sm lg:text-base">
+            <div className="whitespace-nowrap overflow-x-auto">
               {">"} Backed by investors behind{" "}
-              <span className="text-white font-medium">
-                {companyGroups[currentGroup].join(", ")}
+              <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
+                <span className="text-white font-medium">
+                  {companyGroups[currentGroup][0]}
+                </span>
+                {", "}
+                <span className="text-white font-medium">
+                  {companyGroups[currentGroup][1]}
+                </span>
+                {", "}
+                <span className="text-white font-medium">
+                  {companyGroups[currentGroup][2]}
+                </span>
               </span>
-              {"."}
-            </span>
+              .
+            </div>
           </div>
         </div>
 
-        {/* CTA Button */}
+        {/* Glowing CTA Button */}
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button 
             size="xl"

@@ -412,10 +412,6 @@ export function LightspeedHero() {
               {/* Reflection effect */}
               <div className="logo-reflection"></div>
             </h1>
-            
-            {/* Geometric accent lines */}
-            <div className="absolute -left-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
-            <div className="absolute -right-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
           </div>
         </div>
 

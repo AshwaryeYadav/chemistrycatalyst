@@ -283,7 +283,23 @@ export function LightspeedHero() {
         box-shadow: 
           0 0 5px rgba(255,255,255,0.2),
           0 0 10px rgba(255,255,255,0.1);
-        animation: glow-pulse 3s ease-in-out infinite;
+        overflow: hidden;
+      }
+      
+      .logo-underline::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+          transparent 0%, 
+          rgba(237, 108, 92, 0.4) 20%, 
+          rgba(237, 108, 92, 0.8) 50%, 
+          rgba(237, 108, 92, 0.4) 80%, 
+          transparent 100%);
+        animation: orange-sweep 2s linear infinite;
       }
       
       .logo-reflection {
@@ -339,6 +355,11 @@ export function LightspeedHero() {
       @keyframes glow-pulse {
         0%, 100% { opacity: 0.6; }
         50% { opacity: 1; }
+      }
+      
+      @keyframes orange-sweep {
+        0% { left: -100%; }
+        100% { left: 100%; }
       }
       
       @media (prefers-reduced-motion: reduce) {

@@ -17,8 +17,6 @@ export function LightspeedHero() {
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [velocity, setVelocity] = useState({ x: 0, y: 0 });
   const [isSpinning, setIsSpinning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -39,7 +37,7 @@ export function LightspeedHero() {
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
 
-  // Enhanced unified 3D rotation system with full spin capability
+  // Hover-based 3D rotation system
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
@@ -47,85 +45,46 @@ export function LightspeedHero() {
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         
-        if (isDragging) {
-          const deltaX = e.clientX - dragStart.x;
-          const deltaY = e.clientY - dragStart.y;
-          
-          // Track velocity for momentum
-          setVelocity({ x: deltaY * -0.5, y: deltaX * 0.5 });
-          
-          setRotation(prev => ({
-            ...prev,
-            y: prev.y + deltaX * 0.8,
-            x: prev.x - deltaY * 0.8,
-            z: prev.z // Keep Z rotation
-          }));
-          
-          setDragStart({ x: e.clientX, y: e.clientY });
-        } else if (!isSpinning) {
-          // Subtle hover effect when not dragging
-          const x = (e.clientX - centerX) / rect.width * 10;
-          const y = (e.clientY - centerY) / rect.height * 10;
-          
-          setRotation(prev => ({
-            ...prev,
-            x: y,
-            y: x,
-            z: prev.z // Preserve Z rotation
-          }));
-        }
+        // Smooth hover rotation based on mouse position
+        const x = (e.clientY - centerY) / rect.height * 25;
+        const y = (e.clientX - centerX) / rect.width * 25;
+        
+        setRotation({
+          x: -x,
+          y: y,
+          z: (x + y) * 0.1 // Subtle Z rotation based on position
+        });
       }
     };
 
-    const handleMouseDown = (e: MouseEvent) => {
-      setIsDragging(true);
-      setIsSpinning(false);
-      setDragStart({ x: e.clientX, y: e.clientY });
-    };
-
-    const handleMouseUp = () => {
-      if (isDragging && (Math.abs(velocity.x) > 2 || Math.abs(velocity.y) > 2)) {
-        // Start momentum spin if there's enough velocity
-        setIsSpinning(true);
-      }
-      setIsDragging(false);
-    };
-
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      setRotation(prev => ({
-        ...prev,
-        z: prev.z + e.deltaY * 0.2
-      }));
+    const handleMouseLeave = () => {
+      // Return to neutral position when mouse leaves
+      setRotation({ x: 0, y: 0, z: 0 });
     };
 
     const handleDoubleClick = () => {
       // Double-click to start continuous spin
       setIsSpinning(true);
-      setVelocity({ x: 1, y: 2 });
+      setVelocity({ x: 2, y: 3 });
     };
 
     const container = containerRef.current;
     if (container) {
       container.addEventListener('mousemove', handleMouseMove);
-      container.addEventListener('mousedown', handleMouseDown);
+      container.addEventListener('mouseleave', handleMouseLeave);
       container.addEventListener('dblclick', handleDoubleClick);
-      document.addEventListener('mouseup', handleMouseUp);
-      container.addEventListener('wheel', handleWheel);
       
       return () => {
         container.removeEventListener('mousemove', handleMouseMove);
-        container.removeEventListener('mousedown', handleMouseDown);
+        container.removeEventListener('mouseleave', handleMouseLeave);
         container.removeEventListener('dblclick', handleDoubleClick);
-        document.removeEventListener('mouseup', handleMouseUp);
-        container.removeEventListener('wheel', handleWheel);
       };
     }
-  }, [isDragging, dragStart, velocity, isSpinning]);
+  }, []);
 
   // Momentum and continuous rotation system
   useEffect(() => {
-    if (isSpinning && !isDragging) {
+    if (isSpinning) {
       const animationFrame = requestAnimationFrame(() => {
         setRotation(prev => ({
           x: prev.x + velocity.x,
@@ -150,7 +109,7 @@ export function LightspeedHero() {
       
       return () => cancelAnimationFrame(animationFrame);
     }
-  }, [isSpinning, isDragging, velocity]);
+  }, [isSpinning, velocity]);
 
   // Advanced 3D Logo Styling
   useEffect(() => {
@@ -241,6 +200,49 @@ export function LightspeedHero() {
           3px 3px 0 #353A41,
           4px 4px 0 #353A41,
           5px 5px 0 #353A41;
+      }
+
+      /* Enhanced 3D Fill Layers */
+      .logo-lightspeed::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -2;
+        color: #2A2E34;
+        -webkit-text-fill-color: #2A2E34;
+        transform: translateZ(-30px);
+        text-shadow: 
+          1px 1px 0 #2A2E34, 2px 2px 0 #2A2E34, 3px 3px 0 #2A2E34,
+          4px 4px 0 #2A2E34, 5px 5px 0 #2A2E34, 6px 6px 0 #2A2E34,
+          7px 7px 0 #2A2E34, 8px 8px 0 #2A2E34, 9px 9px 0 #2A2E34,
+          10px 10px 0 #2A2E34, 11px 11px 0 #2A2E34, 12px 12px 0 #2A2E34,
+          13px 13px 0 #2A2E34, 14px 14px 0 #2A2E34, 15px 15px 0 #2A2E34,
+          16px 16px 0 #2A2E34, 17px 17px 0 #2A2E34, 18px 18px 0 #2A2E34,
+          19px 19px 0 #2A2E34, 20px 20px 0 #2A2E34;
+      }
+
+      .logo-fellows::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -2;
+        color: #2A2E34;
+        -webkit-text-fill-color: #2A2E34;
+        transform: translateZ(-16px);
+        text-shadow: 
+          1px 1px 0 #2A2E34, 2px 2px 0 #2A2E34, 3px 3px 0 #2A2E34,
+          4px 4px 0 #2A2E34, 5px 5px 0 #2A2E34, 6px 6px 0 #2A2E34,
+          7px 7px 0 #2A2E34, 8px 8px 0 #2A2E34, 9px 9px 0 #2A2E34,
+          10px 10px 0 #2A2E34;
+      }
+
+      /* Smooth transitions for hover rotation */
+      .unified-logo {
+        transform-style: preserve-3d;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
       }
       
       .logo-underline {

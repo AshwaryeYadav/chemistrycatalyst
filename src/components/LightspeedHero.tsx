@@ -153,7 +153,7 @@ export function LightspeedHero() {
                         style={{ filter: 'drop-shadow(0 8px 24px rgba(0,0,0,.55))' }} />
 
                   {/* Tower group anchored to stem top-center */}
-                  <g id="tower" transform="translate(100,40)">
+                  <g id="tower" transform="translate(53,40)">
                     <defs>
                       <mask id="arches" maskUnits="userSpaceOnUse" x="-34" y="-48" width="68" height="40">
                         <rect x="-34" y="-48" width="68" height="40" fill="white" />

@@ -19,6 +19,8 @@ export function LightspeedHero() {
   const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
+  const [isSpinning, setIsSpinning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export function LightspeedHero() {
     return () => clearInterval(descInterval);
   }, [descriptions.length]);
 
-  // Enhanced unified 3D rotation system
+  // Enhanced unified 3D rotation system with full spin capability
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
@@ -49,22 +51,27 @@ export function LightspeedHero() {
           const deltaX = e.clientX - dragStart.x;
           const deltaY = e.clientY - dragStart.y;
           
+          // Track velocity for momentum
+          setVelocity({ x: deltaY * -0.5, y: deltaX * 0.5 });
+          
           setRotation(prev => ({
             ...prev,
-            y: prev.y + deltaX * 0.5,
-            x: prev.x - deltaY * 0.5
+            y: prev.y + deltaX * 0.8,
+            x: prev.x - deltaY * 0.8,
+            z: prev.z // Keep Z rotation
           }));
           
           setDragStart({ x: e.clientX, y: e.clientY });
-        } else {
+        } else if (!isSpinning) {
           // Subtle hover effect when not dragging
-          const x = (e.clientX - centerX) / rect.width * 15;
-          const y = (e.clientY - centerY) / rect.height * 15;
+          const x = (e.clientX - centerX) / rect.width * 10;
+          const y = (e.clientY - centerY) / rect.height * 10;
           
           setRotation(prev => ({
             ...prev,
             x: y,
-            y: x
+            y: x,
+            z: prev.z // Preserve Z rotation
           }));
         }
       }
@@ -72,10 +79,15 @@ export function LightspeedHero() {
 
     const handleMouseDown = (e: MouseEvent) => {
       setIsDragging(true);
+      setIsSpinning(false);
       setDragStart({ x: e.clientX, y: e.clientY });
     };
 
     const handleMouseUp = () => {
+      if (isDragging && (Math.abs(velocity.x) > 2 || Math.abs(velocity.y) > 2)) {
+        // Start momentum spin if there's enough velocity
+        setIsSpinning(true);
+      }
       setIsDragging(false);
     };
 
@@ -83,25 +95,62 @@ export function LightspeedHero() {
       e.preventDefault();
       setRotation(prev => ({
         ...prev,
-        z: prev.z + e.deltaY * 0.1
+        z: prev.z + e.deltaY * 0.2
       }));
+    };
+
+    const handleDoubleClick = () => {
+      // Double-click to start continuous spin
+      setIsSpinning(true);
+      setVelocity({ x: 1, y: 2 });
     };
 
     const container = containerRef.current;
     if (container) {
       container.addEventListener('mousemove', handleMouseMove);
       container.addEventListener('mousedown', handleMouseDown);
+      container.addEventListener('dblclick', handleDoubleClick);
       document.addEventListener('mouseup', handleMouseUp);
       container.addEventListener('wheel', handleWheel);
       
       return () => {
         container.removeEventListener('mousemove', handleMouseMove);
         container.removeEventListener('mousedown', handleMouseDown);
+        container.removeEventListener('dblclick', handleDoubleClick);
         document.removeEventListener('mouseup', handleMouseUp);
         container.removeEventListener('wheel', handleWheel);
       };
     }
-  }, [isDragging, dragStart]);
+  }, [isDragging, dragStart, velocity, isSpinning]);
+
+  // Momentum and continuous rotation system
+  useEffect(() => {
+    if (isSpinning && !isDragging) {
+      const animationFrame = requestAnimationFrame(() => {
+        setRotation(prev => ({
+          x: prev.x + velocity.x,
+          y: prev.y + velocity.y,
+          z: prev.z + velocity.y * 0.1 // Add subtle Z rotation during spin
+        }));
+        
+        // Gradually reduce velocity (friction)
+        setVelocity(prev => {
+          const newVelX = prev.x * 0.98;
+          const newVelY = prev.y * 0.98;
+          
+          // Stop spinning when velocity is very low
+          if (Math.abs(newVelX) < 0.1 && Math.abs(newVelY) < 0.1) {
+            setIsSpinning(false);
+            return { x: 0, y: 0 };
+          }
+          
+          return { x: newVelX, y: newVelY };
+        });
+      });
+      
+      return () => cancelAnimationFrame(animationFrame);
+    }
+  }, [isSpinning, isDragging, velocity]);
 
   // Advanced 3D Logo Styling
   useEffect(() => {
@@ -129,6 +178,7 @@ export function LightspeedHero() {
       .logo-lightspeed {
         color: #ffffff;
         position: relative;
+        font-weight: 300;
         background: linear-gradient(135deg, #ffffff 0%, #ffffff 70%, #ED6C5C 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;

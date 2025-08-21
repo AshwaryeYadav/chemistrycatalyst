@@ -68,19 +68,19 @@ export function LightspeedHero() {
       
       .logo-lightspeed {
         background: linear-gradient(135deg, 
-          #e5e7eb 0%, 
-          #f8fafc 25%, 
-          #cbd5e1 50%, 
-          #f1f5f9 75%, 
+          #c0c0c0 0%,
+          #e8e8e8 15%,
+          #a8a8a8 30%,
+          #d4d4d4 45%,
+          #9ca3af 60%,
+          #cbd5e1 75%,
+          #b8b8b8 90%,
           #e2e8f0 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        filter: brightness(1.2) contrast(1.1);
-        text-shadow: 
-          0 0 20px rgba(255,255,255,0.3),
-          0 0 40px rgba(255,255,255,0.1),
-          0 0 60px rgba(255,255,255,0.05);
+        filter: brightness(1.1) contrast(1.2) saturate(0.9);
+        position: relative;
       }
       
       .logo-lightspeed::before {
@@ -116,35 +116,38 @@ export function LightspeedHero() {
       .logo-lightspeed::after {
         content: '';
         position: absolute;
-        top: -10px;
-        left: -10px;
-        right: -10px;
-        bottom: -10px;
-        background: radial-gradient(ellipse at center, 
-          rgba(255,255,255,0.1) 0%, 
-          transparent 70%);
-        z-index: -2;
-        border-radius: 50%;
-        animation: shimmer 4s ease-in-out infinite;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, 
+          rgba(59,130,246,0.1) 0%,
+          rgba(147,51,234,0.1) 33%,
+          rgba(6,182,212,0.1) 66%,
+          rgba(59,130,246,0.1) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        z-index: 1;
+        animation: iridescent 6s ease-in-out infinite;
+        opacity: 0.6;
       }
       
       .logo-fellows {
         background: linear-gradient(135deg, 
-          rgba(255,255,255,0.4) 0%, 
-          rgba(255,255,255,0.6) 25%, 
-          rgba(147,51,234,0.3) 50%, 
-          rgba(59,130,246,0.3) 75%, 
-          rgba(16,185,129,0.3) 100%);
+          #1a1625 0%,
+          #2d1b69 25%,
+          #1e1b4b 50%,
+          #0f0f23 75%,
+          #000000 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        opacity: 0.8;
+        opacity: 0.9;
         font-weight: 600;
-        letter-spacing: 0.1em;
-        text-shadow: 
-          0 0 10px rgba(255,255,255,0.2),
-          0 0 20px rgba(147,51,234,0.1),
-          0 0 30px rgba(59,130,246,0.1);
+        letter-spacing: 0.15em;
+        filter: contrast(1.3);
+        position: relative;
       }
       
       .logo-fellows::before {
@@ -154,19 +157,34 @@ export function LightspeedHero() {
         left: 0;
         z-index: -1;
         background: linear-gradient(135deg, 
-          rgba(255,255,255,0.1) 0%, 
-          rgba(147,51,234,0.1) 50%, 
-          rgba(59,130,246,0.1) 100%);
+          #4c1d95 0%, 
+          #1e1b4b 50%, 
+          #000000 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         transform: translateZ(-5px);
         text-shadow: 
-          1px 1px 0 rgba(0,0,0,0.3),
-          2px 2px 0 rgba(0,0,0,0.25),
-          3px 3px 0 rgba(0,0,0,0.2),
-          4px 4px 0 rgba(0,0,0,0.15),
-          5px 5px 0 rgba(0,0,0,0.1);
+          inset 0 0 10px rgba(76,29,149,0.4),
+          1px 1px 0 rgba(0,0,0,0.8),
+          2px 2px 0 rgba(0,0,0,0.6),
+          3px 3px 0 rgba(0,0,0,0.4),
+          4px 4px 0 rgba(0,0,0,0.2),
+          0 0 20px rgba(76,29,149,0.1);
+      }
+      
+      .logo-fellows::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        right: 2px;
+        bottom: 2px;
+        background: radial-gradient(ellipse at center, 
+          rgba(76,29,149,0.1) 0%,
+          transparent 60%);
+        border-radius: 2px;
+        z-index: -2;
       }
       
       .logo-underline {
@@ -203,6 +221,37 @@ export function LightspeedHero() {
         filter: blur(1px);
       }
       
+      @keyframes iridescent {
+        0% { 
+          background: linear-gradient(45deg, 
+            rgba(59,130,246,0.1) 0%,
+            rgba(147,51,234,0.1) 33%,
+            rgba(6,182,212,0.1) 66%,
+            rgba(59,130,246,0.1) 100%);
+        }
+        33% { 
+          background: linear-gradient(45deg, 
+            rgba(147,51,234,0.1) 0%,
+            rgba(6,182,212,0.1) 33%,
+            rgba(59,130,246,0.1) 66%,
+            rgba(147,51,234,0.1) 100%);
+        }
+        66% { 
+          background: linear-gradient(45deg, 
+            rgba(6,182,212,0.1) 0%,
+            rgba(59,130,246,0.1) 33%,
+            rgba(147,51,234,0.1) 66%,
+            rgba(6,182,212,0.1) 100%);
+        }
+        100% { 
+          background: linear-gradient(45deg, 
+            rgba(59,130,246,0.1) 0%,
+            rgba(147,51,234,0.1) 33%,
+            rgba(6,182,212,0.1) 66%,
+            rgba(59,130,246,0.1) 100%);
+        }
+      }
+      
       @keyframes shimmer {
         0%, 100% { opacity: 0.1; transform: scale(1); }
         50% { opacity: 0.3; transform: scale(1.05); }
@@ -211,18 +260,6 @@ export function LightspeedHero() {
       @keyframes glow-pulse {
         0%, 100% { opacity: 0.6; }
         50% { opacity: 1; }
-      }
-      
-      @keyframes holographic {
-        0% { filter: hue-rotate(0deg); }
-        25% { filter: hue-rotate(90deg); }
-        50% { filter: hue-rotate(180deg); }
-        75% { filter: hue-rotate(270deg); }
-        100% { filter: hue-rotate(360deg); }
-      }
-      
-      .logo-fellows {
-        animation: holographic 8s linear infinite;
       }
       
       @media (prefers-reduced-motion: reduce) {

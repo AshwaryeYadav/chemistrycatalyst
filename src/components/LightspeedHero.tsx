@@ -176,9 +176,10 @@ export function LightspeedHero() {
         font-weight: 600;
         letter-spacing: 0.15em;
         position: relative;
-        background: linear-gradient(135deg, #ED6C5C 0%, #f3f4f6 20%, #f3f4f6 100%);
+        background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 50%, #ffffff 100%);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
+
 
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;

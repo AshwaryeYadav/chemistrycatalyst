@@ -308,7 +308,7 @@ export function LightspeedHero() {
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-30" />
       <div className="absolute inset-0 opacity-[0.015] bg-noise" />
       
-      <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 text-center relative z-10">
         
         {/* Premium 3D Logo */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
@@ -316,7 +316,7 @@ export function LightspeedHero() {
             className="perspective-[2000px] transform-gpu relative"
             style={{ transformStyle: 'preserve-3d' }}
           >
-            <h1 className="text-6xl md:text-8xl font-display tracking-tight leading-tight mb-8 relative">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display tracking-tight leading-tight mb-6 sm:mb-8 relative">
               <div className="unified-logo">
                 <div 
                   className="logo-3d logo-lightspeed mb-4"
@@ -330,7 +330,7 @@ export function LightspeedHero() {
                   LIGHTSPEED
                 </div>
                 <div 
-                  className="logo-3d logo-fellows text-4xl md:text-6xl"
+                  className="logo-3d logo-fellows text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
                   data-text="FELLOWS"
                   style={{
                     transform: `translateZ(20px) translateX(${mousePosition.x * 0.7}px) translateY(${mousePosition.y * 0.7}px)`,
@@ -350,14 +350,14 @@ export function LightspeedHero() {
             </h1>
             
             {/* Geometric accent lines */}
-            <div className="absolute -left-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
-            <div className="absolute -right-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
+            <div className="hidden lg:block absolute -left-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
+            <div className="hidden lg:block absolute -right-20 top-1/2 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2"></div>
           </div>
         </div>
 
         {/* Description - Typewriter font with cycling effect */}
-        <div className="mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
-          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
+        <div className="mb-12 sm:mb-16 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-3 sm:space-y-4">
+          <div className="text-sm sm:text-base lg:text-lg font-mono text-white/90 leading-relaxed tracking-wide px-2 sm:px-0">
             {">"} A year-long fellowship for Berkeley's top{" "}
             <span className="text-white font-medium">
               {descriptions[currentDescription]}
@@ -365,7 +365,7 @@ export function LightspeedHero() {
             {"."}
           </div>
           <div 
-            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80 whitespace-nowrap"
+            className="text-xs sm:text-sm lg:text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80 whitespace-nowrap overflow-x-auto px-2 sm:px-0"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
@@ -391,7 +391,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button 
             size="xl"
-            className="w-80 mx-auto py-6 text-lg font-semibold text-white border border-white/20 rounded-lg backdrop-blur-lg bg-white/10 shadow-button hover:shadow-button-hover hover:bg-white/20 transition-all duration-500"
+            className="w-full max-w-xs sm:max-w-sm lg:max-w-md xl:w-80 mx-auto py-4 sm:py-6 text-base sm:text-lg font-semibold text-white border border-white/20 rounded-lg backdrop-blur-lg bg-white/10 shadow-button hover:shadow-button-hover hover:bg-white/20 transition-all duration-500"
             onClick={() => window.open('https://form.typeform.com/to/vMxYsW4Y', '_blank')}
           >
             Apply Now

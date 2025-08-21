@@ -322,11 +322,26 @@ export function LightspeedHero() {
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-blue-500/5 opacity-30" />
       <div className="absolute inset-0 opacity-[0.015] bg-noise" />
       
-      {/* Decorative lines */}
-      <div className="absolute top-1/2 left-8 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2" />
-      <div className="absolute top-1/2 right-8 w-16 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform -translate-y-1/2" />
-      <div className="absolute top-1/3 left-16 w-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-y-1/2" />
-      <div className="absolute bottom-1/3 right-16 w-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-y-1/2" />
+      {/* Decorative tech lines */}
+      {/* Left side lines */}
+      <div className="absolute top-1/2 left-8 w-20 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-y-1/2" />
+      <div className="absolute top-1/2 left-6 w-12 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-y-8" />
+      <div className="absolute top-1/2 left-10 w-8 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform translate-y-8" />
+      <div className="absolute top-1/3 left-12 w-16 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+      <div className="absolute bottom-1/3 left-4 w-14 h-px bg-gradient-to-r from-transparent via-white/35 to-transparent" />
+      
+      {/* Right side lines */}
+      <div className="absolute top-1/2 right-8 w-20 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-y-1/2" />
+      <div className="absolute top-1/2 right-6 w-12 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-y-8" />
+      <div className="absolute top-1/2 right-10 w-8 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent transform translate-y-8" />
+      <div className="absolute top-1/3 right-12 w-16 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+      <div className="absolute bottom-1/3 right-4 w-14 h-px bg-gradient-to-r from-transparent via-white/35 to-transparent" />
+      
+      {/* Additional accent lines */}
+      <div className="absolute top-1/4 left-16 w-6 h-px bg-gradient-to-r from-transparent via-orange-400/30 to-transparent" />
+      <div className="absolute bottom-1/4 right-16 w-6 h-px bg-gradient-to-r from-transparent via-orange-400/30 to-transparent" />
+      <div className="absolute top-2/3 left-20 w-4 h-px bg-gradient-to-r from-transparent via-blue-400/20 to-transparent" />
+      <div className="absolute bottom-2/3 right-20 w-4 h-px bg-gradient-to-r from-transparent via-blue-400/20 to-transparent" />
       
       <div className="max-w-2xl mx-auto px-8 py-20 text-center relative z-10">
         

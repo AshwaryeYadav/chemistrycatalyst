@@ -213,34 +213,24 @@ export function LightspeedHero() {
               <span className="i-layer i-text">I</span>
               <span className="i-layer i-tower">
                 <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor">
-                  {/* Berkeley Sather Tower (Campanile) structure */}
+                  {/* Simple campanile matching Lightspeed's clean style */}
                   
-                  {/* Base/foundation - wider and more substantial */}
-                  <rect x="6" y="78" width="23" height="14" fill="currentColor" />
+                  {/* Base */}
+                  <rect x="8" y="80" width="19" height="12" fill="currentColor" />
                   
-                  {/* Main tower shaft - tall and elegant */}
-                  <rect x="12" y="20" width="11" height="58" fill="currentColor" />
+                  {/* Main tower shaft */}
+                  <rect x="12" y="25" width="11" height="55" fill="currentColor" />
                   
-                  {/* Clock/belfry section - distinctive Berkeley style */}
-                  <rect x="8" y="12" width="19" height="8" fill="currentColor" />
+                  {/* Belfry section */}
+                  <rect x="9" y="15" width="17" height="10" fill="currentColor" />
                   
-                  {/* Arched openings in belfry - Gothic style */}
-                  <path d="M 10 14 Q 12 12 14 14 L 14 18 L 10 18 Z" fill="rgba(0,0,0,0.4)" />
-                  <path d="M 15.5 14 Q 17.5 12 19.5 14 L 19.5 18 L 15.5 18 Z" fill="rgba(0,0,0,0.4)" />
-                  <path d="M 21 14 Q 23 12 25 14 L 25 18 L 21 18 Z" fill="rgba(0,0,0,0.4)" />
+                  {/* Simple arch openings */}
+                  <rect x="11" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="16" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="21" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
                   
-                  {/* Clock face - centered */}
-                  <circle cx="17.5" cy="16" r="2.5" fill="rgba(255,255,255,0.9)" />
-                  <circle cx="17.5" cy="16" r="0.3" fill="currentColor" />
-                  
-                  {/* Crown/cornice */}
-                  <rect x="6" y="10" width="23" height="2" fill="currentColor" />
-                  
-                  {/* Pointed spire - Berkeley style pyramid */}
-                  <polygon points="17.5,2 28,10 7,10" fill="currentColor" />
-                  
-                  {/* Finial/lightning rod */}
-                  <rect x="17" y="0" width="1" height="4" fill="currentColor" />
+                  {/* Simple spire */}
+                  <polygon points="17.5,5 26,15 9,15" fill="currentColor" />
                 </svg>
               </span>
             </span>

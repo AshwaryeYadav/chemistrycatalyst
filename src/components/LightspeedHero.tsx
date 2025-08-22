@@ -102,15 +102,15 @@ const HeroL3D = memo(function HeroL3D() {
     <div
       className="mx-auto mb-6 md:mb-8"
       style={{
-        width: "180px",
-        height: "180px",
-        // Interactive container for mouse controls
+        width: "220px",
+        height: "200px",
+        // Larger container to prevent clipping during rotation
       }}
       aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [5.5, 4.0, 8.0], fov: 25 }}
+        camera={{ position: [6.5, 5.0, 10.0], fov: 22 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         shadows
       >
@@ -256,24 +256,24 @@ export function LightspeedHero() {
               <span className="i-layer i-text">I</span>
               <span className="i-layer i-tower">
                 <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor">
-                  {/* Simple campanile matching Lightspeed's clean style */}
+                  {/* Simple campanile centered like an I */}
                   
-                  {/* Base */}
-                  <rect x="8" y="80" width="13" height="12" fill="currentColor" />
+                  {/* Base - narrower and centered */}
+                  <rect x="13" y="80" width="9" height="12" fill="currentColor" />
                   
-                  {/* Main tower shaft */}
-                  <rect x="12" y="25" width="13" height="55" fill="currentColor" />
+                  {/* Main tower shaft - narrow like I width */}
+                  <rect x="15" y="25" width="5" height="55" fill="currentColor" />
                   
-                  {/* Belfry section */}
-                  <rect x="9" y="15" width="13" height="10" fill="currentColor" />
+                  {/* Belfry section - slightly wider than shaft */}
+                  <rect x="12" y="15" width="11" height="10" fill="currentColor" />
                   
-                  {/* Simple arch openings */}
-                  <rect x="11" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
-                  <rect x="16" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
-                  <rect x="21" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  {/* Simple arch openings - smaller */}
+                  <rect x="13" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="16.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="20" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
                   
-                  {/* Simple spire */}
-                  <polygon points="17.5,5 26,15 9,15" fill="currentColor" />
+                  {/* Simple spire - centered */}
+                  <polygon points="17.5,5 23,15 12,15" fill="currentColor" />
                 </svg>
               </span>
             </span>

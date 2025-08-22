@@ -49,7 +49,7 @@ function RotatingL() {
     if (group.current) group.current.rotation.y += dt * 0.25;
   });
   return (
-    <group ref={group} scale={0.6}>
+    <group ref={group} scale={[0.6, -0.6, 0.6]}>
       <LMesh />
     </group>
   );

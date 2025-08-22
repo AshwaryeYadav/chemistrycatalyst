@@ -10,14 +10,15 @@ import * as THREE from "three";
 const LMesh = memo(function LMesh() {
   const geom = useMemo(() => {
     const s = new THREE.Shape();
-    // L shape with diagonal corners like the reference
+    // L shape matching the reference - proper cuts
     s.moveTo(-2, 2);           // Top left
-    s.lineTo(-1, 3);           // Diagonal cut top left
+    s.lineTo(-1, 3);           // Diagonal cut top left  
     s.lineTo(0, 3);            // Top right of vertical stem
     s.lineTo(0, 0);            // Down to corner junction
-    s.lineTo(2, 0);            // Right across horizontal foot
-    s.lineTo(3, -1);           // Diagonal cut bottom right
-    s.lineTo(2, -2);           // Bottom right
+    s.lineTo(3, 0);            // Right across horizontal foot
+    s.lineTo(3, -2);           // Straight down (no diagonal)
+    s.lineTo(1, -2);           // Left to start triangle cut
+    s.lineTo(0, -1);           // Triangle point
     s.lineTo(-2, -2);          // Bottom left
     s.closePath();
 
@@ -150,15 +151,16 @@ export function LightspeedHero() {
     const style = document.createElement("style");
     style.textContent = `
       .i-slot{
-        --iWidth: 0.30em;
+        --iWidth: 0.35em;
         --iHeight: 0.92em;
-        --iBaseline: -0.04em;
+        --iBaseline: 0em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
         inline-size: var(--iWidth);
         block-size: var(--iHeight);
         vertical-align: var(--iBaseline);
         overflow: hidden;
+        text-align: center;
       }
       .i-layer{
         position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
@@ -210,29 +212,35 @@ export function LightspeedHero() {
             <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
               <span className="i-layer i-text">I</span>
               <span className="i-layer i-tower">
-                <svg width="0.3em" height="0.92em" viewBox="0 0 30 92" fill="currentColor">
-                  {/* Campanile tower structure */}
-                  {/* Base/foundation */}
-                  <rect x="8" y="80" width="14" height="12" fill="currentColor" />
+                <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor">
+                  {/* Berkeley Sather Tower (Campanile) structure */}
                   
-                  {/* Main tower shaft */}
-                  <rect x="10" y="25" width="10" height="55" fill="currentColor" />
+                  {/* Base/foundation - wider and more substantial */}
+                  <rect x="6" y="78" width="23" height="14" fill="currentColor" />
                   
-                  {/* Belfry section with arches */}
-                  <rect x="6" y="15" width="18" height="10" fill="currentColor" />
-                  <rect x="8" y="17" width="3" height="6" fill="none" />
-                  <rect x="12" y="17" width="3" height="6" fill="none" />
-                  <rect x="16" y="17" width="3" height="6" fill="none" />
+                  {/* Main tower shaft - tall and elegant */}
+                  <rect x="12" y="20" width="11" height="58" fill="currentColor" />
                   
-                  {/* Clock face */}
-                  <circle cx="15" cy="20" r="2" fill="rgba(0,0,0,0.3)" />
-                  <circle cx="15" cy="20" r="0.5" fill="currentColor" />
+                  {/* Clock/belfry section - distinctive Berkeley style */}
+                  <rect x="8" y="12" width="19" height="8" fill="currentColor" />
                   
-                  {/* Spire/roof */}
-                  <polygon points="15,5 25,15 5,15" fill="currentColor" />
+                  {/* Arched openings in belfry - Gothic style */}
+                  <path d="M 10 14 Q 12 12 14 14 L 14 18 L 10 18 Z" fill="rgba(0,0,0,0.4)" />
+                  <path d="M 15.5 14 Q 17.5 12 19.5 14 L 19.5 18 L 15.5 18 Z" fill="rgba(0,0,0,0.4)" />
+                  <path d="M 21 14 Q 23 12 25 14 L 25 18 L 21 18 Z" fill="rgba(0,0,0,0.4)" />
                   
-                  {/* Cap under spire */}
-                  <rect x="4" y="13" width="22" height="2" fill="currentColor" />
+                  {/* Clock face - centered */}
+                  <circle cx="17.5" cy="16" r="2.5" fill="rgba(255,255,255,0.9)" />
+                  <circle cx="17.5" cy="16" r="0.3" fill="currentColor" />
+                  
+                  {/* Crown/cornice */}
+                  <rect x="6" y="10" width="23" height="2" fill="currentColor" />
+                  
+                  {/* Pointed spire - Berkeley style pyramid */}
+                  <polygon points="17.5,2 28,10 7,10" fill="currentColor" />
+                  
+                  {/* Finial/lightning rod */}
+                  <rect x="17" y="0" width="1" height="4" fill="currentColor" />
                 </svg>
               </span>
             </span>

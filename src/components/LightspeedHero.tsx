@@ -196,7 +196,7 @@ export function LightspeedHero() {
       .i-slot{
         --iWidth: 0.35em;
         --iHeight: 0.92em;
-        --iBaseline: -0.12em;
+        --iBaseline: -0.05em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
         inline-size: var(--iWidth);
@@ -206,7 +206,7 @@ export function LightspeedHero() {
         text-align: center;
       }
       .i-layer{
-        position:absolute; inset:0; display:flex; align-items:baseline; justify-content:center;
+        position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
         will-change: opacity, transform;
         transition: opacity .32s cubic-bezier(.2,.7,.2,1),
                     transform .38s cubic-bezier(.3,.7,.2,1);
@@ -250,43 +250,34 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* LIGHTSPEED with campanile overlay */}
-            <span style={{ position: 'relative', display: 'inline-block' }}>
-              LIGHTSPEED
-              <span 
-                style={{
-                  position: 'absolute',
-                  left: '0.76em', // Position over the "I"
-                  top: '0',
-                  opacity: iAsTower ? 1 : 0,
-                  transition: 'opacity 0.5s ease',
-                  display: 'inline-block',
-                  width: '0.35em',
-                  textAlign: 'center'
-                }}
-              >
-                <svg width="0.35em" height="1em" viewBox="0 0 35 100" fill="currentColor">
-                  {/* Uniform width campanile */}
+            {/* L + IGHTSPEED with morphing I */}
+            <span>L</span>
+            <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
+              <span className="i-layer i-text">I</span>
+              <span className="i-layer i-tower">
+                <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor">
+                  {/* Uniform width campanile like a simple I */}
                   
-                  {/* Base */}
-                  <rect x="12" y="85" width="11" height="15" fill="currentColor" />
+                  {/* Base - same width as body */}
+                  <rect x="12" y="80" width="11" height="12" fill="currentColor" />
                   
-                  {/* Main tower shaft */}
-                  <rect x="12" y="25" width="11" height="60" fill="currentColor" />
+                  {/* Main tower shaft - uniform width */}
+                  <rect x="12" y="25" width="11" height="55" fill="currentColor" />
                   
-                  {/* Belfry section */}
+                  {/* Belfry section - same width as shaft */}
                   <rect x="12" y="15" width="11" height="10" fill="currentColor" />
                   
-                  {/* Simple arch openings */}
+                  {/* Simple arch openings - proportional */}
                   <rect x="13.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
                   <rect x="16.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
                   <rect x="19.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
                   
-                  {/* Simple spire */}
+                  {/* Simple spire - matching base width */}
                   <polygon points="17.5,5 23,15 12,15" fill="currentColor" />
                 </svg>
               </span>
             </span>
+            <span>GHTSPEED</span>
             <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
               FELLOWS

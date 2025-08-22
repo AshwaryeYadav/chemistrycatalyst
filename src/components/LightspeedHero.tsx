@@ -256,24 +256,37 @@ export function LightspeedHero() {
               <span className="i-layer i-text">I</span>
               <span className="i-layer i-tower">
                 <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor">
-                  {/* Uniform width campanile like a simple I */}
+                  {/* Detailed campanile matching the reference logo */}
                   
-                  {/* Base - same width as body */}
+                  {/* Base - uniform width */}
                   <rect x="12" y="80" width="11" height="12" fill="currentColor" />
                   
                   {/* Main tower shaft - uniform width */}
-                  <rect x="12" y="25" width="11" height="55" fill="currentColor" />
+                  <rect x="12" y="30" width="11" height="50" fill="currentColor" />
                   
-                  {/* Belfry section - same width as shaft */}
-                  <rect x="12" y="15" width="11" height="10" fill="currentColor" />
+                  {/* Upper belfry section - slightly wider with detailed arches */}
+                  <rect x="10" y="18" width="15" height="12" fill="currentColor" />
                   
-                  {/* Simple arch openings - proportional */}
-                  <rect x="13.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
-                  <rect x="16.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
-                  <rect x="19.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
+                  {/* Gothic arched openings - more detailed */}
+                  <path d="M 12 22 Q 14 19 16 22 L 16 27 L 12 27 Z" fill="rgba(0,0,0,0.4)" />
+                  <path d="M 17 22 Q 19 19 21 22 L 21 27 L 17 27 Z" fill="rgba(0,0,0,0.4)" />
+                  <path d="M 22 22 Q 24 19 26 22 L 26 27 L 22 27 Z" fill="rgba(0,0,0,0.4)" />
                   
-                  {/* Simple spire - matching base width */}
-                  <polygon points="17.5,5 23,15 12,15" fill="currentColor" />
+                  {/* Small upper windows */}
+                  <rect x="13" y="20" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                  <rect x="16" y="20" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                  <rect x="19" y="20" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                  <rect x="22" y="20" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                  
+                  {/* Crown/cornice */}
+                  <rect x="9" y="16" width="17" height="2" fill="currentColor" />
+                  
+                  {/* Detailed spire with ornate top */}
+                  <polygon points="17.5,4 26,16 9,16" fill="currentColor" />
+                  
+                  {/* Spire details */}
+                  <rect x="17" y="2" width="1" height="4" fill="currentColor" />
+                  <polygon points="17.5,1 18.5,3 16.5,3" fill="currentColor" />
                 </svg>
               </span>
             </span>

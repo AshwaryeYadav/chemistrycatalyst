@@ -139,7 +139,7 @@ export function LightspeedHero() {
     ["AppDynamics", "Nutanix", "UiPath"],
     ["Affirm", "MindBody", "Nicira"],
   ];
-  const descriptions = ["builders", "founders", "engineers", "hackers"];
+  const descriptions = ["builders.", "founders.", "engineers.", "hackers."];
 
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
@@ -329,7 +329,7 @@ export function LightspeedHero() {
             <span className="text-white font-medium relative">
               {typingText}
               <span className="animate-pulse ml-0.5 text-[#ED6C5C]">|</span>
-            </span>.
+            </span>
           </div>
           <div
             className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
@@ -351,7 +351,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-semibold text-white border-2 border-[#ED6C5C]/40 rounded-full backdrop-blur-lg bg-gradient-to-r from-[#ED6C5C]/10 to-[#ED6C5C]/5 hover:from-[#ED6C5C]/20 hover:to-[#ED6C5C]/10 hover:bg-white/10 hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:border-[#ED6C5C]/60 hover:scale-105 transform transition-all duration-300 shadow-[0_0_15px_rgba(237,108,92,0.3)]"
+            className="w-56 mx-auto py-4 text-base font-bold text-black border-2 border-white/30 rounded-full bg-white hover:bg-[#ED6C5C] hover:border-[#ED6C5C] hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300 animate-pulse"
             onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
           >
             APPLY

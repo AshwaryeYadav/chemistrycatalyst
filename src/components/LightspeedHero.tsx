@@ -6,34 +6,28 @@ import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** Extruded L built from the flat silhouette; exact color #ED6C5C */
+/** Lightspeed logo L built from rectangular blocks matching the SVG */
 const LMesh = memo(function LMesh() {
-  const geom = useMemo(() => {
-    const s = new THREE.Shape();
-    s.moveTo(-1.5, 3.5);
-    s.lineTo(-1.5, -3.5);
-    s.lineTo(1.8, -3.5);
-    s.lineTo(0.0, -1.7);
-    s.lineTo(-0.6, -1.7);
-    s.lineTo(-0.6, 3.5);
-    s.closePath();
-
-    const g = new THREE.ExtrudeGeometry(s, {
-      depth: 0.6,
-      bevelEnabled: true,
-      bevelThickness: 0.1,
-      bevelSize: 0.08,
-      bevelSegments: 4,
-      curveSegments: 12,
-    });
-    g.center();
-    return g;
-  }, []);
-
   return (
-    <mesh geometry={geom} castShadow receiveShadow>
-      <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
-    </mesh>
+    <group>
+      {/* Vertical block (tall rectangle) */}
+      <mesh position={[-1.2, 0.5, 0]} castShadow receiveShadow>
+        <boxGeometry args={[1, 3, 1]} />
+        <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
+      </mesh>
+      
+      {/* Horizontal block (wide rectangle) */}
+      <mesh position={[0.3, -1, 0]} castShadow receiveShadow>
+        <boxGeometry args={[3, 1, 1]} />
+        <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
+      </mesh>
+      
+      {/* Corner block (connecting piece) */}
+      <mesh position={[-0.7, -0.5, 0]} castShadow receiveShadow>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
+      </mesh>
+    </group>
   );
 });
 

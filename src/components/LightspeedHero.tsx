@@ -56,15 +56,15 @@ const HeroL3D = memo(function HeroL3D() {
     <div
       className="mx-auto mb-6 md:mb-8 pointer-events-none"
       style={{
-        width: "240px",
-        height: "200px",
-        // Larger container to prevent clipping during rotation
+        width: "300px",
+        height: "250px",
+        // Even larger container to fully prevent clipping during rotation
       }}
       aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [3.2, 2.8, 4.5], fov: 35 }}
+        camera={{ position: [4.0, 3.5, 6.0], fov: 30 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         shadows
       >

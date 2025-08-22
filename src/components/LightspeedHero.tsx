@@ -196,7 +196,7 @@ export function LightspeedHero() {
       .i-slot{
         --iWidth: 0.35em;
         --iHeight: 0.92em;
-        --iBaseline: -0.08em;
+        --iBaseline: 0em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
         inline-size: var(--iWidth);
@@ -206,7 +206,7 @@ export function LightspeedHero() {
         text-align: center;
       }
       .i-layer{
-        position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+        position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
         will-change: opacity, transform;
         transition: opacity .32s cubic-bezier(.2,.7,.2,1),
                     transform .38s cubic-bezier(.3,.7,.2,1);

@@ -259,13 +259,13 @@ export function LightspeedHero() {
                   {/* Simple campanile matching Lightspeed's clean style */}
                   
                   {/* Base */}
-                  <rect x="8" y="80" width="19" height="12" fill="currentColor" />
+                  <rect x="8" y="80" width="13" height="12" fill="currentColor" />
                   
                   {/* Main tower shaft */}
-                  <rect x="12" y="25" width="11" height="55" fill="currentColor" />
+                  <rect x="12" y="25" width="13" height="55" fill="currentColor" />
                   
                   {/* Belfry section */}
-                  <rect x="9" y="15" width="17" height="10" fill="currentColor" />
+                  <rect x="9" y="15" width="13" height="10" fill="currentColor" />
                   
                   {/* Simple arch openings */}
                   <rect x="11" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />

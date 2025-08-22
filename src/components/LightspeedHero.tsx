@@ -246,6 +246,17 @@ export function LightspeedHero() {
       @media (prefers-reduced-motion: reduce){
         .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
       }
+      
+      @keyframes subtle-pulse {
+        0%, 100% { 
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% { 
+          opacity: 0.85;
+          transform: scale(1.02);
+        }
+      }
     `;
     document.head.appendChild(style);
     return () => style.remove();
@@ -351,7 +362,10 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-bold text-black border-2 border-white/30 rounded-full bg-white hover:bg-[#ED6C5C] hover:border-[#ED6C5C] hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300 animate-pulse"
+            className="w-56 mx-auto py-4 text-base font-bold text-black border-2 border-white/30 rounded-full bg-white hover:bg-[#ED6C5C] hover:border-[#ED6C5C] hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300"
+            style={{
+              animation: 'subtle-pulse 3s ease-in-out infinite'
+            }}
             onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
           >
             APPLY

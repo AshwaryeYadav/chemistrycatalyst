@@ -256,33 +256,33 @@ export function LightspeedHero() {
               <span className="i-layer i-text">I</span>
               <span className="i-layer i-tower">
                 <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor" style={{verticalAlign: 'baseline'}}>
-                  {/* Detailed campanile - positioned to align base with baseline */}
+                  {/* Campanile with base aligned to text baseline */}
                   
-                  {/* Base - positioned at bottom of viewBox */}
-                  <rect x="12" y="80" width="11" height="12" fill="currentColor" />
+                  {/* Base - positioned at text baseline level */}
+                  <rect x="12" y="68" width="11" height="8" fill="currentColor" />
                   
-                  {/* Main tower shaft */}
-                  <rect x="12" y="20" width="11" height="60" fill="currentColor" />
+                  {/* Main tower shaft - shortened */}
+                  <rect x="12" y="25" width="11" height="43" fill="currentColor" />
                   
                   {/* Upper belfry section */}
-                  <rect x="10" y="8" width="15" height="12" fill="currentColor" />
+                  <rect x="10" y="13" width="15" height="12" fill="currentColor" />
                   
                   {/* Gothic arched openings */}
-                  <path d="M 12 12 Q 14 9 16 12 L 16 17 L 12 17 Z" fill="rgba(0,0,0,0.4)" />
-                  <path d="M 17 12 Q 19 9 21 12 L 21 17 L 17 17 Z" fill="rgba(0,0,0,0.4)" />
-                  <path d="M 22 12 Q 24 9 26 12 L 26 17 L 22 17 Z" fill="rgba(0,0,0,0.4)" />
+                  <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
+                  <path d="M 17 17 Q 19 14 21 17 L 21 22 L 17 22 Z" fill="rgba(0,0,0,0.4)" />
+                  <path d="M 22 17 Q 24 14 26 17 L 26 22 L 22 22 Z" fill="rgba(0,0,0,0.4)" />
                   
                   {/* Small upper windows */}
-                  <rect x="13" y="10" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  <rect x="16" y="10" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  <rect x="19" y="10" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  <rect x="22" y="10" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                  <rect x="13" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                  <rect x="16" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                  <rect x="19" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                  <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
                   
                   {/* Crown/cornice */}
-                  <rect x="9" y="6" width="17" height="2" fill="currentColor" />
+                  <rect x="9" y="11" width="17" height="2" fill="currentColor" />
                   
                   {/* Detailed spire */}
-                  <polygon points="17.5,0 26,6 9,6" fill="currentColor" />
+                  <polygon points="17.5,2 26,11 9,11" fill="currentColor" />
                 </svg>
               </span>
             </span>

@@ -102,15 +102,15 @@ const HeroL3D = memo(function HeroL3D() {
     <div
       className="mx-auto mb-6 md:mb-8"
       style={{
-        width: "220px",
-        height: "200px",
-        // Larger container to prevent clipping during rotation
+        width: "180px",
+        height: "180px",
+        // Interactive container for mouse controls
       }}
       aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [6.5, 5.0, 10.0], fov: 22 }}
+        camera={{ position: [5.5, 4.0, 8.0], fov: 25 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         shadows
       >
@@ -196,7 +196,7 @@ export function LightspeedHero() {
       .i-slot{
         --iWidth: 0.35em;
         --iHeight: 0.92em;
-        --iBaseline: -0.05em;
+        --iBaseline: -0.15em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
         inline-size: var(--iWidth);
@@ -206,7 +206,7 @@ export function LightspeedHero() {
         text-align: center;
       }
       .i-layer{
-        position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
+        position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
         will-change: opacity, transform;
         transition: opacity .32s cubic-bezier(.2,.7,.2,1),
                     transform .38s cubic-bezier(.3,.7,.2,1);
@@ -256,37 +256,24 @@ export function LightspeedHero() {
               <span className="i-layer i-text">I</span>
               <span className="i-layer i-tower">
                 <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor">
-                  {/* Detailed campanile matching the reference logo */}
+                  {/* Simple campanile matching Lightspeed's clean style */}
                   
-                  {/* Base - uniform width */}
-                  <rect x="12" y="80" width="11" height="12" fill="currentColor" />
+                  {/* Base */}
+                  <rect x="8" y="80" width="13" height="12" fill="currentColor" />
                   
-                  {/* Main tower shaft - uniform width */}
-                  <rect x="12" y="30" width="11" height="50" fill="currentColor" />
+                  {/* Main tower shaft */}
+                  <rect x="12" y="25" width="13" height="55" fill="currentColor" />
                   
-                  {/* Upper belfry section - slightly wider with detailed arches */}
-                  <rect x="10" y="18" width="15" height="12" fill="currentColor" />
+                  {/* Belfry section */}
+                  <rect x="9" y="15" width="13" height="10" fill="currentColor" />
                   
-                  {/* Gothic arched openings - more detailed */}
-                  <path d="M 12 22 Q 14 19 16 22 L 16 27 L 12 27 Z" fill="rgba(0,0,0,0.4)" />
-                  <path d="M 17 22 Q 19 19 21 22 L 21 27 L 17 27 Z" fill="rgba(0,0,0,0.4)" />
-                  <path d="M 22 22 Q 24 19 26 22 L 26 27 L 22 27 Z" fill="rgba(0,0,0,0.4)" />
+                  {/* Simple arch openings */}
+                  <rect x="11" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="16" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="21" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
                   
-                  {/* Small upper windows */}
-                  <rect x="13" y="20" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  <rect x="16" y="20" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  <rect x="19" y="20" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  <rect x="22" y="20" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  
-                  {/* Crown/cornice */}
-                  <rect x="9" y="16" width="17" height="2" fill="currentColor" />
-                  
-                  {/* Detailed spire with ornate top */}
-                  <polygon points="17.5,4 26,16 9,16" fill="currentColor" />
-                  
-                  {/* Spire details */}
-                  <rect x="17" y="2" width="1" height="4" fill="currentColor" />
-                  <polygon points="17.5,1 18.5,3 16.5,3" fill="currentColor" />
+                  {/* Simple spire */}
+                  <polygon points="17.5,5 26,15 9,15" fill="currentColor" />
                 </svg>
               </span>
             </span>

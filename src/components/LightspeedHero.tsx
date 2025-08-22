@@ -10,16 +10,15 @@ import * as THREE from "three";
 const LMesh = memo(function LMesh() {
   const geom = useMemo(() => {
     const s = new THREE.Shape();
-    // L shape matching the reference - proper cuts
-    s.moveTo(-2, 2);           // Top left
-    s.lineTo(-1, 3);           // Diagonal cut top left  
-    s.lineTo(0, 3);            // Top right of vertical stem
-    s.lineTo(0, 0);            // Down to corner junction
-    s.lineTo(3, 0);            // Right across horizontal foot
-    s.lineTo(3, -2);           // Straight down (no diagonal)
-    s.lineTo(1, -2);           // Left to start triangle cut
-    s.lineTo(0, -1);           // Triangle point
-    s.lineTo(-2, -2);          // Bottom left
+    // Simple L shape exactly like Lightspeed logo
+    s.moveTo(-2, 3);           // Top left
+    s.lineTo(3, -2);           // Diagonal cut top-left to bottom-right
+    s.lineTo(3, -3);           // Bottom right
+    s.lineTo(-3, -3);          // Bottom left
+    s.lineTo(-3, 0);           // Up to horizontal junction
+    s.lineTo(0, 0);            // Right to vertical junction
+    s.lineTo(0, 3);            // Up to top right of vertical
+    s.lineTo(-2, 3);           // Back to start
     s.closePath();
 
     const g = new THREE.ExtrudeGeometry(s, {

@@ -10,15 +10,18 @@ import * as THREE from "three";
 const LMesh = memo(function LMesh() {
   const geom = useMemo(() => {
     const s = new THREE.Shape();
-    // Simple L shape exactly like Lightspeed logo
-    s.moveTo(-2, 3);           // Top left
-    s.lineTo(3, -2);           // Diagonal cut top-left to bottom-right
-    s.lineTo(3, -3);           // Bottom right
-    s.lineTo(-3, -3);          // Bottom left
-    s.lineTo(-3, 0);           // Up to horizontal junction
-    s.lineTo(0, 0);            // Right to vertical junction
-    s.lineTo(0, 3);            // Up to top right of vertical
-    s.lineTo(-2, 3);           // Back to start
+    // Exact Lightspeed L shape from SVG: points="65.2,65.2 32.6,65.2 32.6,32.6 0,0 0,32.6 0,65.2 0,97.8 32.6,97.8 65.2,97.8 97.8,97.8"
+    // Scaled and centered for Three.js
+    s.moveTo(2, 2);            // 65.2,65.2 
+    s.lineTo(-1, 2);           // 32.6,65.2
+    s.lineTo(-1, -1);          // 32.6,32.6
+    s.lineTo(-3.5, -3.5);      // 0,0 (diagonal cut)
+    s.lineTo(-3.5, -1);        // 0,32.6
+    s.lineTo(-3.5, 2);         // 0,65.2  
+    s.lineTo(-3.5, 4);         // 0,97.8
+    s.lineTo(-1, 4);           // 32.6,97.8
+    s.lineTo(2, 4);            // 65.2,97.8
+    s.lineTo(3.5, 4);          // 97.8,97.8
     s.closePath();
 
     const g = new THREE.ExtrudeGeometry(s, {

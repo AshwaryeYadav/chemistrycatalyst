@@ -196,7 +196,7 @@ export function LightspeedHero() {
       .i-slot{
         --iWidth: 0.35em;
         --iHeight: 0.92em;
-        --iBaseline: 0em;
+        --iBaseline: -0.12em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
         inline-size: var(--iWidth);

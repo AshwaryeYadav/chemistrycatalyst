@@ -78,8 +78,8 @@ function RotatingL() {
 
   const handlePointerUp = () => {
     setIsDragging(false);
-    // Resume auto-rotation after 3 seconds of inactivity
-    setTimeout(() => setAutoRotate(true), 3000);
+    // Resume auto-rotation immediately
+    setAutoRotate(true);
   };
 
   return (
@@ -320,7 +320,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-semibold text-white border border-white/15 rounded-full backdrop-blur-lg bg-white/5 hover:bg-white/10 transition-all"
+            className="w-56 mx-auto py-4 text-base font-semibold text-white border border-white/15 rounded-full backdrop-blur-lg bg-white/5 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(237,108,92,0.5)] hover:border-[#ED6C5C]/30 transition-all duration-300"
             onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
           >
             APPLY

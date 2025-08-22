@@ -102,15 +102,15 @@ const HeroL3D = memo(function HeroL3D() {
     <div
       className="mx-auto mb-6 md:mb-8"
       style={{
-        width: "220px",
-        height: "200px",
-        // Larger container to prevent clipping during rotation
+        width: "320px",
+        height: "280px",
+        // Much larger container for seamless rotation without clipping
       }}
       aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [6.5, 5.0, 10.0], fov: 22 }}
+        camera={{ position: [8.0, 6.0, 12.0], fov: 20 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         shadows
       >
@@ -289,12 +289,17 @@ export function LightspeedHero() {
               className="text-white"
               style={{
                 textShadow: `
-                  0 1px 0 rgba(255,255,255,0.2),
-                  0 2px 4px rgba(0,0,0,0.4),
-                  0 4px 8px rgba(0,0,0,0.3),
-                  0 8px 16px rgba(0,0,0,0.2),
-                  ${mousePosition.x * 0.5}px ${mousePosition.y * 0.5}px 14px rgba(0,0,0,0.25)
+                  0 1px 0 rgba(255,255,255,0.3),
+                  0 2px 0 rgba(255,255,255,0.2),
+                  0 3px 0 rgba(0,0,0,0.1),
+                  0 4px 2px rgba(0,0,0,0.2),
+                  0 6px 4px rgba(0,0,0,0.3),
+                  0 8px 8px rgba(0,0,0,0.4),
+                  0 12px 16px rgba(0,0,0,0.3),
+                  ${mousePosition.x * 0.8}px ${mousePosition.y * 0.8}px 20px rgba(0,0,0,0.4)
                 `,
+                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.5))',
+                transform: `translateZ(12px) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
               }}
             >
               {/* L + IGHTSPEED with morphing I */}
@@ -335,18 +340,19 @@ export function LightspeedHero() {
               </span>
               <span>GHTSPEED</span>
             </div>
-            <br />
-            {/* FELLOWS with enhanced 3D gradient effect */}
+            {/* FELLOWS with grey color and glow */}
             <div 
-              className="bg-clip-text text-transparent bg-gradient-to-br from-[#ED6C5C] via-orange-400 to-red-500"
+              className="text-gray-400"
               style={{
                 textShadow: `
-                  0 2px 4px rgba(237, 108, 92, 0.3),
-                  0 4px 8px rgba(237, 108, 92, 0.2),
-                  0 8px 16px rgba(237, 108, 92, 0.1)
+                  0 1px 0 rgba(255,255,255,0.1),
+                  0 2px 4px rgba(156, 163, 175, 0.4),
+                  0 4px 8px rgba(156, 163, 175, 0.3),
+                  0 8px 16px rgba(156, 163, 175, 0.2)
                 `,
-                filter: 'drop-shadow(0 4px 8px rgba(237, 108, 92, 0.4))',
+                filter: 'drop-shadow(0 4px 8px rgba(156, 163, 175, 0.3))',
                 transform: 'translateZ(8px)',
+                marginTop: '-0.2em'
               }}
             >
               FELLOWS

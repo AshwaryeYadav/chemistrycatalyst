@@ -6,39 +6,91 @@ import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** Lightspeed logo L built from rectangular blocks matching the SVG */
+/** Lightspeed logo L with diagonal cut corners */
 const LMesh = memo(function LMesh() {
+  const geom = useMemo(() => {
+    const s = new THREE.Shape();
+    // Exact Lightspeed L shape from SVG: points="65.2,65.2 32.6,65.2 32.6,32.6 0,0 0,32.6 0,65.2 0,97.8 32.6,97.8 65.2,97.8 97.8,97.8"
+    // Scaled and centered for Three.js
+    s.moveTo(2, 2);            // 65.2,65.2 
+    s.lineTo(-1, 2);           // 32.6,65.2
+    s.lineTo(-1, -1);          // 32.6,32.6
+    s.lineTo(-3.5, -3.5);      // 0,0 (diagonal cut)
+    s.lineTo(-3.5, -1);        // 0,32.6
+    s.lineTo(-3.5, 2);         // 0,65.2  
+    s.lineTo(-3.5, 4);         // 0,97.8
+    s.lineTo(-1, 4);           // 32.6,97.8
+    s.lineTo(2, 4);            // 65.2,97.8
+    s.lineTo(3.5, 4);          // 97.8,97.8
+    s.closePath();
+
+    const g = new THREE.ExtrudeGeometry(s, {
+      depth: 1.2,
+      bevelEnabled: true,
+      bevelThickness: 0.05,
+      bevelSize: 0.03,
+      bevelSegments: 2,
+    });
+    g.center();
+    return g;
+  }, []);
+
   return (
-    <group>
-      {/* Vertical block (tall rectangle) */}
-      <mesh position={[-1.2, 0.5, 0]} castShadow receiveShadow>
-        <boxGeometry args={[1, 3, 1]} />
-        <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
-      </mesh>
-      
-      {/* Horizontal block (wide rectangle) */}
-      <mesh position={[0.3, -1, 0]} castShadow receiveShadow>
-        <boxGeometry args={[3, 1, 1]} />
-        <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
-      </mesh>
-      
-      {/* Corner block (connecting piece) */}
-      <mesh position={[-0.7, -0.5, 0]} castShadow receiveShadow>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
-      </mesh>
-    </group>
+    <mesh geometry={geom} castShadow receiveShadow>
+      <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
+    </mesh>
   );
 });
 
-/** Rotator lives *inside* <Canvas>, so we can safely use useFrame */
+/** Interactive rotating L with mouse controls */
 function RotatingL() {
   const group = useRef<THREE.Group>(null!);
+  const [isDragging, setIsDragging] = useState(false);
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [previousMousePosition, setPreviousMousePosition] = useState({ x: 0, y: 0 });
+
   useFrame((_s, dt) => {
-    if (group.current) group.current.rotation.y += dt * 0.25;
+    if (group.current && autoRotate && !isDragging) {
+      group.current.rotation.y += dt * 0.25;
+    }
   });
+
+  const handlePointerDown = (event: any) => {
+    setIsDragging(true);
+    setAutoRotate(false);
+    setPreviousMousePosition({ x: event.clientX, y: event.clientY });
+    event.target.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: any) => {
+    if (!isDragging || !group.current) return;
+    
+    const deltaMove = {
+      x: event.clientX - previousMousePosition.x,
+      y: event.clientY - previousMousePosition.y
+    };
+
+    group.current.rotation.y += deltaMove.x * 0.01;
+    group.current.rotation.x += deltaMove.y * 0.01;
+    
+    setPreviousMousePosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const handlePointerUp = () => {
+    setIsDragging(false);
+    // Resume auto-rotation after 3 seconds of inactivity
+    setTimeout(() => setAutoRotate(true), 3000);
+  };
+
   return (
-    <group ref={group} scale={0.6}>
+    <group 
+      ref={group} 
+      scale={[0.6, -0.6, 0.6]}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+    >
       <LMesh />
     </group>
   );
@@ -48,11 +100,11 @@ function RotatingL() {
 const HeroL3D = memo(function HeroL3D() {
   return (
     <div
-      className="mx-auto mb-6 md:mb-8 pointer-events-none"
+      className="mx-auto mb-6 md:mb-8"
       style={{
         width: "180px",
         height: "180px",
-        // Compact container with distant camera to prevent clipping
+        // Interactive container for mouse controls
       }}
       aria-hidden
     >
@@ -142,18 +194,19 @@ export function LightspeedHero() {
     const style = document.createElement("style");
     style.textContent = `
       .i-slot{
-        --iWidth: 0.30em;
+        --iWidth: 0.35em;
         --iHeight: 0.92em;
-        --iBaseline: -0.04em;
+        --iBaseline: 0em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
         inline-size: var(--iWidth);
         block-size: var(--iHeight);
         vertical-align: var(--iBaseline);
         overflow: hidden;
+        text-align: center;
       }
       .i-layer{
-        position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
+        position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
         will-change: opacity, transform;
         transition: opacity .32s cubic-bezier(.2,.7,.2,1),
                     transform .38s cubic-bezier(.3,.7,.2,1);
@@ -197,8 +250,34 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* REGULAR TEXT L now */}
-            <span>LIGHTSPEED</span>
+            {/* L + IGHTSPEED with morphing I */}
+            <span>L</span>
+            <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
+              <span className="i-layer i-text">I</span>
+              <span className="i-layer i-tower">
+                <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor">
+                  {/* Simple campanile matching Lightspeed's clean style */}
+                  
+                  {/* Base */}
+                  <rect x="8" y="80" width="19" height="12" fill="currentColor" />
+                  
+                  {/* Main tower shaft */}
+                  <rect x="12" y="25" width="11" height="55" fill="currentColor" />
+                  
+                  {/* Belfry section */}
+                  <rect x="9" y="15" width="17" height="10" fill="currentColor" />
+                  
+                  {/* Simple arch openings */}
+                  <rect x="11" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="16" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="21" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  
+                  {/* Simple spire */}
+                  <polygon points="17.5,5 26,15 9,15" fill="currentColor" />
+                </svg>
+              </span>
+            </span>
+            <span>GHTSPEED</span>
             <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
               FELLOWS

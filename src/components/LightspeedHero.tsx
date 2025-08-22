@@ -44,7 +44,7 @@ function RotatingL() {
     if (group.current) group.current.rotation.y += dt * 0.25;
   });
   return (
-    <group ref={group}>
+    <group ref={group} scale={0.6}>
       <LMesh />
     </group>
   );
@@ -56,15 +56,15 @@ const HeroL3D = memo(function HeroL3D() {
     <div
       className="mx-auto mb-6 md:mb-8 pointer-events-none"
       style={{
-        width: "160px",
-        height: "160px",
-        // on small screens we keep it compact; tweak as desired
+        width: "180px",
+        height: "180px",
+        // Compact container with distant camera to prevent clipping
       }}
       aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [2.5, 2.2, 3.8], fov: 25 }}
+        camera={{ position: [5.5, 4.0, 8.0], fov: 25 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         shadows
       >

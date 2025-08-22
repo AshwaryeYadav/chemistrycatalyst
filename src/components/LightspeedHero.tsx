@@ -389,7 +389,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-bold text-black border border-white/20 rounded-full bg-white/10 backdrop-blur-xl hover:bg-[#ED6C5C]/20 hover:border-[#ED6C5C]/40 hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300"
+            className="w-56 mx-auto py-4 text-base font-bold text-white border border-[#ED6C5C]/30 rounded-full bg-[#ED6C5C]/20 backdrop-blur-xl hover:bg-[#ED6C5C]/40 hover:border-[#ED6C5C]/60 hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300"
             style={{
               animation: 'subtle-pulse 3s ease-in-out infinite'
             }}

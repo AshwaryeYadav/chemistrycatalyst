@@ -256,23 +256,23 @@ export function LightspeedHero() {
               <span className="i-layer i-text">I</span>
               <span className="i-layer i-tower">
                 <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor">
-                  {/* Simple campanile centered like an I */}
+                  {/* Uniform width campanile like a simple I */}
                   
-                  {/* Base - narrower and centered */}
-                  <rect x="13" y="80" width="9" height="12" fill="currentColor" />
+                  {/* Base - same width as body */}
+                  <rect x="12" y="80" width="11" height="12" fill="currentColor" />
                   
-                  {/* Main tower shaft - narrow like I width */}
-                  <rect x="15" y="25" width="5" height="55" fill="currentColor" />
+                  {/* Main tower shaft - uniform width */}
+                  <rect x="12" y="25" width="11" height="55" fill="currentColor" />
                   
-                  {/* Belfry section - slightly wider than shaft */}
+                  {/* Belfry section - same width as shaft */}
                   <rect x="12" y="15" width="11" height="10" fill="currentColor" />
                   
-                  {/* Simple arch openings - smaller */}
-                  <rect x="13" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
+                  {/* Simple arch openings - proportional */}
+                  <rect x="13.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
                   <rect x="16.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
-                  <rect x="20" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="19.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
                   
-                  {/* Simple spire - centered */}
+                  {/* Simple spire - matching base width */}
                   <polygon points="17.5,5 23,15 12,15" fill="currentColor" />
                 </svg>
               </span>

@@ -172,14 +172,14 @@ export function LightspeedHero() {
           setIsDeleting(false);
           setCurrentDescription((p) => (p + 1) % descriptions.length);
         }
-      }, 100);
+      }, 80);
     } else {
       if (typingText === currentWord) {
         timeout = setTimeout(() => setIsDeleting(true), 2000);
       } else {
         timeout = setTimeout(() => {
           setTypingText(currentWord.substring(0, typingText.length + 1));
-        }, 150);
+        }, 120);
       }
     }
 
@@ -337,7 +337,7 @@ export function LightspeedHero() {
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
             {">"} A year-long fellowship for Berkeley's top{" "}
-            <span className="text-white font-medium relative">
+            <span className="text-white font-medium relative inline-block min-w-[120px]">
               {typingText}
               <span className="animate-pulse ml-0.5 text-[#ED6C5C]">|</span>
             </span>
@@ -362,7 +362,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-bold text-black border-2 border-white/30 rounded-full bg-white hover:bg-[#ED6C5C] hover:border-[#ED6C5C] hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300"
+            className="w-56 mx-auto py-4 text-base font-bold text-black border border-white/20 rounded-full bg-white/10 backdrop-blur-xl hover:bg-[#ED6C5C]/20 hover:border-[#ED6C5C]/40 hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300"
             style={{
               animation: 'subtle-pulse 3s ease-in-out infinite'
             }}

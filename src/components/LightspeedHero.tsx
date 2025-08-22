@@ -129,6 +129,7 @@ const HeroL3D = memo(function HeroL3D() {
 });
 
 /* --------------------------------- Hero --------------------------------- */
+
 export function LightspeedHero() {
   const companyGroups = [
     ["Stripe", "Anthropic", "Anduril"],
@@ -145,6 +146,8 @@ export function LightspeedHero() {
   const [isPaused, setIsPaused] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [iAsTower, setIAsTower] = useState(false);
+  const [typingText, setTypingText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // cycles
@@ -157,13 +160,38 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, [isPaused, companyGroups.length]);
 
+  // Typing animation effect
   useEffect(() => {
-    const id = setInterval(
-      () => setCurrentDescription((p) => (p + 1) % descriptions.length),
-      3600
-    );
-    return () => clearInterval(id);
-  }, [descriptions.length]);
+    const currentWord = descriptions[currentDescription];
+    let timeout: NodeJS.Timeout;
+
+    if (isDeleting) {
+      timeout = setTimeout(() => {
+        setTypingText(currentWord.substring(0, typingText.length - 1));
+        if (typingText === "") {
+          setIsDeleting(false);
+          setCurrentDescription((p) => (p + 1) % descriptions.length);
+        }
+      }, 100);
+    } else {
+      if (typingText === currentWord) {
+        timeout = setTimeout(() => setIsDeleting(true), 2000);
+      } else {
+        timeout = setTimeout(() => {
+          setTypingText(currentWord.substring(0, typingText.length + 1));
+        }, 150);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [typingText, isDeleting, currentDescription, descriptions]);
+
+  // Initialize first word
+  useEffect(() => {
+    if (typingText === "" && !isDeleting) {
+      setTypingText(descriptions[0].substring(0, 1));
+    }
+  }, []);
 
   // mouse tilt (subtle 3D feel on the whole wordmark)
   useEffect(() => {
@@ -298,7 +326,10 @@ export function LightspeedHero() {
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
             {">"} A year-long fellowship for Berkeley's top{" "}
-            <span className="text-white font-medium">{descriptions[currentDescription]}</span>.
+            <span className="text-white font-medium relative">
+              {typingText}
+              <span className="animate-pulse ml-0.5 text-[#ED6C5C]">|</span>
+            </span>.
           </div>
           <div
             className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
@@ -320,7 +351,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-semibold text-white border border-white/15 rounded-full backdrop-blur-lg bg-white/5 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(237,108,92,0.5)] hover:border-[#ED6C5C]/30 transition-all duration-300"
+            className="w-56 mx-auto py-4 text-base font-semibold text-white border-2 border-[#ED6C5C]/40 rounded-full backdrop-blur-lg bg-gradient-to-r from-[#ED6C5C]/10 to-[#ED6C5C]/5 hover:from-[#ED6C5C]/20 hover:to-[#ED6C5C]/10 hover:bg-white/10 hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:border-[#ED6C5C]/60 hover:scale-105 transform transition-all duration-300 shadow-[0_0_15px_rgba(237,108,92,0.3)]"
             onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
           >
             APPLY

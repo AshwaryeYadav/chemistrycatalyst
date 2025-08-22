@@ -102,15 +102,15 @@ const HeroL3D = memo(function HeroL3D() {
     <div
       className="mx-auto mb-6 md:mb-8"
       style={{
-        width: "220px",
-        height: "200px",
-        // Larger container to prevent clipping during rotation
+        width: "320px",
+        height: "280px",
+        // Much larger container for seamless rotation without clipping
       }}
       aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [6.5, 5.0, 10.0], fov: 22 }}
+        camera={{ position: [8.0, 6.0, 12.0], fov: 20 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         shadows
       >
@@ -277,59 +277,86 @@ export function LightspeedHero() {
 
         <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1
-            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight text-white"
+            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight"
             style={{
               display: "inline-block",
               transform: `rotateX(${-mousePosition.y * 0.45}deg) rotateY(${mousePosition.x * 0.45}deg) translateZ(18px)`,
-              textShadow: `
-                0 1px 0 rgba(255,255,255,0.1),
-                0 2px 4px rgba(0,0,0,0.35),
-                ${mousePosition.x * 0.5}px ${mousePosition.y * 0.5}px 14px rgba(0,0,0,0.25)
-              `,
               transformStyle: "preserve-3d",
             }}
           >
-            {/* L + IGHTSPEED with morphing I */}
-            <span>L</span>
-            <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
-              <span className="i-layer i-text">I</span>
-              <span className="i-layer i-tower">
-                <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor" style={{verticalAlign: 'baseline'}}>
-                  {/* Campanile with base aligned to text baseline */}
-                  
-                  {/* Base - positioned at text baseline level */}
-                  <rect x="12" y="68" width="11" height="8" fill="currentColor" />
-                  
-                  {/* Main tower shaft - shortened */}
-                  <rect x="12" y="25" width="11" height="43" fill="currentColor" />
-                  
-                  {/* Upper belfry section */}
-                  <rect x="10" y="13" width="15" height="12" fill="currentColor" />
-                  
-                  {/* Gothic arched openings */}
-                  <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
-                  <path d="M 17 17 Q 19 14 21 17 L 21 22 L 17 22 Z" fill="rgba(0,0,0,0.4)" />
-                  <path d="M 22 17 Q 24 14 26 17 L 26 22 L 22 22 Z" fill="rgba(0,0,0,0.4)" />
-                  
-                  {/* Small upper windows */}
-                  <rect x="13" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  <rect x="16" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  <rect x="19" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                  
-                  {/* Crown/cornice */}
-                  <rect x="9" y="11" width="17" height="2" fill="currentColor" />
-                  
-                  {/* Detailed spire */}
-                  <polygon points="17.5,2 26,11 9,11" fill="currentColor" />
-                </svg>
+            {/* LIGHTSPEED with enhanced 3D effects */}
+            <div 
+              className="text-white"
+              style={{
+                textShadow: `
+                  0 1px 0 rgba(255,255,255,0.3),
+                  0 2px 0 rgba(255,255,255,0.2),
+                  0 3px 0 rgba(0,0,0,0.1),
+                  0 4px 2px rgba(0,0,0,0.2),
+                  0 6px 4px rgba(0,0,0,0.3),
+                  0 8px 8px rgba(0,0,0,0.4),
+                  0 12px 16px rgba(0,0,0,0.3),
+                  ${mousePosition.x * 0.8}px ${mousePosition.y * 0.8}px 20px rgba(0,0,0,0.4)
+                `,
+                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.5))',
+                transform: `translateZ(12px) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
+              }}
+            >
+              {/* L + IGHTSPEED with morphing I */}
+              <span>L</span>
+              <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
+                <span className="i-layer i-text">I</span>
+                <span className="i-layer i-tower">
+                  <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor" style={{verticalAlign: 'baseline'}}>
+                    {/* Campanile with base aligned to text baseline */}
+                    
+                    {/* Base - positioned at text baseline level */}
+                    <rect x="12" y="68" width="11" height="8" fill="currentColor" />
+                    
+                    {/* Main tower shaft - shortened */}
+                    <rect x="12" y="25" width="11" height="43" fill="currentColor" />
+                    
+                    {/* Upper belfry section */}
+                    <rect x="10" y="13" width="15" height="12" fill="currentColor" />
+                    
+                    {/* Gothic arched openings */}
+                    <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
+                    <path d="M 17 17 Q 19 14 21 17 L 21 22 L 17 22 Z" fill="rgba(0,0,0,0.4)" />
+                    <path d="M 22 17 Q 24 14 26 17 L 26 22 L 22 22 Z" fill="rgba(0,0,0,0.4)" />
+                    
+                    {/* Small upper windows */}
+                    <rect x="13" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    <rect x="16" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    <rect x="19" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    
+                    {/* Crown/cornice */}
+                    <rect x="9" y="11" width="17" height="2" fill="currentColor" />
+                    
+                    {/* Detailed spire */}
+                    <polygon points="17.5,2 26,11 9,11" fill="currentColor" />
+                  </svg>
+                </span>
               </span>
-            </span>
-            <span>GHTSPEED</span>
-            <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+              <span>GHTSPEED</span>
+            </div>
+            {/* FELLOWS with grey color and glow */}
+            <div 
+              className="text-gray-400"
+              style={{
+                textShadow: `
+                  0 1px 0 rgba(255,255,255,0.1),
+                  0 2px 4px rgba(156, 163, 175, 0.4),
+                  0 4px 8px rgba(156, 163, 175, 0.3),
+                  0 8px 16px rgba(156, 163, 175, 0.2)
+                `,
+                filter: 'drop-shadow(0 4px 8px rgba(156, 163, 175, 0.3))',
+                transform: 'translateZ(8px)',
+                marginTop: '-0.2em'
+              }}
+            >
               FELLOWS
-            </span>
+            </div>
           </h1>
         </div>
 
@@ -337,7 +364,7 @@ export function LightspeedHero() {
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
             {">"} A year-long fellowship for Berkeley's top{" "}
-            <span className="text-white font-medium relative inline-block min-w-[120px]">
+            <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
               {typingText}
               <span className="animate-pulse ml-0.5 text-[#ED6C5C]">|</span>
             </span>
@@ -362,7 +389,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-bold text-black border border-white/20 rounded-full bg-white/10 backdrop-blur-xl hover:bg-[#ED6C5C]/10 hover:border-[#ED6C5C]/40 hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300"
+            className="w-56 mx-auto py-4 text-base font-bold text-white border border-[#ED6C5C]/40 rounded-full bg-[#ED6C5C]/35 backdrop-blur-xl hover:bg-[#ED6C5C]/55 hover:border-[#ED6C5C]/70 hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300"
             style={{
               animation: 'subtle-pulse 3s ease-in-out infinite'
             }}

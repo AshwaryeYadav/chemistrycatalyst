@@ -205,8 +205,38 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* REGULAR TEXT L now */}
-            <span>LIGHTSPEED</span>
+            {/* L + IGHTSPEED with morphing I */}
+            <span>L</span>
+            <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
+              <span className="i-layer i-text">I</span>
+              <span className="i-layer i-tower">
+                <svg width="0.3em" height="0.92em" viewBox="0 0 30 92" fill="currentColor">
+                  {/* Campanile tower structure */}
+                  {/* Base/foundation */}
+                  <rect x="8" y="80" width="14" height="12" fill="currentColor" />
+                  
+                  {/* Main tower shaft */}
+                  <rect x="10" y="25" width="10" height="55" fill="currentColor" />
+                  
+                  {/* Belfry section with arches */}
+                  <rect x="6" y="15" width="18" height="10" fill="currentColor" />
+                  <rect x="8" y="17" width="3" height="6" fill="none" />
+                  <rect x="12" y="17" width="3" height="6" fill="none" />
+                  <rect x="16" y="17" width="3" height="6" fill="none" />
+                  
+                  {/* Clock face */}
+                  <circle cx="15" cy="20" r="2" fill="rgba(0,0,0,0.3)" />
+                  <circle cx="15" cy="20" r="0.5" fill="currentColor" />
+                  
+                  {/* Spire/roof */}
+                  <polygon points="15,5 25,15 5,15" fill="currentColor" />
+                  
+                  {/* Cap under spire */}
+                  <rect x="4" y="13" width="22" height="2" fill="currentColor" />
+                </svg>
+              </span>
+            </span>
+            <span>GHTSPEED</span>
             <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
               FELLOWS

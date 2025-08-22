@@ -10,18 +10,16 @@ import * as THREE from "three";
 const LMesh = memo(function LMesh() {
   const geom = useMemo(() => {
     const s = new THREE.Shape();
-    // Exact Lightspeed L shape from SVG: points="65.2,65.2 32.6,65.2 32.6,32.6 0,0 0,32.6 0,65.2 0,97.8 32.6,97.8 65.2,97.8 97.8,97.8"
-    // Scaled and centered for Three.js
-    s.moveTo(2, 2);            // 65.2,65.2 
-    s.lineTo(-1, 2);           // 32.6,65.2
-    s.lineTo(-1, -1);          // 32.6,32.6
-    s.lineTo(-3.5, -3.5);      // 0,0 (diagonal cut)
-    s.lineTo(-3.5, -1);        // 0,32.6
-    s.lineTo(-3.5, 2);         // 0,65.2  
-    s.lineTo(-3.5, 4);         // 0,97.8
-    s.lineTo(-1, 4);           // 32.6,97.8
-    s.lineTo(2, 4);            // 65.2,97.8
-    s.lineTo(3.5, 4);          // 97.8,97.8
+    s.moveTo(2, 2);            
+    s.lineTo(-1, 2);           
+    s.lineTo(-1, -1);          
+    s.lineTo(-3.5, -3.5);      
+    s.lineTo(-3.5, -1);        
+    s.lineTo(-3.5, 2);         
+    s.lineTo(-3.5, 4);         
+    s.lineTo(-1, 4);           
+    s.lineTo(2, 4);            
+    s.lineTo(3.5, 4);          
     s.closePath();
 
     const g = new THREE.ExtrudeGeometry(s, {
@@ -78,7 +76,6 @@ function RotatingL() {
 
   const handlePointerUp = () => {
     setIsDragging(false);
-    // Resume auto-rotation after 3 seconds of inactivity
     setTimeout(() => setAutoRotate(true), 3000);
   };
 
@@ -101,16 +98,12 @@ const HeroL3D = memo(function HeroL3D() {
   return (
     <div
       className="mx-auto mb-6 md:mb-8"
-      style={{
-        width: "220px",
-        height: "200px",
-        // Larger container to prevent clipping during rotation
-      }}
+      style={{ width: "180px", height: "180px" }}
       aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [6.5, 5.0, 10.0], fov: 22 }}
+        camera={{ position: [5.5, 4.0, 8.0], fov: 25 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         shadows
       >
@@ -165,7 +158,7 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, [descriptions.length]);
 
-  // mouse tilt (subtle 3D feel on the whole wordmark)
+  // mouse tilt
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const el = containerRef.current;
@@ -189,32 +182,38 @@ export function LightspeedHero() {
     return () => clearInterval(id);
   }, []);
 
-  // CSS for tighter IN-SLOT morph (unchanged)
+  // CSS bottom alignment fix
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
       .i-slot{
         --iWidth: 0.35em;
-        --iHeight: 0.92em;
-        --iBaseline: -0.05em;
+        --iHeight: 1em;
+        --iBaseline: 0em;
         --towerNudgeX: 0px;
-        position: relative; display:inline-block;
+        --towerNudgeY: 0px;
+
+        position: relative;
+        display:inline-block;
         inline-size: var(--iWidth);
         block-size: var(--iHeight);
         vertical-align: var(--iBaseline);
-        overflow: hidden;
+        overflow: visible;
         text-align: center;
       }
       .i-layer{
-        position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
+        position:absolute;
+        left:0; right:0; bottom:0;
+        display:flex; justify-content:center; align-items:flex-end;
         will-change: opacity, transform;
+        transform-origin:center bottom;
         transition: opacity .32s cubic-bezier(.2,.7,.2,1),
                     transform .38s cubic-bezier(.3,.7,.2,1);
       }
       .i-text  { opacity:1;  transform: translateY(0)    scale(1); }
-      .i-tower { opacity:0;  transform: translateY(3%)   scale(.985) translateX(var(--towerNudgeX)); }
+      .i-tower { opacity:0;  transform: translateY(3%)   scale(.985) translateX(var(--towerNudgeX)) translateY(var(--towerNudgeY)); }
       .i-slot.on .i-text  { opacity:0; transform: translateY(-3%)  scale(.985); }
-      .i-slot.on .i-tower { opacity:1; transform: translateY(0%)   scale(1)    translateX(var(--towerNudgeX)); }
+      .i-slot.on .i-tower { opacity:1; transform: translateY(0%)   scale(1)    translateX(var(--towerNudgeX)) translateY(var(--towerNudgeY)); }
       @media (prefers-reduced-motion: reduce){
         .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
       }
@@ -233,7 +232,6 @@ export function LightspeedHero() {
       <div className="absolute inset-0 opacity-[0.03] bg-noise" />
 
       <div className="max-w-2xl mx-auto px-8 py-16 md:py-20 text-center relative z-10">
-        {/* 3D L artwork ABOVE the wordmark */}
         <HeroL3D />
 
         <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
@@ -250,30 +248,25 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* L + IGHTSPEED with morphing I */}
             <span>L</span>
             <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
               <span className="i-layer i-text">I</span>
               <span className="i-layer i-tower">
-                <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor">
-                  {/* Uniform width campanile like a simple I */}
-                  
-                  {/* Base - same width as body */}
-                  <rect x="12" y="80" width="11" height="12" fill="currentColor" />
-                  
-                  {/* Main tower shaft - uniform width */}
-                  <rect x="12" y="25" width="11" height="55" fill="currentColor" />
-                  
-                  {/* Belfry section - same width as shaft */}
-                  <rect x="12" y="15" width="11" height="10" fill="currentColor" />
-                  
-                  {/* Simple arch openings - proportional */}
-                  <rect x="13.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
-                  <rect x="16.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
-                  <rect x="19.5" y="17" width="2" height="6" fill="rgba(0,0,0,0.4)" />
-                  
-                  {/* Simple spire - matching base width */}
-                  <polygon points="17.5,5 23,15 12,15" fill="currentColor" />
+                <svg
+                  width="0.35em"
+                  viewBox="0 0 35 92"
+                  preserveAspectRatio="xMidYMax meet"
+                  style={{ display: "block" }}
+                  fill="currentColor"
+                  aria-hidden
+                >
+                  <rect x="8" y="80" width="13" height="12" />
+                  <rect x="12" y="25" width="13" height="55" />
+                  <rect x="9" y="15" width="13" height="10" />
+                  <rect x="11" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="16" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  <rect x="21" y="17" width="3" height="6" fill="rgba(0,0,0,0.4)" />
+                  <polygon points="17.5,5 26,15 9,15" />
                 </svg>
               </span>
             </span>

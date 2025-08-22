@@ -6,28 +6,36 @@ import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** Lightspeed logo L built from rectangular blocks matching the SVG */
+/** Lightspeed logo L with diagonal cut corners */
 const LMesh = memo(function LMesh() {
+  const geom = useMemo(() => {
+    const s = new THREE.Shape();
+    // L shape with diagonal corners like the reference
+    s.moveTo(-2, 2);           // Top left
+    s.lineTo(-1, 3);           // Diagonal cut top left
+    s.lineTo(0, 3);            // Top right of vertical stem
+    s.lineTo(0, 0);            // Down to corner junction
+    s.lineTo(2, 0);            // Right across horizontal foot
+    s.lineTo(3, -1);           // Diagonal cut bottom right
+    s.lineTo(2, -2);           // Bottom right
+    s.lineTo(-2, -2);          // Bottom left
+    s.closePath();
+
+    const g = new THREE.ExtrudeGeometry(s, {
+      depth: 1.2,
+      bevelEnabled: true,
+      bevelThickness: 0.05,
+      bevelSize: 0.03,
+      bevelSegments: 2,
+    });
+    g.center();
+    return g;
+  }, []);
+
   return (
-    <group>
-      {/* Vertical block (tall rectangle) */}
-      <mesh position={[-1.2, 0.5, 0]} castShadow receiveShadow>
-        <boxGeometry args={[1, 3, 1]} />
-        <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
-      </mesh>
-      
-      {/* Horizontal block (wide rectangle) */}
-      <mesh position={[0.3, -1, 0]} castShadow receiveShadow>
-        <boxGeometry args={[3, 1, 1]} />
-        <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
-      </mesh>
-      
-      {/* Corner block (connecting piece) */}
-      <mesh position={[-0.7, -0.5, 0]} castShadow receiveShadow>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
-      </mesh>
-    </group>
+    <mesh geometry={geom} castShadow receiveShadow>
+      <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
+    </mesh>
   );
 });
 

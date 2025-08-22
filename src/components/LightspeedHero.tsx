@@ -206,7 +206,7 @@ export function LightspeedHero() {
         text-align: center;
       }
       .i-layer{
-        position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
+        position:absolute; inset:0; display:flex; align-items:baseline; justify-content:center;
         will-change: opacity, transform;
         transition: opacity .32s cubic-bezier(.2,.7,.2,1),
                     transform .38s cubic-bezier(.3,.7,.2,1);

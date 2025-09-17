@@ -1,244 +1,408 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chemistry Fellows Program | Chemistry VC</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <div class="hero-branding">
-                    <h1 class="hero-title">
-                        <span class="chemistry-text">CHEMI<span class="campanile-container"><span class="campanile">🗼</span><span class="campanile-i">I</span></span>TRY</span>
-                        <span class="highlight">FELLOWS</span>
-                    </h1>
-                    <h2 class="hero-subtitle">
-                        Join the next generation of technology leaders through Chemistry VC's comprehensive fellowship program for Berkeley students.
-                    </h2>
-                </div>
-                <div class="hero-cta">
-                    <a href="https://form.typeform.com/to/vMxYsW4Y" class="primary-button">
-                        Apply Now
-                    </a>
-                </div>
-                
-                <!-- Deadline Timer -->
-                <div class="deadline-timer">
-                    <div class="timer-header">
-                        <i class="fas fa-clock"></i>
-                        <span>Applications Close In</span>
-                    </div>
-                    <div class="timer-display">
-                        <div class="timer-unit">
-                            <span class="timer-number" id="days">00</span>
-                            <span class="timer-label">Days</span>
-                        </div>
-                        <div class="timer-unit">
-                            <span class="timer-number" id="hours">00</span>
-                            <span class="timer-label">Hours</span>
-                        </div>
-                        <div class="timer-unit">
-                            <span class="timer-number" id="minutes">00</span>
-                            <span class="timer-label">Minutes</span>
-                        </div>
-                        <div class="timer-unit">
-                            <span class="timer-number" id="seconds">00</span>
-                            <span class="timer-label">Seconds</span>
-                        </div>
-                    </div>
+// src/components/LightspeedHero.tsx
+import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useState, memo, useMemo } from "react";
+
+/* --------------------------- THREE: 3D Lightspeed L --------------------------- */
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+
+/** Lightspeed logo L with diagonal cut corners */
+const LMesh = memo(function LMesh() {
+  const geom = useMemo(() => {
+    const s = new THREE.Shape();
+    // Exact Lightspeed L shape from SVG: points="65.2,65.2 32.6,65.2 32.6,32.6 0,0 0,32.6 0,65.2 0,97.8 32.6,97.8 65.2,97.8 97.8,97.8"
+    // Scaled and centered for Three.js
+    s.moveTo(2, 2);            // 65.2,65.2 
+    s.lineTo(-1, 2);           // 32.6,65.2
+    s.lineTo(-1, -1);          // 32.6,32.6
+    s.lineTo(-3.5, -3.5);      // 0,0 (diagonal cut)
+    s.lineTo(-3.5, -1);        // 0,32.6
+    s.lineTo(-3.5, 2);         // 0,65.2  
+    s.lineTo(-3.5, 4);         // 0,97.8
+    s.lineTo(-1, 4);           // 32.6,97.8
+    s.lineTo(2, 4);            // 65.2,97.8
+    s.lineTo(3.5, 4);          // 97.8,97.8
+    s.closePath();
+
+    const g = new THREE.ExtrudeGeometry(s, {
+      depth: 1.2,
+      bevelEnabled: true,
+      bevelThickness: 0.05,
+      bevelSize: 0.03,
+      bevelSegments: 2,
+    });
+    g.center();
+    return g;
+  }, []);
+
+  return (
+    <mesh geometry={geom} castShadow receiveShadow>
+      <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
+    </mesh>
+  );
+});
+
+/** Interactive rotating L with mouse controls */
+function RotatingL() {
+  const group = useRef<THREE.Group>(null!);
+  const [isDragging, setIsDragging] = useState(false);
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [previousMousePosition, setPreviousMousePosition] = useState({ x: 0, y: 0 });
+
+  useFrame((_s, dt) => {
+    if (group.current && autoRotate && !isDragging) {
+      group.current.rotation.y += dt * 0.25;
+    }
+  });
+
+  const handlePointerDown = (event: any) => {
+    setIsDragging(true);
+    setAutoRotate(false);
+    setPreviousMousePosition({ x: event.clientX, y: event.clientY });
+    event.target.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: any) => {
+    if (!isDragging || !group.current) return;
+    
+    const deltaMove = {
+      x: event.clientX - previousMousePosition.x,
+      y: event.clientY - previousMousePosition.y
+    };
+
+    group.current.rotation.y += deltaMove.x * 0.01;
+    group.current.rotation.x += deltaMove.y * 0.01;
+    
+    setPreviousMousePosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const handlePointerUp = () => {
+    setIsDragging(false);
+    // Resume auto-rotation immediately
+    setAutoRotate(true);
+  };
+
+  return (
+    <group 
+      ref={group} 
+      scale={[0.6, -0.6, 0.6]}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+    >
+      <LMesh />
+    </group>
+  );
+}
+
+/** Top artwork: standalone 3D L above the wordmark */
+const HeroL3D = memo(function HeroL3D() {
+  return (
+    <div
+      className="mx-auto mb-6 md:mb-8"
+      style={{
+        width: "320px",
+        height: "280px",
+        // Much larger container for seamless rotation without clipping
+      }}
+      aria-hidden
+    >
+      <Canvas
+        dpr={[1, 2]}
+        camera={{ position: [8.0, 6.0, 12.0], fov: 20 }}
+        style={{ width: "100%", height: "100%", display: "block" }}
+        shadows
+      >
+        <ambientLight intensity={0.25} />
+        <directionalLight
+          position={[3, 6, 5]}
+          castShadow
+          intensity={1.1}
+          shadow-mapSize={[1024, 1024]}
+        />
+        <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
+        <RotatingL />
+      </Canvas>
+    </div>
+  );
+});
+
+/* --------------------------------- Hero --------------------------------- */
+
+export function LightspeedHero() {
+  const companyGroups = [
+    ["Stripe", "Anthropic", "Anduril"],
+    ["Wiz", "Glean", "Rubrik"],
+    ["Anduril", "Rubrik", "Mulesoft"],
+    ["Snap", "Mulesoft", "Nest"],
+    ["AppDynamics", "Nutanix", "UiPath"],
+    ["Affirm", "MindBody", "Nicira"],
+  ];
+  const descriptions = ["builders.", "founders.", "engineers.", "hackers."];
+
+  const [currentGroup, setCurrentGroup] = useState(0);
+  const [currentDescription, setCurrentDescription] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [iAsTower, setIAsTower] = useState(false);
+  const [typingText, setTypingText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // cycles
+  useEffect(() => {
+    if (isPaused) return;
+    const id = setInterval(
+      () => setCurrentGroup((p) => (p + 1) % companyGroups.length),
+      2400
+    );
+    return () => clearInterval(id);
+  }, [isPaused, companyGroups.length]);
+
+  // Typing animation effect
+  useEffect(() => {
+    const currentWord = descriptions[currentDescription];
+    let timeout: NodeJS.Timeout;
+
+    if (isDeleting) {
+      timeout = setTimeout(() => {
+        setTypingText(currentWord.substring(0, typingText.length - 1));
+        if (typingText === "") {
+          setIsDeleting(false);
+          setCurrentDescription((p) => (p + 1) % descriptions.length);
+        }
+      }, 80);
+    } else {
+      if (typingText === currentWord) {
+        timeout = setTimeout(() => setIsDeleting(true), 2000);
+      } else {
+        timeout = setTimeout(() => {
+          setTypingText(currentWord.substring(0, typingText.length + 1));
+        }, 120);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [typingText, isDeleting, currentDescription, descriptions]);
+
+  // Initialize first word
+  useEffect(() => {
+    if (typingText === "" && !isDeleting) {
+      setTypingText(descriptions[0].substring(0, 1));
+    }
+  }, []);
+
+  // mouse tilt (subtle 3D feel on the whole wordmark)
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const el = containerRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width / 2) / r.width;
+      const y = (e.clientY - r.top - r.height / 2) / r.height;
+      setMousePosition({ x: x * 20, y: y * 20 });
+    };
+    const el = containerRef.current;
+    if (!el) return;
+    el.addEventListener("mousemove", handleMouseMove);
+    return () => el.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  // morph I
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+    const id = setInterval(() => setIAsTower((v) => !v), 6000);
+    return () => clearInterval(id);
+  }, []);
+
+  // CSS for tighter IN-SLOT morph (unchanged)
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      .i-slot{
+        --iWidth: 0.35em;
+        --iHeight: 0.92em;
+        --iBaseline: -0.15em;
+        --towerNudgeX: 0px;
+        position: relative; display:inline-block;
+        inline-size: var(--iWidth);
+        block-size: var(--iHeight);
+        vertical-align: var(--iBaseline);
+        overflow: hidden;
+        text-align: center;
+      }
+      .i-layer{
+        position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
+        will-change: opacity, transform;
+        transition: opacity .32s cubic-bezier(.2,.7,.2,1),
+                    transform .38s cubic-bezier(.3,.7,.2,1);
+      }
+      .i-text  { opacity:1;  transform: translateY(0)    scale(1); }
+      .i-tower { opacity:0;  transform: translateY(3%)   scale(.985) translateX(var(--towerNudgeX)); }
+      .i-slot.on .i-text  { opacity:0; transform: translateY(-3%)  scale(.985); }
+      .i-slot.on .i-tower { opacity:1; transform: translateY(0%)   scale(1)    translateX(var(--towerNudgeX)); }
+      @media (prefers-reduced-motion: reduce){
+        .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
+      }
+      
+      @keyframes subtle-pulse {
+        0%, 100% { 
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% { 
+          opacity: 0.85;
+          transform: scale(1.02);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => style.remove();
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden"
+      style={{ perspective: "1000px" }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-[#ED6C5C]/10 opacity-40" />
+      <div className="absolute inset-0 opacity-[0.03] bg-noise" />
+
+      <div className="max-w-2xl mx-auto px-8 py-16 md:py-20 text-center relative z-10">
+        {/* 3D L artwork ABOVE the wordmark */}
+        <HeroL3D />
+
+        <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
+          <h1
+            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight"
+            style={{
+              display: "inline-block",
+              transform: `rotateX(${-mousePosition.y * 0.45}deg) rotateY(${mousePosition.x * 0.45}deg) translateZ(18px)`,
+              transformStyle: "preserve-3d",
+            }}
+          >
+            {/* LIGHTSPEED with enhanced 3D effects */}
+            <div 
+              className="text-white"
+              style={{
+                textShadow: `
+                  0 1px 0 rgba(255,255,255,0.3),
+                  0 2px 0 rgba(255,255,255,0.2),
+                  0 3px 0 rgba(0,0,0,0.1),
+                  0 4px 2px rgba(0,0,0,0.2),
+                  0 6px 4px rgba(0,0,0,0.3),
+                  0 8px 8px rgba(0,0,0,0.4),
+                  0 12px 16px rgba(0,0,0,0.3),
+                  ${mousePosition.x * 0.8}px ${mousePosition.y * 0.8}px 20px rgba(0,0,0,0.4)
+                `,
+                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.5))',
+                transform: `translateZ(12px) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
+              }}
+            >
+              {/* L + IGHTSPEED with morphing I */}
+              <span>L</span>
+              <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
+                <span className="i-layer i-text">I</span>
+                <span className="i-layer i-tower">
+                  <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor" style={{verticalAlign: 'baseline'}}>
+                    {/* Campanile with base aligned to text baseline */}
                     
-                </div>
-                
-
-            </div>
-            <div class="hero-visual">
-                <div class="floating-elements">
-                    <div class="element element-1">🚀</div>
-                    <div class="element element-2">💡</div>
-                    <div class="element element-3">⚡</div>
-                    <div class="element element-4">🎯</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Program Overview Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="section-header fade-in">
-                <h2>Program Overview</h2>
-                <p>The program will run concurrently with the Berkeley 2025-2026 academic calendar.</p>
-            </div>
-            <div class="overview-content">
-                <div class="overview-text fade-in">
-                    <p class="overview-intro">The Chemistry Fellows Program is designed to provide exceptional technical students with direct mentorship from our partners and access to our extensive network of founders and industry leaders.</p>
+                    {/* Base - positioned at text baseline level */}
+                    <rect x="12" y="68" width="11" height="8" fill="currentColor" />
                     
-                    <div class="features-grid">
-                        <div class="feature-card fade-in">
-                            <div class="feature-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <h3>Direct Mentorship</h3>
-                            <p>Work directly with Chemistry VC partners who will provide hands-on guidance throughout your fellowship experience.</p>
-                        </div>
-                        <div class="feature-card fade-in">
-                            <div class="feature-icon">
-                                <i class="fas fa-network-wired"></i>
-                            </div>
-                            <h3>Network Access</h3>
-                            <p>Connect with fellow students, alumni, and professionals across the Chemistry VC & wider technology ecosystem.</p>
-                        </div>
-                        <div class="feature-card fade-in">
-                            <div class="feature-icon">
-                                <i class="fas fa-briefcase"></i>
-                            </div>
-                            <h3>Career Opportunities</h3>
-                            <p>Exclusive access to internships, full-time roles, and startup opportunities within our network.</p>
-                        </div>
-                        <div class="feature-card fade-in">
-                            <div class="feature-icon">
-                                <i class="fas fa-graduation-cap"></i>
-                            </div>
-                            <h3>Learning Resources</h3>
-                            <p>Monthly workshops, events, and educational content designed to accelerate your professional development.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="partners-integration fade-in">
-                    <h3>Hands-On Partner Involvement</h3>
-                    <p>Our partners will be actively involved with the cohort, providing direct mentorship and guidance throughout the program.</p>
+                    {/* Main tower shaft - shortened */}
+                    <rect x="12" y="25" width="11" height="43" fill="currentColor" />
                     
-                    <div class="partners-preview">
-                        <div class="partner-preview">
-                            <div class="partner-avatar james-alcorn">
-                                <img src="images/james-alcorn.jpg" alt="James Alcorn" class="partner-photo">
-                            </div>
-                            <div class="partner-preview-info">
-                                <h4>James Alcorn</h4>
-                                <p>Early-stage investments in enterprise software and AI</p>
-                            </div>
-                            <div class="partner-expanded">
-                                <div class="partner-expanded-content">
-                                    <div class="partner-expanded-avatar">
-                                        <img src="images/james-alcorn.jpg" alt="James Alcorn">
-                                    </div>
-                                    <div class="partner-expanded-info">
-                                        <h5>James Alcorn</h5>
-                                        <p>Partner at Chemistry VC focusing on early-stage investments in enterprise software and AI. James brings deep technical expertise and a track record of identifying breakthrough technologies.</p>
-                                    </div>
-                                </div>
-                                <div class="partner-expanded-links">
-                                    <a href="#" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
-                                    <a href="#" target="_blank"><i class="fas fa-globe"></i> Bio</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="partner-preview">
-                            <div class="partner-avatar faraz-fatemi">
-                                <img src="images/1649219385219.jpeg" alt="Faraz Fatemi" class="partner-photo">
-                            </div>
-                            <div class="partner-preview-info">
-                                <h4>Faraz Fatemi</h4>
-                                <p>Early-stage investments in consumer platforms and AI applications</p>
-                            </div>
-                            <div class="partner-expanded">
-                                <div class="partner-expanded-content">
-                                    <div class="partner-expanded-avatar">
-                                        <img src="images/1649219385219.jpeg" alt="Faraz Fatemi">
-                                    </div>
-                                    <div class="partner-expanded-info">
-                                        <h5>Faraz Fatemi</h5>
-                                        <p>Partner at Chemistry VC specializing in growth-stage investments in enterprise software and infrastructure. Faraz has extensive experience scaling companies and building lasting partnerships.</p>
-                                    </div>
-                                </div>
-                                <div class="partner-expanded-links">
-                                    <a href="#" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
-                                    <a href="#" target="_blank"><i class="fas fa-globe"></i> Bio</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    {/* Upper belfry section */}
+                    <rect x="10" y="13" width="15" height="12" fill="currentColor" />
+                    
+                    {/* Gothic arched openings */}
+                    <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
+                    <path d="M 17 17 Q 19 14 21 17 L 21 22 L 17 22 Z" fill="rgba(0,0,0,0.4)" />
+                    <path d="M 22 17 Q 24 14 26 17 L 26 22 L 22 22 Z" fill="rgba(0,0,0,0.4)" />
+                    
+                    {/* Small upper windows */}
+                    <rect x="13" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    <rect x="16" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    <rect x="19" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    
+                    {/* Crown/cornice */}
+                    <rect x="9" y="11" width="17" height="2" fill="currentColor" />
+                    
+                    {/* Detailed spire */}
+                    <polygon points="17.5,2 26,11 9,11" fill="currentColor" />
+                  </svg>
+                </span>
+              </span>
+              <span>GHTSPEED</span>
             </div>
+            {/* FELLOWS with grey color and glow */}
+            <div 
+              className="text-gray-400"
+              style={{
+                textShadow: `
+                  0 1px 0 rgba(255,255,255,0.1),
+                  0 2px 4px rgba(156, 163, 175, 0.4),
+                  0 4px 8px rgba(156, 163, 175, 0.3),
+                  0 8px 16px rgba(156, 163, 175, 0.2)
+                `,
+                filter: 'drop-shadow(0 4px 8px rgba(156, 163, 175, 0.3))',
+                transform: 'translateZ(8px)',
+                marginTop: '-0.2em'
+              }}
+            >
+              FELLOWS
+            </div>
+          </h1>
         </div>
-    </section>
 
-
-    <!-- Eligibility Section -->
-    <section id="eligibility" class="eligibility">
-        <div class="container">
-            <div class="section-header fade-in">
-                <h2>Who Should Apply</h2>
-                <p>We're looking for exceptional students passionate about technology and innovation</p>
-            </div>
-            <div class="eligibility-content">
-                <div class="eligibility-criteria">
-                    <h3>Eligibility Criteria</h3>
-                    <ul class="criteria-list">
-                        <li><i class="fas fa-check"></i> Currently enrolled undergraduate or graduate student</li>
-                        <li><i class="fas fa-check"></i> Strong academic performance and demonstrated technical skills</li>
-                        <li><i class="fas fa-check"></i> Passion for technology, innovation, and entrepreneurship</li>
-                        <li><i class="fas fa-check"></i> Leadership experience or potential for leadership</li>
-                        <li><i class="fas fa-check"></i> Available to participate in program activities and events</li>
-                    </ul>
-                </div>
-                <div class="eligibility-note">
-                    <div class="note-card">
-                        <h4><i class="fas fa-lightbulb"></i> What We Look For</h4>
-                        <p>We welcome all applicants who have demonstrated strong technical foundations and leadership potential. We value diversity of thought, background, and experience.</p>
-                    </div>
-                </div>
-            </div>
+        {/* body */}
+        <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
+          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
+            {">"} A year-long fellowship for Berkeley's top{" "}
+            <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
+              {typingText}
+              <span className="animate-pulse ml-0.5 text-[#ED6C5C]">|</span>
+            </span>
+          </div>
+          <div
+            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            {">"} Backed by investors behind{" "}
+            <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
+              <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
+              {", "}
+              <span className="text-white font-medium">{companyGroups[currentGroup][1]}</span>
+              {", "}
+              <span className="text-white font-medium">{companyGroups[currentGroup][2]}</span>
+            </span>
+            .
+          </div>
         </div>
-    </section>
 
-    <!-- Application Section -->
-    <section id="apply" class="application">
-        <div class="container">
-            <div class="section-header">
-                <h2>Application</h2>
-                <p>Complete your application to join the Chemistry Fellows program</p>
-            </div>
-            <div class="application-container">
-                <div class="typeform-embed">
-                    <iframe 
-                        src="https://form.typeform.com/to/vMxYsW4Y" 
-                        width="100%" 
-                        height="800px" 
-                        frameborder="0" 
-                        allow="camera; microphone; autoplay; encrypted-media; fullscreen; display-capture; geolocation; gyroscope; magnetometer; midi; clipboard-read; clipboard-write"
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            </div>
+        <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
+          <Button
+            size="xl"
+            className="w-56 mx-auto py-4 text-base font-bold text-white border border-[#ED6C5C]/40 rounded-full bg-[#ED6C5C]/35 backdrop-blur-xl hover:bg-[#ED6C5C]/55 hover:border-[#ED6C5C]/70 hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300"
+            style={{
+              animation: 'subtle-pulse 3s ease-in-out infinite'
+            }}
+            onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
+          >
+            APPLY
+          </Button>
         </div>
-    </section>
+      </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <div class="logo-container">
-                            <span class="footer-chemistry-text">CHEMISTRY VC</span>
-                        </div>
-                    </div>
-                    <p>© 2025 Chemistry VC. All rights reserved.</p>
-                </div>
-
-            </div>
-
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html> 
+      <footer className="absolute bottom-0 left-0 right-0 p-6 text-center">
+        <div className="text-xs font-mono text-white/40">LIGHTSPEED © 2025</div>
+      </footer>
+    </div>
+  );
+}

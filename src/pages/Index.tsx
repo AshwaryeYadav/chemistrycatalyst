@@ -1,9 +1,9 @@
-import { ChemistryHero } from "@/components/ChemistryHero";
+import { LightspeedHero } from "@/components/LightspeedHero";
 
 const Index = () => {
   return (
     <div className="dark">
-      <ChemistryHero />
+      <LightspeedHero />
     </div>
   );
 };

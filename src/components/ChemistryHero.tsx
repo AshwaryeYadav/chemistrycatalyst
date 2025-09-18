@@ -2,48 +2,93 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState, memo, useMemo } from "react";
 
-/* --------------------------- THREE: 3D Lightspeed L --------------------------- */
+/* --------------------------- THREE: 3D Campanile --------------------------- */
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** Lightspeed logo L with diagonal cut corners */
-const LMesh = memo(function LMesh() {
+/** UC Berkeley Campanile tower */
+const CampanileMesh = memo(function CampanileMesh() {
   const geom = useMemo(() => {
-    const s = new THREE.Shape();
-    // Exact Lightspeed L shape from SVG: points="65.2,65.2 32.6,65.2 32.6,32.6 0,0 0,32.6 0,65.2 0,97.8 32.6,97.8 65.2,97.8 97.8,97.8"
-    // Scaled and centered for Three.js
-    s.moveTo(2, 2);            // 65.2,65.2 
-    s.lineTo(-1, 2);           // 32.6,65.2
-    s.lineTo(-1, -1);          // 32.6,32.6
-    s.lineTo(-3.5, -3.5);      // 0,0 (diagonal cut)
-    s.lineTo(-3.5, -1);        // 0,32.6
-    s.lineTo(-3.5, 2);         // 0,65.2  
-    s.lineTo(-3.5, 4);         // 0,97.8
-    s.lineTo(-1, 4);           // 32.6,97.8
-    s.lineTo(2, 4);            // 65.2,97.8
-    s.lineTo(3.5, 4);          // 97.8,97.8
-    s.closePath();
-
-    const g = new THREE.ExtrudeGeometry(s, {
-      depth: 1.2,
-      bevelEnabled: true,
-      bevelThickness: 0.05,
-      bevelSize: 0.03,
-      bevelSegments: 2,
+    const group = new THREE.Group();
+    
+    // Base platform
+    const baseGeom = new THREE.BoxGeometry(2.5, 0.3, 2.5);
+    const baseMesh = new THREE.Mesh(baseGeom);
+    baseMesh.position.y = -2;
+    group.add(baseMesh);
+    
+    // Main tower shaft
+    const shaftGeom = new THREE.BoxGeometry(1, 3, 1);
+    const shaftMesh = new THREE.Mesh(shaftGeom);
+    shaftMesh.position.y = -0.5;
+    group.add(shaftMesh);
+    
+    // Upper belfry section
+    const belfryGeom = new THREE.BoxGeometry(1.5, 0.8, 1.5);
+    const belfryMesh = new THREE.Mesh(belfryGeom);
+    belfryMesh.position.y = 1.4;
+    group.add(belfryMesh);
+    
+    // Crown/top section
+    const crownGeom = new THREE.BoxGeometry(1.8, 0.2, 1.8);
+    const crownMesh = new THREE.Mesh(crownGeom);
+    crownMesh.position.y = 2;
+    group.add(crownMesh);
+    
+    // Spire
+    const spireGeom = new THREE.ConeGeometry(0.3, 1, 8);
+    const spireMesh = new THREE.Mesh(spireGeom);
+    spireMesh.position.y = 2.7;
+    group.add(spireMesh);
+    
+    // Convert group to single geometry
+    const finalGeom = new THREE.BufferGeometry();
+    const vertices: number[] = [];
+    const indices: number[] = [];
+    let indexOffset = 0;
+    
+    group.children.forEach((child) => {
+      const mesh = child as THREE.Mesh;
+      const geom = mesh.geometry as THREE.BufferGeometry;
+      geom.computeBoundingBox();
+      
+      const positions = geom.attributes.position.array;
+      const meshIndices = geom.index?.array || [];
+      
+      // Apply position offset
+      for (let i = 0; i < positions.length; i += 3) {
+        vertices.push(
+          positions[i] + mesh.position.x,
+          positions[i + 1] + mesh.position.y,
+          positions[i + 2] + mesh.position.z
+        );
+      }
+      
+      // Add indices with offset
+      for (let i = 0; i < meshIndices.length; i++) {
+        indices.push(meshIndices[i] + indexOffset);
+      }
+      
+      indexOffset += positions.length / 3;
     });
-    g.center();
-    return g;
+    
+    finalGeom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    finalGeom.setIndex(indices);
+    finalGeom.computeVertexNormals();
+    finalGeom.center();
+    
+    return finalGeom;
   }, []);
 
   return (
     <mesh geometry={geom} castShadow receiveShadow>
-      <meshStandardMaterial color="#ED6C5C" metalness={0.15} roughness={0.35} />
+      <meshStandardMaterial color="#1e40af" metalness={0.1} roughness={0.4} />
     </mesh>
   );
 });
 
-/** Interactive rotating L with mouse controls */
-function RotatingL() {
+/** Interactive rotating Campanile with mouse controls */
+function RotatingCampanile() {
   const group = useRef<THREE.Group>(null!);
   const [isDragging, setIsDragging] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
@@ -85,19 +130,18 @@ function RotatingL() {
   return (
     <group 
       ref={group} 
-      scale={[0.6, -0.6, 0.6]}
+      scale={[0.6, 0.6, 0.6]}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
     >
-      <LMesh />
+      <CampanileMesh />
     </group>
   );
 }
 
-/** Top artwork: standalone 3D L above the wordmark */
-const HeroL3D = memo(function HeroL3D() {
+/** Top artwork: standalone 3D Campanile above the wordmark */
+const HeroCampanile3D = memo(function HeroCampanile3D() {
   return (
     <div
       className="mx-auto mb-6 md:mb-8"
@@ -122,7 +166,7 @@ const HeroL3D = memo(function HeroL3D() {
           shadow-mapSize={[1024, 1024]}
         />
         <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
-        <RotatingL />
+        <RotatingCampanile />
       </Canvas>
     </div>
   );
@@ -130,16 +174,16 @@ const HeroL3D = memo(function HeroL3D() {
 
 /* --------------------------------- Hero --------------------------------- */
 
-export function LightspeedHero() {
+export function ChemistryHero() {
   const companyGroups = [
-    ["Stripe", "Anthropic", "Anduril"],
-    ["Wiz", "Glean", "Rubrik"],
-    ["Anduril", "Rubrik", "Mulesoft"],
-    ["Snap", "Mulesoft", "Nest"],
-    ["AppDynamics", "Nutanix", "UiPath"],
-    ["Affirm", "MindBody", "Nicira"],
+    ["Moderna", "Ginkgo Bioworks", "Platform.sh"],
+    ["Recursion", "Benchling", "Zymergen"],
+    ["Twist Bioscience", "Synthace", "TeselaGen"],
+    ["Emerald Cloud Lab", "Strateos", "Transcriptic"],
+    ["Zymeworks", "AbCellera", "Adimab"],
+    ["Gensyn", "Labguru", "Science Exchange"],
   ];
-  const descriptions = ["builders.", "founders.", "engineers.", "hackers."];
+  const descriptions = ["scientists.", "founders.", "researchers.", "innovators."];
 
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
@@ -272,8 +316,8 @@ export function LightspeedHero() {
       <div className="absolute inset-0 opacity-[0.03] bg-noise" />
 
       <div className="max-w-2xl mx-auto px-8 py-16 md:py-20 text-center relative z-10">
-        {/* 3D L artwork ABOVE the wordmark */}
-        <HeroL3D />
+        {/* 3D Campanile artwork ABOVE the wordmark */}
+        <HeroCampanile3D />
 
         <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1
@@ -284,7 +328,7 @@ export function LightspeedHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* LIGHTSPEED with enhanced 3D effects */}
+            {/* CHEMISTRY with enhanced 3D effects */}
             <div 
               className="text-white"
               style={{
@@ -302,8 +346,8 @@ export function LightspeedHero() {
                 transform: `translateZ(12px) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
               }}
             >
-              {/* L + IGHTSPEED with morphing I */}
-              <span>L</span>
+              {/* CHEM + ISTRY with morphing I */}
+              <span>CHEM</span>
               <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
                 <span className="i-layer i-text">I</span>
                 <span className="i-layer i-tower">
@@ -338,7 +382,7 @@ export function LightspeedHero() {
                   </svg>
                 </span>
               </span>
-              <span>GHTSPEED</span>
+              <span>STRY</span>
             </div>
             {/* FELLOWS with grey color and glow */}
             <div 
@@ -366,7 +410,7 @@ export function LightspeedHero() {
             {">"} A year-long fellowship for Berkeley's top{" "}
             <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
               {typingText}
-              <span className="animate-pulse ml-0.5 text-[#ED6C5C]">|</span>
+              <span className="animate-pulse ml-0.5 text-[#1e40af]">|</span>
             </span>
           </div>
           <div
@@ -389,7 +433,7 @@ export function LightspeedHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-bold text-white border border-[#ED6C5C]/40 rounded-full bg-[#ED6C5C]/35 backdrop-blur-xl hover:bg-[#ED6C5C]/55 hover:border-[#ED6C5C]/70 hover:text-white hover:shadow-[0_0_30px_rgba(237,108,92,0.8)] hover:scale-105 transform transition-all duration-300"
+            className="w-56 mx-auto py-4 text-base font-bold text-white border border-[#1e40af]/40 rounded-full bg-[#1e40af]/35 backdrop-blur-xl hover:bg-[#1e40af]/55 hover:border-[#1e40af]/70 hover:text-white hover:shadow-[0_0_30px_rgba(30,64,175,0.8)] hover:scale-105 transform transition-all duration-300"
             style={{
               animation: 'subtle-pulse 3s ease-in-out infinite'
             }}
@@ -401,7 +445,7 @@ export function LightspeedHero() {
       </div>
 
       <footer className="absolute bottom-0 left-0 right-0 p-6 text-center">
-        <div className="text-xs font-mono text-white/40">LIGHTSPEED © 2025</div>
+        <div className="text-xs font-mono text-white/40">CHEMISTRY VC © 2025</div>
       </footer>
     </div>
   );

@@ -6,39 +6,111 @@ import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** UC Berkeley Campanile tower */
+/** UC Berkeley Campanile tower - Detailed model based on GrabCAD reference */
 const CampanileMesh = memo(function CampanileMesh() {
   const geom = useMemo(() => {
     const group = new THREE.Group();
     
-    // Base platform
-    const baseGeom = new THREE.BoxGeometry(2.5, 0.3, 2.5);
-    const baseMesh = new THREE.Mesh(baseGeom);
-    baseMesh.position.y = -2;
-    group.add(baseMesh);
+    // Foundation/Base platform (wider and more substantial)
+    const foundationGeom = new THREE.BoxGeometry(3.2, 0.4, 3.2);
+    const foundationMesh = new THREE.Mesh(foundationGeom);
+    foundationMesh.position.y = -3.2;
+    group.add(foundationMesh);
     
-    // Main tower shaft
-    const shaftGeom = new THREE.BoxGeometry(1, 3, 1);
+    // Lower base section
+    const lowerBaseGeom = new THREE.BoxGeometry(2.8, 0.6, 2.8);
+    const lowerBaseMesh = new THREE.Mesh(lowerBaseGeom);
+    lowerBaseMesh.position.y = -2.6;
+    group.add(lowerBaseMesh);
+    
+    // Main tower shaft (taller and more proportioned)
+    const shaftGeom = new THREE.BoxGeometry(1.2, 4.5, 1.2);
     const shaftMesh = new THREE.Mesh(shaftGeom);
-    shaftMesh.position.y = -0.5;
+    shaftMesh.position.y = -0.25;
     group.add(shaftMesh);
     
-    // Upper belfry section
-    const belfryGeom = new THREE.BoxGeometry(1.5, 0.8, 1.5);
+    // Mid-level detail band
+    const midBandGeom = new THREE.BoxGeometry(1.4, 0.2, 1.4);
+    const midBandMesh = new THREE.Mesh(midBandGeom);
+    midBandMesh.position.y = 1.0;
+    group.add(midBandMesh);
+    
+    // Clock level section
+    const clockLevelGeom = new THREE.BoxGeometry(1.3, 0.8, 1.3);
+    const clockLevelMesh = new THREE.Mesh(clockLevelGeom);
+    clockLevelMesh.position.y = 1.8;
+    group.add(clockLevelMesh);
+    
+    // Add clock faces (simplified as inset rectangles)
+    const clockFaceGeom = new THREE.BoxGeometry(0.1, 0.4, 0.4);
+    
+    // Front clock face
+    const frontClockMesh = new THREE.Mesh(clockFaceGeom);
+    frontClockMesh.position.set(0.7, 1.8, 0);
+    group.add(frontClockMesh);
+    
+    // Back clock face
+    const backClockMesh = new THREE.Mesh(clockFaceGeom);
+    backClockMesh.position.set(-0.7, 1.8, 0);
+    group.add(backClockMesh);
+    
+    // Left clock face
+    const leftClockGeom = new THREE.BoxGeometry(0.4, 0.4, 0.1);
+    const leftClockMesh = new THREE.Mesh(leftClockGeom);
+    leftClockMesh.position.set(0, 1.8, 0.7);
+    group.add(leftClockMesh);
+    
+    // Right clock face
+    const rightClockMesh = new THREE.Mesh(leftClockGeom);
+    rightClockMesh.position.set(0, 1.8, -0.7);
+    group.add(rightClockMesh);
+    
+    // Upper belfry section (with arched openings)
+    const belfryGeom = new THREE.BoxGeometry(1.8, 1.2, 1.8);
     const belfryMesh = new THREE.Mesh(belfryGeom);
-    belfryMesh.position.y = 1.4;
+    belfryMesh.position.y = 3.1;
     group.add(belfryMesh);
     
-    // Crown/top section
-    const crownGeom = new THREE.BoxGeometry(1.8, 0.2, 1.8);
+    // Belfry arched openings (simplified as rectangular cutouts)
+    const archGeom = new THREE.BoxGeometry(0.1, 0.8, 0.6);
+    
+    // Front arch
+    const frontArchMesh = new THREE.Mesh(archGeom);
+    frontArchMesh.position.set(0.95, 3.1, 0);
+    group.add(frontArchMesh);
+    
+    // Back arch
+    const backArchMesh = new THREE.Mesh(archGeom);
+    backArchMesh.position.set(-0.95, 3.1, 0);
+    group.add(backArchMesh);
+    
+    // Side arches
+    const sideArchGeom = new THREE.BoxGeometry(0.6, 0.8, 0.1);
+    const leftArchMesh = new THREE.Mesh(sideArchGeom);
+    leftArchMesh.position.set(0, 3.1, 0.95);
+    group.add(leftArchMesh);
+    
+    const rightArchMesh = new THREE.Mesh(sideArchGeom);
+    rightArchMesh.position.set(0, 3.1, -0.95);
+    group.add(rightArchMesh);
+    
+    // Crown/cornice section
+    const crownGeom = new THREE.BoxGeometry(2.0, 0.3, 2.0);
     const crownMesh = new THREE.Mesh(crownGeom);
-    crownMesh.position.y = 2;
+    crownMesh.position.y = 3.85;
     group.add(crownMesh);
     
-    // Spire
-    const spireGeom = new THREE.ConeGeometry(0.3, 1, 8);
+    // Roof structure (pyramidal)
+    const roofGeom = new THREE.ConeGeometry(1.1, 0.8, 4);
+    const roofMesh = new THREE.Mesh(roofGeom);
+    roofMesh.position.y = 4.4;
+    roofMesh.rotation.y = Math.PI / 4; // Rotate 45 degrees for square base
+    group.add(roofMesh);
+    
+    // Final spire/finial
+    const spireGeom = new THREE.ConeGeometry(0.2, 0.8, 8);
     const spireMesh = new THREE.Mesh(spireGeom);
-    spireMesh.position.y = 2.7;
+    spireMesh.position.y = 5.0;
     group.add(spireMesh);
     
     // Convert group to single geometry
@@ -82,7 +154,12 @@ const CampanileMesh = memo(function CampanileMesh() {
 
   return (
     <mesh geometry={geom} castShadow receiveShadow>
-      <meshStandardMaterial color="#1e40af" metalness={0.1} roughness={0.4} />
+      <meshStandardMaterial 
+        color="#D4A574" 
+        metalness={0.05} 
+        roughness={0.7}
+        // Campanile stone color - warm beige/tan
+      />
     </mesh>
   );
 });

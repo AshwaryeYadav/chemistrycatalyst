@@ -405,12 +405,12 @@ export function ChemistryHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* CHEMISTRY with minimalistic glow */}
+            {/* CHEMISTRY with purple-white glow */}
             <div 
-              className="bg-gradient-chemistry-glow bg-clip-text text-transparent"
+              className="text-white bg-gradient-chemistry-glow bg-clip-text"
               style={{
                 textShadow: `var(--shadow-chemistry-text)`,
-                filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.3))',
+                filter: 'drop-shadow(0 0 20px rgba(168, 85, 247, 0.3))',
                 transform: `translateZ(12px) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
               }}
             >
@@ -420,16 +420,16 @@ export function ChemistryHero() {
                 <span className="i-layer i-text">I</span>
                 <span className="i-layer i-tower">
                   <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" style={{verticalAlign: 'baseline'}}>
-                    {/* Campanile with base aligned to text baseline */}
+                    {/* Campanile with base aligned to text baseline - teal color */}
                     
                     {/* Base - positioned at text baseline level */}
-                    <rect x="12" y="68" width="11" height="8" fill="hsl(35, 25%, 88%)" />
+                    <rect x="12" y="68" width="11" height="8" fill="hsl(180, 75%, 55%)" />
                     
                     {/* Main tower shaft - shortened */}
-                    <rect x="12" y="25" width="11" height="43" fill="hsl(35, 25%, 88%)" />
+                    <rect x="12" y="25" width="11" height="43" fill="hsl(180, 75%, 55%)" />
                     
                     {/* Upper belfry section */}
-                    <rect x="10" y="13" width="15" height="12" fill="hsl(35, 25%, 88%)" />
+                    <rect x="10" y="13" width="15" height="12" fill="hsl(180, 75%, 55%)" />
                     
                     {/* Gothic arched openings */}
                     <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
@@ -443,10 +443,10 @@ export function ChemistryHero() {
                     <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
                     
                     {/* Crown/cornice */}
-                    <rect x="9" y="11" width="17" height="2" fill="hsl(35, 25%, 88%)" />
+                    <rect x="9" y="11" width="17" height="2" fill="hsl(180, 75%, 55%)" />
                     
                     {/* Detailed spire */}
-                    <polygon points="17.5,2 26,11 9,11" fill="hsl(35, 25%, 88%)" />
+                    <polygon points="17.5,2 26,11 9,11" fill="hsl(180, 75%, 55%)" />
                   </svg>
                 </span>
               </span>
@@ -454,7 +454,7 @@ export function ChemistryHero() {
             </div>
             {/* FELLOWS with teal-blue glow */}
             <div 
-              className="bg-gradient-fellows-glow bg-clip-text text-transparent"
+              className="text-white bg-gradient-fellows-glow bg-clip-text"
               style={{
                 textShadow: `var(--shadow-fellows-text)`,
                 filter: 'drop-shadow(0 0 15px rgba(20, 184, 166, 0.3))',

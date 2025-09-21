@@ -155,10 +155,10 @@ const CampanileMesh = memo(function CampanileMesh() {
   return (
     <mesh geometry={geom} castShadow receiveShadow>
       <meshStandardMaterial 
-        color="#F5F5F5" 
+        color="hsl(35, 25%, 88%)" 
         metalness={0.02} 
         roughness={0.3}
-        // Clean white/light stone color matching the reference
+        // Clean light stone color matching the reference
       />
     </mesh>
   );
@@ -419,17 +419,17 @@ export function ChemistryHero() {
               <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
                 <span className="i-layer i-text">I</span>
                 <span className="i-layer i-tower">
-                  <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" fill="currentColor" style={{verticalAlign: 'baseline'}}>
+                  <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" style={{verticalAlign: 'baseline'}}>
                     {/* Campanile with base aligned to text baseline */}
                     
                     {/* Base - positioned at text baseline level */}
-                    <rect x="12" y="68" width="11" height="8" fill="currentColor" />
+                    <rect x="12" y="68" width="11" height="8" fill="hsl(35, 25%, 88%)" />
                     
                     {/* Main tower shaft - shortened */}
-                    <rect x="12" y="25" width="11" height="43" fill="currentColor" />
+                    <rect x="12" y="25" width="11" height="43" fill="hsl(35, 25%, 88%)" />
                     
                     {/* Upper belfry section */}
-                    <rect x="10" y="13" width="15" height="12" fill="currentColor" />
+                    <rect x="10" y="13" width="15" height="12" fill="hsl(35, 25%, 88%)" />
                     
                     {/* Gothic arched openings */}
                     <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
@@ -443,21 +443,21 @@ export function ChemistryHero() {
                     <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
                     
                     {/* Crown/cornice */}
-                    <rect x="9" y="11" width="17" height="2" fill="currentColor" />
+                    <rect x="9" y="11" width="17" height="2" fill="hsl(35, 25%, 88%)" />
                     
                     {/* Detailed spire */}
-                    <polygon points="17.5,2 26,11 9,11" fill="currentColor" />
+                    <polygon points="17.5,2 26,11 9,11" fill="hsl(35, 25%, 88%)" />
                   </svg>
                 </span>
               </span>
               <span>STRY</span>
             </div>
-            {/* FELLOWS with minimalistic glow */}
+            {/* FELLOWS with teal-blue glow */}
             <div 
-              className="bg-gradient-chemistry-glow bg-clip-text text-transparent"
+              className="bg-gradient-fellows-glow bg-clip-text text-transparent"
               style={{
-                textShadow: `var(--shadow-chemistry-text)`,
-                filter: 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.25))',
+                textShadow: `var(--shadow-fellows-text)`,
+                filter: 'drop-shadow(0 0 15px rgba(20, 184, 166, 0.3))',
                 transform: 'translateZ(8px)',
                 marginTop: '-0.2em'
               }}

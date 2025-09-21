@@ -59,7 +59,8 @@ All colors MUST be HSL.
     --gradient-text: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 80%) 100%);
     --gradient-button: linear-gradient(135deg, hsl(0 0% 95%) 0%, hsl(0 0% 100%) 100%);
     --gradient-chemistry: linear-gradient(135deg, hsl(var(--chemistry-blue)) 0%, hsl(var(--chemistry-purple)) 50%, hsl(var(--chemistry-teal)) 100%);
-    --gradient-chemistry-glow: linear-gradient(135deg, hsl(var(--chemistry-blue-light)) 0%, hsl(var(--chemistry-purple)) 100%);
+    --gradient-chemistry-glow: linear-gradient(135deg, hsl(260 75% 85%) 0%, hsl(0 0% 100%) 50%, hsl(260 75% 75%) 100%);
+    --gradient-fellows-glow: linear-gradient(135deg, hsl(var(--chemistry-teal)) 0%, hsl(var(--chemistry-blue-light)) 100%);
     
     /* Glow effects */
     --shadow-elite: 0 20px 60px -10px hsl(0 0% 0% / 0.8);
@@ -68,7 +69,8 @@ All colors MUST be HSL.
     --shadow-button: 0 10px 40px hsl(0 0% 0% / 0.3);
     --shadow-button-hover: 0 0 40px hsl(0 0% 100% / 0.6), 0 0 80px hsl(0 0% 100% / 0.3), 0 20px 60px hsl(0 0% 0% / 0.4);
     --shadow-chemistry-glow: 0 0 40px hsl(var(--chemistry-blue) / 0.3), 0 0 80px hsl(var(--chemistry-blue) / 0.15);
-    --shadow-chemistry-text: 0 0 20px hsl(var(--chemistry-blue) / 0.4), 0 0 40px hsl(var(--chemistry-purple) / 0.2);
+    --shadow-chemistry-text: 0 0 20px hsl(260 75% 75% / 0.4), 0 0 40px hsl(260 75% 65% / 0.2);
+    --shadow-fellows-text: 0 0 20px hsl(var(--chemistry-teal) / 0.4), 0 0 40px hsl(var(--chemistry-blue-light) / 0.2);
     
     /* Typography */
     --font-display: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;

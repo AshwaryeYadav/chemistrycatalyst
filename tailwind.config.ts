@@ -76,6 +76,7 @@ export default {
 				'gradient-button': 'var(--gradient-button)',
 				'gradient-chemistry': 'var(--gradient-chemistry)',
 				'gradient-chemistry-glow': 'var(--gradient-chemistry-glow)',
+				'gradient-fellows-glow': 'var(--gradient-fellows-glow)',
 			},
 			boxShadow: {
 				'elite': 'var(--shadow-elite)',
@@ -85,6 +86,7 @@ export default {
 				'button-hover': 'var(--shadow-button-hover)',
 				'chemistry-glow': 'var(--shadow-chemistry-glow)',
 				'chemistry-text': 'var(--shadow-chemistry-text)',
+				'fellows-text': 'var(--shadow-fellows-text)',
 			},
 			transitionTimingFunction: {
 				'elite': 'cubic-bezier(0.4, 0, 0.2, 1)',

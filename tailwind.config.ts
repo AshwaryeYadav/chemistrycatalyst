@@ -57,6 +57,15 @@ export default {
 					silver: 'hsl(var(--elite-silver))',
 					accent: 'hsl(var(--elite-accent))',
 					blue: 'hsl(var(--elite-blue))',
+				},
+				chemistry: {
+					blue: 'hsl(var(--chemistry-blue))',
+					'blue-light': 'hsl(var(--chemistry-blue-light))',
+					purple: 'hsl(var(--chemistry-purple))',
+					teal: 'hsl(var(--chemistry-teal))',
+				},
+				campanile: {
+					stone: 'hsl(var(--campanile-stone))',
 				}
 			},
 			backgroundImage: {
@@ -65,6 +74,8 @@ export default {
 				'gradient-hero': 'var(--gradient-hero)',
 				'gradient-text': 'var(--gradient-text)',
 				'gradient-button': 'var(--gradient-button)',
+				'gradient-chemistry': 'var(--gradient-chemistry)',
+				'gradient-chemistry-glow': 'var(--gradient-chemistry-glow)',
 			},
 			boxShadow: {
 				'elite': 'var(--shadow-elite)',
@@ -72,6 +83,8 @@ export default {
 				'premium': 'var(--shadow-premium)',
 				'button': 'var(--shadow-button)',
 				'button-hover': 'var(--shadow-button-hover)',
+				'chemistry-glow': 'var(--shadow-chemistry-glow)',
+				'chemistry-text': 'var(--shadow-chemistry-text)',
 			},
 			transitionTimingFunction: {
 				'elite': 'cubic-bezier(0.4, 0, 0.2, 1)',

@@ -155,10 +155,10 @@ const CampanileMesh = memo(function CampanileMesh() {
   return (
     <mesh geometry={geom} castShadow receiveShadow>
       <meshStandardMaterial 
-        color="#D4A574" 
-        metalness={0.05} 
-        roughness={0.7}
-        // Campanile stone color - warm beige/tan
+        color="#F5F5F5" 
+        metalness={0.02} 
+        roughness={0.3}
+        // Clean white/light stone color matching the reference
       />
     </mesh>
   );
@@ -405,21 +405,12 @@ export function ChemistryHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* CHEMISTRY with enhanced 3D effects */}
+            {/* CHEMISTRY with minimalistic glow */}
             <div 
-              className="text-white"
+              className="bg-gradient-chemistry-glow bg-clip-text text-transparent"
               style={{
-                textShadow: `
-                  0 1px 0 rgba(255,255,255,0.3),
-                  0 2px 0 rgba(255,255,255,0.2),
-                  0 3px 0 rgba(0,0,0,0.1),
-                  0 4px 2px rgba(0,0,0,0.2),
-                  0 6px 4px rgba(0,0,0,0.3),
-                  0 8px 8px rgba(0,0,0,0.4),
-                  0 12px 16px rgba(0,0,0,0.3),
-                  ${mousePosition.x * 0.8}px ${mousePosition.y * 0.8}px 20px rgba(0,0,0,0.4)
-                `,
-                filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.5))',
+                textShadow: `var(--shadow-chemistry-text)`,
+                filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.3))',
                 transform: `translateZ(12px) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
               }}
             >
@@ -461,17 +452,12 @@ export function ChemistryHero() {
               </span>
               <span>STRY</span>
             </div>
-            {/* FELLOWS with grey color and glow */}
+            {/* FELLOWS with minimalistic glow */}
             <div 
-              className="text-gray-400"
+              className="bg-gradient-chemistry-glow bg-clip-text text-transparent"
               style={{
-                textShadow: `
-                  0 1px 0 rgba(255,255,255,0.1),
-                  0 2px 4px rgba(156, 163, 175, 0.4),
-                  0 4px 8px rgba(156, 163, 175, 0.3),
-                  0 8px 16px rgba(156, 163, 175, 0.2)
-                `,
-                filter: 'drop-shadow(0 4px 8px rgba(156, 163, 175, 0.3))',
+                textShadow: `var(--shadow-chemistry-text)`,
+                filter: 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.25))',
                 transform: 'translateZ(8px)',
                 marginTop: '-0.2em'
               }}

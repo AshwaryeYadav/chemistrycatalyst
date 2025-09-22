@@ -253,14 +253,14 @@ const HeroCampanile3D = memo(function HeroCampanile3D() {
 
 export function ChemistryHero() {
   const companyGroups = [
-    ["Moderna", "Ginkgo Bioworks", "Platform.sh"],
-    ["Recursion", "Benchling", "Zymergen"],
-    ["Twist Bioscience", "Synthace", "TeselaGen"],
-    ["Emerald Cloud Lab", "Strateos", "Transcriptic"],
-    ["Zymeworks", "AbCellera", "Adimab"],
-    ["Gensyn", "Labguru", "Science Exchange"],
+    ["Bridge", "Decagon", "Intercom"],
+    ["LaunchDarkly", "Manychat", "PagerDuty"],
+    ["Pave", "Persona", "Pilot"],
+    ["Plaid", "TRM", "Twitch"],
+    ["Stripe", "Figma", "Linear"],
+    ["Notion", "Airtable", "Webflow"],
   ];
-  const descriptions = ["scientists.", "founders.", "researchers.", "innovators."];
+  const descriptions = ["entrepreneurs.", "founders.", "builders.", "innovators."];
 
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
@@ -481,7 +481,7 @@ export function ChemistryHero() {
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            {">"} Backed by investors behind{" "}
+            {">"} Join the companies behind{" "}
             <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
               <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
               {", "}

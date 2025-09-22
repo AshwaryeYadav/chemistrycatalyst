@@ -418,8 +418,8 @@ export function ChemistryHero() {
     style.textContent = `
       .i-slot{
         --iWidth: 0.35em;
-        --iHeight: 0.92em;
-        --iBaseline: -0.15em;
+        --iHeight: 0.88em;
+        --iBaseline: -0.05em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
         inline-size: var(--iWidth);

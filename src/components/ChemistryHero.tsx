@@ -6,102 +6,80 @@ import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** Frosted Glass Column - Modern 3D asset with purple and green accents */
+/** Frosted Glass Rectangular Prism - Based on uploaded color image */
 const FrostedColumn = memo(function FrostedColumn() {
   const meshRef = useRef<THREE.Mesh>(null);
   
-  const { mainColumn, accentBands, innerLights } = useMemo(() => {
-    // Main frosted glass column
-    const mainGeometry = new THREE.CylinderGeometry(1.0, 1.0, 7.0, 32);
-    
-    // Purple and green accent bands
-    const bandGeometry = new THREE.CylinderGeometry(1.05, 1.05, 0.3, 32);
-    
-    // Inner light-emitting cores
-    const lightGeometry = new THREE.CylinderGeometry(0.3, 0.3, 6.5, 16);
+  const { leftHalf, rightHalf } = useMemo(() => {
+    // Create two halves of the rectangular prism to match image proportions
+    const leftGeometry = new THREE.BoxGeometry(2.0, 6.0, 1.5); // Purple half
+    const rightGeometry = new THREE.BoxGeometry(2.0, 6.0, 1.5); // Green half
     
     return {
-      mainColumn: mainGeometry,
-      accentBands: bandGeometry,
-      innerLights: lightGeometry
+      leftHalf: leftGeometry,
+      rightHalf: rightGeometry
     };
   }, []);
 
   return (
     <group>
-      {/* Main frosted glass column */}
-      <mesh ref={meshRef} geometry={mainColumn} position={[0, 0, 0]} castShadow receiveShadow>
+      {/* Left half - Purple section matching image */}
+      <mesh 
+        ref={meshRef} 
+        geometry={leftHalf} 
+        position={[-1.0, 0, 0]} 
+        castShadow 
+        receiveShadow
+      >
         <meshPhysicalMaterial
-          color="#9d7ff7"
+          color="#6366f1" // Purple from image
           transparent={true}
-          opacity={0.75}
+          opacity={0.85}
           roughness={0.9}
           metalness={0.1}
           transmission={0.3}
           thickness={0.5}
           clearcoat={0.3}
           clearcoatRoughness={0.7}
+          emissive="#6366f1"
+          emissiveIntensity={0.05}
         />
       </mesh>
 
-      {/* Purple accent band - upper */}
-      <mesh geometry={accentBands} position={[0, 2.0, 0]} castShadow>
+      {/* Right half - Green section matching image */}
+      <mesh 
+        geometry={rightHalf} 
+        position={[1.0, 0, 0]} 
+        castShadow 
+        receiveShadow
+      >
         <meshPhysicalMaterial
-          color="#7459f8"
+          color="#84cc16" // Bright green from image
           transparent={true}
-          opacity={0.8}
-          roughness={0.8}
-          metalness={0.2}
-          transmission={0.4}
-          emissive="#7459f8"
-          emissiveIntensity={0.1}
+          opacity={0.85}
+          roughness={0.9}
+          metalness={0.1}
+          transmission={0.3}
+          thickness={0.5}
+          clearcoat={0.3}
+          clearcoatRoughness={0.7}
+          emissive="#84cc16"
+          emissiveIntensity={0.05}
         />
       </mesh>
 
-      {/* Green accent band - lower */}
-      <mesh geometry={accentBands} position={[0, -2.0, 0]} castShadow>
-        <meshPhysicalMaterial
-          color="#99f859"
-          transparent={true}
-          opacity={0.8}
-          roughness={0.8}
-          metalness={0.2}
-          transmission={0.4}
-          emissive="#99f859"
-          emissiveIntensity={0.1}
-        />
-      </mesh>
-
-      {/* Inner light core - purple glow */}
-      <mesh geometry={innerLights} position={[0, 1.0, 0]}>
-        <meshBasicMaterial
-          color="#7459f8"
-          transparent={true}
-          opacity={0.3}
-        />
-      </mesh>
-
-      {/* Inner light core - green glow */}
-      <mesh geometry={innerLights} position={[0, -1.0, 0]}>
-        <meshBasicMaterial
-          color="#99f859"
-          transparent={true}
-          opacity={0.3}
-        />
-      </mesh>
-
-      {/* Internal point lights for glow effects */}
+      {/* Internal glow lights */}
       <pointLight
-        position={[0, 1.5, 0]}
-        color="#7459f8"
-        intensity={0.5}
-        distance={3}
+        position={[-1.0, 0, 0]}
+        color="#6366f1"
+        intensity={0.3}
+        distance={4}
       />
       <pointLight
-        position={[0, -1.5, 0]}
-        color="#99f859"
-        intensity={0.5}
-        distance={3}
+        position={[1.0, 0, 0]}
+        color="#84cc16"
+        intensity={0.3}
+        distance={4}
       />
     </group>
   );

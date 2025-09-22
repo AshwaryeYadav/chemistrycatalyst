@@ -9,7 +9,7 @@ export function ExclusiveDetails() {
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             We select exactly twelve exceptional Berkeley students each year. 
-            Each fellow receives direct 1:1 mentorship from Lightspeed partners who have invested in
+            Each fellow receives direct 1:1 mentorship from industry leaders who have built
             the world's most valuable companies.
           </p>
         </div>
@@ -20,7 +20,7 @@ export function ExclusiveDetails() {
             <div>
               <h3 className="text-xl font-medium mb-3 text-elite-gold">Direct Partner Access</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Work directly with partners who have led investments in Stripe, Snapchat, 
+                Work directly with founders and executives who have built companies like Stripe, Snapchat, 
                 and hundreds of other category-defining companies.
               </p>
             </div>
@@ -29,7 +29,7 @@ export function ExclusiveDetails() {
               <h3 className="text-xl font-medium mb-3 text-elite-gold">Inner Circle Network</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Connect with founders, executives, and technical leaders across 
-                Lightspeed's portfolio and extended network.
+                our curated network of industry pioneers.
               </p>
             </div>
           </div>
@@ -38,7 +38,7 @@ export function ExclusiveDetails() {
             <div>
               <h3 className="text-xl font-medium mb-3 text-elite-gold">Exclusive Opportunities</h3>
               <p className="text-muted-foreground leading-relaxed">
-                First access to internships and full-time roles at portfolio companies, 
+                First access to internships and full-time roles at top-tier companies, 
                 plus introductions to founding opportunities.
               </p>
             </div>

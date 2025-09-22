@@ -1,4 +1,4 @@
-// src/components/LightspeedHero.tsx
+// src/components/ChemistryHero.tsx
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState, memo, useMemo } from "react";
 

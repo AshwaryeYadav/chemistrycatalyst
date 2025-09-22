@@ -425,7 +425,7 @@ export function ChemistryHero() {
         inline-size: var(--iWidth);
         block-size: var(--iHeight);
         vertical-align: var(--iBaseline);
-        overflow: visible;
+        overflow: hidden;
         text-align: center;
       }
       .i-layer{
@@ -440,22 +440,6 @@ export function ChemistryHero() {
       .i-slot.on .i-tower { opacity:1; transform: translateY(0%)   scale(1)    translateX(var(--towerNudgeX)); }
       @media (prefers-reduced-motion: reduce){
         .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
-      }
-      
-      @media (max-width: 768px) {
-        .i-slot {
-          --iWidth: 0.32em;
-          --iHeight: 0.88em;
-          --iBaseline: -0.13em;
-        }
-      }
-      
-      @media (max-width: 480px) {
-        .i-slot {
-          --iWidth: 0.3em;
-          --iHeight: 0.85em;
-          --iBaseline: -0.12em;
-        }
       }
       
       @keyframes subtle-pulse {

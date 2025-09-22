@@ -385,9 +385,13 @@ export function ChemistryHero() {
                   }}
                 >
                   <div 
-                    className="relative bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent"
+                    className="relative"
                     style={{
-                      filter: 'drop-shadow(0 0 20px hsl(var(--electric-purple) / 0.5))'
+                      background: 'linear-gradient(135deg, #ffffff 0%, #8b5cf6 50%, #3b82f6 100%)',
+                      WebkitBackgroundClip: 'text',
+                      backgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 0 30px rgba(139, 92, 246, 0.5)'
                     }}
                   >
                     {/* CHEM + ISTRY with morphing I */}
@@ -418,11 +422,17 @@ export function ChemistryHero() {
                 
                 {/* FELLOWS with purple glow behind */}
                 <h1 
-                  className="text-6xl xl:text-8xl font-display font-black tracking-tight leading-none relative bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent"
+                  className="text-6xl xl:text-8xl font-display font-black tracking-tight leading-none relative"
                   style={{
                     letterSpacing: "-1%",
                     fontWeight: 900,
-                    filter: 'drop-shadow(0 0 20px hsl(var(--electric-purple) / 0.5))'
+                    background: 'linear-gradient(135deg, #ffffff 0%, #06b6d4 50%, #0891b2 100%)',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    textShadow: '0 0 30px rgba(6, 182, 212, 0.5)',
+                    marginTop: '10px',
+                    display: 'block'
                   }}
                 >
                   {/* Purple glow behind */}

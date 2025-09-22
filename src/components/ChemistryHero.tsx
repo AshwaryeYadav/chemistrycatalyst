@@ -531,12 +531,10 @@ export function ChemistryHero() {
               </span>
               <span>STRY</span>
             </div>
-            {/* FELLOWS with teal-blue glow */}
+            {/* FELLOWS without glow */}
             <div 
-              className="text-white bg-gradient-fellows-glow bg-clip-text"
+              className="text-white"
               style={{
-                textShadow: `var(--shadow-fellows-text)`,
-                filter: 'drop-shadow(0 0 15px rgba(20, 184, 166, 0.3))',
                 transform: 'translateZ(8px)',
                 marginTop: '-0.2em'
               }}
@@ -575,7 +573,7 @@ export function ChemistryHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-bold text-white border border-[#1e40af]/40 rounded-full bg-[#1e40af]/35 backdrop-blur-xl hover:bg-[#1e40af]/55 hover:border-[#1e40af]/70 hover:text-white hover:shadow-[0_0_30px_rgba(30,64,175,0.8)] hover:scale-105 transform transition-all duration-300"
+            className="w-56 mx-auto py-4 text-base font-bold text-white border border-green-500/40 rounded-full bg-green-600/35 backdrop-blur-xl hover:bg-green-600/55 hover:border-green-500/70 hover:text-white hover:shadow-[0_0_30px_rgba(34,197,94,0.8)] hover:scale-105 transform transition-all duration-300"
             style={{
               animation: 'subtle-pulse 3s ease-in-out infinite'
             }}

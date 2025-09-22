@@ -152,17 +152,17 @@ const FrostedColumn = memo(function FrostedColumn() {
         receiveShadow
       >
         <meshPhysicalMaterial
-          color="#7459f8" // Actual purple color
+          color="#8b5cf6" // Brighter purple
           transparent={true}
-          opacity={0.85}
-          roughness={0.8}
-          metalness={0.2}
-          transmission={0.4}
+          opacity={0.9}
+          roughness={0.7}
+          metalness={0.3}
+          transmission={0.5}
           thickness={0.3}
-          clearcoat={0.4}
-          clearcoatRoughness={0.6}
-          emissive="#7459f8"
-          emissiveIntensity={0.08}
+          clearcoat={0.5}
+          clearcoatRoughness={0.5}
+          emissive="#8b5cf6"
+          emissiveIntensity={0.15}
         />
       </mesh>
 
@@ -175,17 +175,17 @@ const FrostedColumn = memo(function FrostedColumn() {
         receiveShadow
       >
         <meshPhysicalMaterial
-          color="#c6e2ff" // Soft purple
+          color="#a78bfa" // Brighter light purple
           transparent={true}
-          opacity={0.85}
-          roughness={0.8}
-          metalness={0.2}
-          transmission={0.4}
+          opacity={0.9}
+          roughness={0.7}
+          metalness={0.3}
+          transmission={0.5}
           thickness={0.3}
-          clearcoat={0.4}
-          clearcoatRoughness={0.6}
-          emissive="#c6e2ff"
-          emissiveIntensity={0.06}
+          clearcoat={0.5}
+          clearcoatRoughness={0.5}
+          emissive="#a78bfa"
+          emissiveIntensity={0.12}
         />
       </mesh>
 
@@ -198,38 +198,38 @@ const FrostedColumn = memo(function FrostedColumn() {
         receiveShadow
       >
         <meshPhysicalMaterial
-          color="#99f859" // Bright green
+          color="#22c55e" // Brighter green
           transparent={true}
-          opacity={0.85}
-          roughness={0.8}
-          metalness={0.2}
-          transmission={0.4}
+          opacity={0.9}
+          roughness={0.7}
+          metalness={0.3}
+          transmission={0.5}
           thickness={0.3}
-          clearcoat={0.4}
-          clearcoatRoughness={0.6}
-          emissive="#99f859"
-          emissiveIntensity={0.08}
+          clearcoat={0.5}
+          clearcoatRoughness={0.5}
+          emissive="#22c55e"
+          emissiveIntensity={0.15}
         />
       </mesh>
 
       {/* Glow lights for each segment */}
       <pointLight
         position={[-2.2, 0, 0]}
-        color="#7459f8"
-        intensity={0.4}
-        distance={3}
+        color="#8b5cf6"
+        intensity={0.6}
+        distance={4}
       />
       <pointLight
         position={[0, 0, 0]}
-        color="#c6e2ff"
-        intensity={0.3}
-        distance={3}
+        color="#a78bfa"
+        intensity={0.5}
+        distance={4}
       />
       <pointLight
         position={[2.4, 0, 0]}
-        color="#99f859"
-        intensity={0.4}
-        distance={3}
+        color="#22c55e"
+        intensity={0.6}
+        distance={4}
       />
     </group>
   );

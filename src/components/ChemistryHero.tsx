@@ -28,12 +28,12 @@ const FrostedColumn = memo(function FrostedColumn() {
   useFrame((state) => {
     const time = state.clock.elapsedTime;
     
-    // Slower animation cycle: 8 seconds total
-    const cycle = (time % 8.0) / 8.0;
+    // Extended animation cycle: 18 seconds total
+    const cycle = (time % 18.0) / 18.0;
     
-    if (cycle < 0.5) {
+    if (cycle < 0.22) {
       // Phase 1: Bouncing and spinning (0-4s)
-      const bounceTime = cycle * 2; // Scale for bounce timing
+      const bounceTime = cycle * 4.5; // Scale for bounce timing
       
       // Purple (left) bounces first
       if (purpleRef.current) {
@@ -56,56 +56,87 @@ const FrostedColumn = memo(function FrostedColumn() {
       if (greenRef.current) {
         const delayedBounce = Math.max(0, bounceTime - 0.6);
         const bounce = Math.sin(delayedBounce * 3) * 0.4;
-        const spin = delayedBounce * Math.PI * 1.5; // Different spin speed
+        const spin = delayedBounce * Math.PI * 1.5;
         greenRef.current.position.set(3.2, bounce, 0);
         greenRef.current.rotation.y = spin;
       }
-    } else if (cycle < 0.75) {
-      // Phase 2: Join together (4-6s) - Move to touching positions
-      const joinProgress = (cycle - 0.5) / 0.25;
+    } else if (cycle < 0.33) {
+      // Phase 2: Join together (4-6s)
+      const joinProgress = (cycle - 0.22) / 0.11;
       const easeJoin = 1 - Math.pow(1 - joinProgress, 3);
       
       if (purpleRef.current) {
         const startX = -3.0;
-        const endX = -1.2; // Final position when joined
+        const endX = -1.2;
         const xPos = startX + (endX - startX) * easeJoin;
-        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.5) * 15) * 0.2);
+        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.22) * 15) * 0.2);
         purpleRef.current.position.set(xPos, yPos, 0);
         purpleRef.current.rotation.z = (1 - easeJoin) * Math.PI * 4;
       }
       
       if (lightPurpleRef.current) {
-        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.5) * 15) * 0.2);
-        lightPurpleRef.current.position.set(0, yPos, 0); // Already in center
+        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.22) * 15) * 0.2);
+        lightPurpleRef.current.position.set(0, yPos, 0);
         lightPurpleRef.current.rotation.z = (1 - easeJoin) * Math.PI * 4;
       }
       
       if (greenRef.current) {
         const startX = 3.2;
-        const endX = 1.6; // Final position when joined
+        const endX = 1.6;
         const xPos = startX + (endX - startX) * easeJoin;
-        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.5) * 15) * 0.2);
+        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.22) * 15) * 0.2);
         greenRef.current.position.set(xPos, yPos, 0);
         greenRef.current.rotation.y = (1 - easeJoin) * Math.PI * 3;
       }
-    } else {
-      // Phase 3: Rotate as one unit (6-8s) - Keep joined positions
+    } else if (cycle < 0.89) {
+      // Phase 3: Stay joined and rotate (6-16s) - 10 seconds
       if (purpleRef.current) {
-        purpleRef.current.position.set(-1.2, 0, 0); // Touching position
+        purpleRef.current.position.set(-1.2, 0, 0);
         purpleRef.current.rotation.set(0, 0, 0);
       }
       if (lightPurpleRef.current) {
-        lightPurpleRef.current.position.set(0, 0, 0); // Center position
+        lightPurpleRef.current.position.set(0, 0, 0);
         lightPurpleRef.current.rotation.set(0, 0, 0);
       }
       if (greenRef.current) {
-        greenRef.current.position.set(1.6, 0, 0); // Touching position
+        greenRef.current.position.set(1.6, 0, 0);
         greenRef.current.rotation.set(0, 0, 0);
       }
       
       if (groupRef.current) {
-        const rotateProgress = (cycle - 0.75) / 0.25;
-        groupRef.current.rotation.x = rotateProgress * Math.PI * 2;
+        const rotateProgress = (cycle - 0.33) / 0.56;
+        groupRef.current.rotation.x = rotateProgress * Math.PI * 6; // Multiple rotations
+      }
+    } else {
+      // Phase 4: Slowly separate (16-18s)
+      const separateProgress = (cycle - 0.89) / 0.11;
+      const easeSeparate = separateProgress * separateProgress * (3 - 2 * separateProgress); // Smooth ease
+      
+      // Reset group rotation gradually
+      if (groupRef.current) {
+        groupRef.current.rotation.x = (1 - easeSeparate) * Math.PI * 6;
+      }
+      
+      if (purpleRef.current) {
+        const startX = -1.2;
+        const endX = -3.0;
+        const xPos = startX + (endX - startX) * easeSeparate;
+        // Add slight bounce as they separate
+        const bounce = easeSeparate * Math.sin(separateProgress * Math.PI * 4) * 0.1;
+        purpleRef.current.position.set(xPos, bounce, 0);
+      }
+      
+      if (lightPurpleRef.current) {
+        const bounce = easeSeparate * Math.sin((separateProgress - 0.2) * Math.PI * 4) * 0.1;
+        lightPurpleRef.current.position.set(0, bounce, 0);
+      }
+      
+      if (greenRef.current) {
+        const startX = 1.6;
+        const endX = 3.2;
+        const xPos = startX + (endX - startX) * easeSeparate;
+        const bounce = easeSeparate * Math.sin((separateProgress - 0.4) * Math.PI * 4) * 0.1;
+        greenRef.current.position.set(xPos, bounce, 0);
       }
     }
   });

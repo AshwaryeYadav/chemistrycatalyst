@@ -378,10 +378,11 @@ export function ChemistryHero() {
               <div className="space-y-4 text-center lg:text-left">
                 {/* CHEMISTRY */}
                 <h1 
-                  className="text-6xl xl:text-8xl font-display font-medium tracking-tight leading-none"
+                  className="text-6xl xl:text-8xl font-display leading-none"
                   style={{
-                    letterSpacing: "-1%",
-                    fontWeight: 500,
+                    fontWeight: 200,
+                    letterSpacing: "0.02em",
+                    lineHeight: 0.95,
                   }}
                 >
                   <div 
@@ -440,10 +441,11 @@ export function ChemistryHero() {
                 
                 {/* FELLOWS with purple glow behind */}
                 <h1 
-                  className="text-6xl xl:text-8xl font-display font-medium tracking-tight leading-none relative"
+                  className="text-6xl xl:text-8xl font-display leading-none relative"
                   style={{
-                    letterSpacing: "-1%",
-                    fontWeight: 500,
+                    fontWeight: 200,
+                    letterSpacing: "0.02em",
+                    lineHeight: 0.95,
                     background: 'linear-gradient(135deg, #ffffff 0%, #9ca3af 50%, #6b7280 100%)',
                     WebkitBackgroundClip: 'text',
                     backgroundClip: 'text',
@@ -472,7 +474,12 @@ export function ChemistryHero() {
               {/* First terminal line */}
               <div 
                 className="font-mono text-lg leading-relaxed text-center lg:text-left" 
-                style={{ lineHeight: 1.6, maxWidth: "70ch" }}
+                style={{ 
+                  lineHeight: 1.6, 
+                  maxWidth: "70ch",
+                  fontWeight: 300,
+                  letterSpacing: "0.06em"
+                }}
               >
                 <span className="text-acid-green mr-3">{">"}</span>
                 <span className="text-soft-gray">
@@ -495,7 +502,12 @@ export function ChemistryHero() {
               {/* Second terminal line */}
               <div
                 className="font-mono text-lg leading-relaxed cursor-pointer transition-colors hover:text-white/90 text-center lg:text-left"
-                style={{ lineHeight: 1.6, maxWidth: "70ch" }}
+                style={{ 
+                  lineHeight: 1.6, 
+                  maxWidth: "70ch",
+                  fontWeight: 300,
+                  letterSpacing: "0.06em"
+                }}
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
               >

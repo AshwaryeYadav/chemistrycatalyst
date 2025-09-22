@@ -96,8 +96,8 @@ export default {
 			},
 			fontFamily: {
 				'sans': ['Space Grotesk', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-				'display': ['Sora', 'Space Grotesk', 'sans-serif'],
-				'mono': ['IBM Plex Mono', 'JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
+				'display': ['Space Grotesk', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+				'mono': ['IBM Plex Mono', 'Consolas', 'Monaco', 'monospace'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

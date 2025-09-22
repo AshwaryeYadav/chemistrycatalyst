@@ -294,9 +294,11 @@ const HeroCampanile3D = memo(function HeroCampanile3D() {
     <div
       className="mx-auto mb-2 md:mb-4"
       style={{
-        width: "480px",
-        height: "420px",
-        // Much larger container for seamless rotation without clipping
+        width: "min(480px, 90vw)",
+        height: "min(420px, 50vh)",
+        maxWidth: "480px",
+        maxHeight: "420px",
+        // Responsive container that adapts to screen size
       }}
       aria-hidden
     >
@@ -412,14 +414,14 @@ export function ChemistryHero() {
     return () => clearInterval(id);
   }, []);
 
-  // CSS for tighter IN-SLOT morph (unchanged)
+  // CSS for tighter IN-SLOT morph with mobile optimization
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
       .i-slot{
         --iWidth: 0.35em;
-        --iHeight: 0.88em;
-        --iBaseline: -0.05em;
+        --iHeight: 0.92em;
+        --iBaseline: -0.15em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
         inline-size: var(--iWidth);
@@ -438,6 +440,33 @@ export function ChemistryHero() {
       .i-tower { opacity:0;  transform: translateY(3%)   scale(.985) translateX(var(--towerNudgeX)); }
       .i-slot.on .i-text  { opacity:0; transform: translateY(-3%)  scale(.985); }
       .i-slot.on .i-tower { opacity:1; transform: translateY(0%)   scale(1)    translateX(var(--towerNudgeX)); }
+      
+      /* Mobile optimizations */
+      @media (max-width: 768px) {
+        .i-slot {
+          --iWidth: 0.32em;
+          --iHeight: 0.88em;
+          --iBaseline: -0.12em;
+          --towerNudgeX: 1px;
+        }
+        .i-tower {
+          transform: translateY(2%) scale(.99) translateX(var(--towerNudgeX));
+        }
+        .i-slot.on .i-tower {
+          transform: translateY(-1%) scale(1.02) translateX(var(--towerNudgeX));
+        }
+      }
+      
+      /* Small mobile adjustments */
+      @media (max-width: 480px) {
+        .i-slot {
+          --iWidth: 0.30em;
+          --iHeight: 0.85em;
+          --iBaseline: -0.10em;
+          --towerNudgeX: 2px;
+        }
+      }
+      
       @media (prefers-reduced-motion: reduce){
         .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
       }
@@ -550,7 +579,7 @@ export function ChemistryHero() {
         {/* body */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
-            <span style={{ color: 'hsl(96, 92%, 66%)' }}>{">"}</span> A tight-knit community for Berkeley's top{" "}
+            <span style={{ color: 'hsl(96, 92%, 66%)' }}>{">"}</span> A year-long fellowship for Berkeley's top{" "}
             <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
               {typingText}
               <span style={{ color: 'hsl(96, 92%, 66%)' }} className="animate-pulse ml-0.5">|</span>

@@ -479,12 +479,12 @@ export function ChemistryHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* CHEMISTRY with purple-white glow */}
+            {/* CHEMISTRY with softer purple glow */}
             <div 
-              className="text-white bg-gradient-chemistry-glow bg-clip-text"
+              className="text-white/90 bg-gradient-chemistry-glow bg-clip-text"
               style={{
                 textShadow: `var(--shadow-chemistry-text)`,
-                filter: 'drop-shadow(0 0 20px rgba(168, 85, 247, 0.3))',
+                filter: 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.2))',
                 transform: `translateZ(12px) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
               }}
             >
@@ -534,9 +534,9 @@ export function ChemistryHero() {
               </span>
               <span>STRY</span>
             </div>
-            {/* FELLOWS without glow */}
+            {/* FELLOWS softer */}
             <div 
-              className="text-white"
+              className="text-white/85"
               style={{
                 transform: 'translateZ(8px)',
                 marginTop: '-0.2em'

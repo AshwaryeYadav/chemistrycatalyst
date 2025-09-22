@@ -292,7 +292,7 @@ function RotatingCampanile() {
 const HeroCampanile3D = memo(function HeroCampanile3D() {
   return (
     <div
-      className="mx-auto mb-6 md:mb-8"
+      className="mx-auto mb-2 md:mb-4"
       style={{
         width: "480px",
         height: "420px",

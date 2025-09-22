@@ -378,10 +378,10 @@ export function ChemistryHero() {
               <div className="space-y-4 text-center lg:text-left">
                 {/* CHEMISTRY */}
                 <h1 
-                  className="text-6xl xl:text-8xl font-display font-black tracking-tight leading-none"
+                  className="text-6xl xl:text-8xl font-display font-medium tracking-tight leading-none"
                   style={{
                     letterSpacing: "-1%",
-                    fontWeight: 900,
+                    fontWeight: 500,
                   }}
                 >
                   <div 
@@ -422,15 +422,15 @@ export function ChemistryHero() {
                 
                 {/* FELLOWS with purple glow behind */}
                 <h1 
-                  className="text-6xl xl:text-8xl font-display font-black tracking-tight leading-none relative"
+                  className="text-6xl xl:text-8xl font-display font-medium tracking-tight leading-none relative"
                   style={{
                     letterSpacing: "-1%",
-                    fontWeight: 900,
-                    background: 'linear-gradient(135deg, #ffffff 0%, #06b6d4 50%, #0891b2 100%)',
+                    fontWeight: 500,
+                    background: 'linear-gradient(135deg, #ffffff 0%, #9ca3af 50%, #6b7280 100%)',
                     WebkitBackgroundClip: 'text',
                     backgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    textShadow: '0 0 30px rgba(6, 182, 212, 0.5)',
+                    textShadow: '0 0 30px rgba(156, 163, 175, 0.5)',
                     marginTop: '10px',
                     display: 'block'
                   }}
@@ -483,12 +483,10 @@ export function ChemistryHero() {
               >
                 <span className="text-acid-green mr-3">{">"}</span>
                 <span className="text-soft-gray">
-                  Backed by founders of{" "}
-                  <span className="text-white font-medium">Pave</span>
-                  {", "}
-                  <span className="text-white font-medium">Persona</span>
-                  {", "}
-                  <span className="text-white font-medium">Pilot</span>
+                  Backed by the investors behind{" "}
+                  <span className="text-white">
+                    {companyGroups[currentGroup].join(", ")}
+                  </span>
                   .
                 </span>
               </div>

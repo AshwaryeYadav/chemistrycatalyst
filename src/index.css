@@ -8,87 +8,72 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* New Style Guide Colors */
-    --background: 240 5% 4%;  /* #0A0A0B */
-    --foreground: 217 9% 75%; /* #B9BDC6 soft gray */
+    /* Exclusive Dark Theme - Always Dark */
+    --background: 0 0% 2%;
+    --foreground: 0 0% 95%;
 
-    --card: 240 5% 6%;
-    --card-foreground: 217 9% 75%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 240 5% 6%;
-    --popover-foreground: 217 9% 75%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 217 9% 75%;
-    --primary-foreground: 240 5% 4%;
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 2%;
 
-    --secondary: 240 5% 8%;
-    --secondary-foreground: 217 9% 70%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 85%;
 
-    --muted: 240 5% 6%;
-    --muted-foreground: 217 9% 60%;
+    --muted: 0 0% 6%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 240 5% 12%;
-    --accent-foreground: 217 9% 85%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 90%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5% 12%;
-    --input: 240 5% 8%;
-    --ring: 240 5% 20%;
+    --border: 0 0% 12%;
+    --input: 0 0% 8%;
+    --ring: 0 0% 20%;
 
     --radius: 0.5rem;
 
-    /* Style Guide Color Palette */
-    --electric-purple: 258 100% 69%; /* #8A5BFF */
-    --acid-green: 75 100% 59%;       /* #C5FF31 */
-    --soft-gray: 217 9% 75%;         /* #B9BDC6 */
-    
-    /* Legacy colors for compatibility */
+    /* Chemistry VC Color Palette */
     --elite-gold: 45 85% 70%;
     --elite-silver: 0 0% 85%;
     --elite-accent: 0 0% 90%;
     --elite-blue: 0 0% 95%;
+    
+    /* Chemistry-themed colors */
     --chemistry-blue: 220 90% 56%;
     --chemistry-blue-light: 220 85% 65%;
-    --chemistry-purple: 258 100% 69%;
+    --chemistry-purple: 260 75% 65%;
     --chemistry-teal: 180 75% 55%;
     --campanile-stone: 35 25% 88%;
     
-    /* Style Guide Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(240 5% 4%) 0%, hsl(240 8% 3%) 50%, hsl(240 5% 4%) 100%);
-    --gradient-purple-glow: linear-gradient(135deg, hsl(var(--electric-purple)) 0%, hsl(var(--electric-purple) / 0.8) 50%, hsl(var(--electric-purple) / 0.6) 100%);
-    --gradient-green-cta: linear-gradient(135deg, hsl(var(--acid-green)) 0%, hsl(var(--acid-green) / 0.9) 100%);
-    
-    /* Legacy gradients for compatibility */
+    /* Gradients for chemistry aesthetic */
     --gradient-elite: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 90%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(240 5% 4%) 0%, hsl(240 5% 3%) 100%);
-    --gradient-text: linear-gradient(135deg, hsl(217 9% 90%) 0%, hsl(217 9% 75%) 100%);
-    --gradient-button: linear-gradient(135deg, hsl(var(--acid-green)) 0%, hsl(var(--acid-green) / 0.9) 100%);
-    --gradient-chemistry: linear-gradient(135deg, hsl(var(--electric-purple)) 0%, hsl(var(--acid-green)) 100%);
-    --gradient-chemistry-glow: linear-gradient(135deg, hsl(var(--electric-purple)) 0%, hsl(var(--electric-purple) / 0.8) 50%, hsl(var(--electric-purple) / 0.6) 100%);
-    --gradient-fellows-glow: linear-gradient(135deg, hsl(var(--electric-purple)) 0%, hsl(var(--electric-purple) / 0.7) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 0%) 0%, hsl(0 0% 2%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(240 20% 2%) 30%, hsl(0 0% 1%) 100%);
+    --gradient-text: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(0 0% 80%) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(0 0% 95%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-chemistry: linear-gradient(135deg, hsl(var(--chemistry-blue)) 0%, hsl(var(--chemistry-purple)) 50%, hsl(var(--chemistry-teal)) 100%);
+    --gradient-chemistry-glow: linear-gradient(135deg, hsl(260 75% 85%) 0%, hsl(0 0% 100%) 50%, hsl(260 75% 75%) 100%);
+    --gradient-fellows-glow: linear-gradient(135deg, hsl(var(--chemistry-teal)) 0%, hsl(var(--chemistry-blue-light)) 100%);
     
-    /* Soft Glow Effects */
-    --shadow-purple-glow: 0 0 60px hsl(var(--electric-purple) / 0.3), 0 0 120px hsl(var(--electric-purple) / 0.1);
-    --shadow-green-glow: 0 0 40px hsl(var(--acid-green) / 0.4), 0 0 80px hsl(var(--acid-green) / 0.15);
-    --shadow-soft-glow: 0 0 30px hsl(var(--electric-purple) / 0.2), 0 0 60px hsl(var(--electric-purple) / 0.1);
-    --shadow-button-glow: 0 0 30px hsl(var(--acid-green) / 0.6), 0 0 60px hsl(var(--acid-green) / 0.2);
-    --shadow-text-glow: 0 0 20px hsl(var(--electric-purple) / 0.4), 0 0 40px hsl(var(--electric-purple) / 0.2);
-    
-    /* Legacy shadows for compatibility */
-    --shadow-elite: 0 20px 60px -10px hsl(240 5% 2% / 0.8);
-    --shadow-glow: 0 0 30px hsl(var(--electric-purple) / 0.3), 0 0 60px hsl(var(--electric-purple) / 0.1);
-    --shadow-premium: 0 0 50px hsl(var(--electric-purple) / 0.4), 0 0 100px hsl(var(--electric-purple) / 0.2);
-    --shadow-button: 0 10px 40px hsl(240 5% 2% / 0.3);
-    --shadow-button-hover: 0 0 40px hsl(var(--acid-green) / 0.6), 0 0 80px hsl(var(--acid-green) / 0.3);
-    --shadow-chemistry-glow: 0 0 40px hsl(var(--electric-purple) / 0.3), 0 0 80px hsl(var(--electric-purple) / 0.15);
-    --shadow-chemistry-text: 0 0 20px hsl(var(--electric-purple) / 0.4), 0 0 40px hsl(var(--electric-purple) / 0.2);
-    --shadow-fellows-text: 0 0 20px hsl(var(--electric-purple) / 0.4), 0 0 40px hsl(var(--electric-purple) / 0.2);
+    /* Glow effects */
+    --shadow-elite: 0 20px 60px -10px hsl(0 0% 0% / 0.8);
+    --shadow-glow: 0 0 30px hsl(0 0% 100% / 0.3), 0 0 60px hsl(0 0% 100% / 0.1);
+    --shadow-premium: 0 0 50px hsl(0 0% 100% / 0.4), 0 0 100px hsl(0 0% 100% / 0.2);
+    --shadow-button: 0 10px 40px hsl(0 0% 0% / 0.3);
+    --shadow-button-hover: 0 0 40px hsl(0 0% 100% / 0.6), 0 0 80px hsl(0 0% 100% / 0.3), 0 20px 60px hsl(0 0% 0% / 0.4);
+    --shadow-chemistry-glow: 0 0 40px hsl(var(--chemistry-blue) / 0.3), 0 0 80px hsl(var(--chemistry-blue) / 0.15);
+    --shadow-chemistry-text: 0 0 20px hsl(260 75% 75% / 0.4), 0 0 40px hsl(260 75% 65% / 0.2);
+    --shadow-fellows-text: 0 0 20px hsl(var(--chemistry-teal) / 0.4), 0 0 40px hsl(var(--chemistry-blue-light) / 0.2);
     
     /* Typography */
-    --font-display: "Sora", "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: "IBM Plex Mono", "JetBrains Mono", Consolas, Monaco, monospace;
+    --font-display: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
     
     /* Animations */
     --transition-elite: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);

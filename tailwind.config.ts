@@ -64,9 +64,6 @@ export default {
 					purple: 'hsl(var(--chemistry-purple))',
 					teal: 'hsl(var(--chemistry-teal))',
 				},
-				'electric-purple': 'hsl(var(--electric-purple))',
-				'acid-green': 'hsl(var(--acid-green))',
-				'soft-gray': 'hsl(var(--soft-gray))',
 				campanile: {
 					stone: 'hsl(var(--campanile-stone))',
 				}
@@ -95,9 +92,9 @@ export default {
 				'elite': 'cubic-bezier(0.4, 0, 0.2, 1)',
 			},
 			fontFamily: {
-				'sans': ['Space Grotesk', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-				'display': ['Space Grotesk', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-				'mono': ['IBM Plex Mono', 'Consolas', 'Monaco', 'monospace'],
+				'sans': ['Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+				'display': ['Inter', 'SF Pro Display', 'sans-serif'],
+				'mono': ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

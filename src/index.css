@@ -75,8 +75,8 @@ All colors MUST be HSL.
     --shadow-button: 0 10px 40px hsl(0 0% 0% / 0.3);
     --shadow-button-hover: 0 0 40px hsl(0 0% 100% / 0.6), 0 0 80px hsl(0 0% 100% / 0.3), 0 20px 60px hsl(0 0% 0% / 0.4);
     --shadow-chemistry-glow: 0 0 40px hsl(var(--chemistry-blue) / 0.3), 0 0 80px hsl(var(--chemistry-blue) / 0.15);
-    --shadow-chemistry-text: 0 0 20px hsl(260 75% 75% / 0.4), 0 0 40px hsl(260 75% 65% / 0.2), 0 0 60px hsl(var(--terminal-green) / 0.15);
-    --shadow-fellows-text: 0 0 20px hsl(var(--terminal-green) / 0.4), 0 0 40px hsl(var(--campanile-gradient-start) / 0.2);
+    --shadow-chemistry-text: 0 0 20px hsl(0 0% 70% / 0.3), 0 0 40px hsl(0 0% 60% / 0.2), 0 0 60px hsl(0 0% 50% / 0.1);
+    --shadow-fellows-text: 0 0 20px hsl(0 0% 70% / 0.3), 0 0 40px hsl(0 0% 60% / 0.2);
     
     /* Typography */
     --font-display: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;

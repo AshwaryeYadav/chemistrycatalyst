@@ -385,9 +385,9 @@ export function ChemistryHero() {
                   }}
                 >
                   <div 
-                    className="text-soft-gray relative"
+                    className="relative bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent"
                     style={{
-                      filter: 'drop-shadow(var(--shadow-text-glow))'
+                      filter: 'drop-shadow(0 0 20px hsl(var(--electric-purple) / 0.5))'
                     }}
                   >
                     {/* CHEM + ISTRY with morphing I */}
@@ -418,10 +418,11 @@ export function ChemistryHero() {
                 
                 {/* FELLOWS with purple glow behind */}
                 <h1 
-                  className="text-6xl xl:text-8xl font-display font-black tracking-tight leading-none text-soft-gray relative"
+                  className="text-6xl xl:text-8xl font-display font-black tracking-tight leading-none relative bg-gradient-to-r from-[#4F46E5] via-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent"
                   style={{
                     letterSpacing: "-1%",
                     fontWeight: 900,
+                    filter: 'drop-shadow(0 0 20px hsl(var(--electric-purple) / 0.5))'
                   }}
                 >
                   {/* Purple glow behind */}

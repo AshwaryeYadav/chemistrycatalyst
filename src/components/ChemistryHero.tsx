@@ -6,80 +6,163 @@ import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** Frosted Glass Rectangular Prism - Based on uploaded color image */
+/** Loading Bar with Bouncing Segments */
 const FrostedColumn = memo(function FrostedColumn() {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
+  const segment1Ref = useRef<THREE.Mesh>(null);
+  const segment2Ref = useRef<THREE.Mesh>(null);
+  const segment3Ref = useRef<THREE.Mesh>(null);
   
-  const { leftHalf, rightHalf } = useMemo(() => {
-    // Create two halves of the rectangular prism to match image proportions
-    const leftGeometry = new THREE.BoxGeometry(2.0, 6.0, 1.5); // Purple half
-    const rightGeometry = new THREE.BoxGeometry(2.0, 6.0, 1.5); // Green half
-    
-    return {
-      leftHalf: leftGeometry,
-      rightHalf: rightGeometry
-    };
+  const segmentGeometry = useMemo(() => {
+    // Long, skinny rectangular segments
+    return new THREE.BoxGeometry(1.5, 0.4, 0.4);
   }, []);
 
+  useFrame((state) => {
+    const time = state.clock.elapsedTime;
+    
+    // Animation cycle: 4 seconds total
+    const cycle = (time % 4.0) / 4.0;
+    
+    if (cycle < 0.6) {
+      // Phase 1: Bouncing segments (0-2.4s)
+      const bounceTime = cycle * 6.67; // Scale to make bouncing faster
+      
+      if (segment1Ref.current) {
+        const bounce1 = Math.sin(bounceTime * 2) * 0.3;
+        segment1Ref.current.position.set(-2.0, bounce1, 0);
+      }
+      
+      if (segment2Ref.current) {
+        const bounce2 = Math.sin((bounceTime - 0.3) * 2) * 0.3;
+        segment2Ref.current.position.set(0, bounce2, 0);
+      }
+      
+      if (segment3Ref.current) {
+        const bounce3 = Math.sin((bounceTime - 0.6) * 2) * 0.3;
+        segment3Ref.current.position.set(2.0, bounce3, 0);
+      }
+    } else if (cycle < 0.8) {
+      // Phase 2: Join together (2.4-3.2s)
+      const joinProgress = (cycle - 0.6) / 0.2;
+      const easeJoin = 1 - Math.pow(1 - joinProgress, 3);
+      
+      if (segment1Ref.current) {
+        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.6) * 20) * 0.3);
+        segment1Ref.current.position.set(-2.0, yPos, 0);
+      }
+      
+      if (segment2Ref.current) {
+        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.6 - 0.3) * 20) * 0.3);
+        segment2Ref.current.position.set(0, yPos, 0);
+      }
+      
+      if (segment3Ref.current) {
+        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.6 - 0.6) * 20) * 0.3);
+        segment3Ref.current.position.set(2.0, yPos, 0);
+      }
+    } else {
+      // Phase 3: Rotate as one unit (3.2-4s)
+      if (segment1Ref.current) segment1Ref.current.position.set(-2.0, 0, 0);
+      if (segment2Ref.current) segment2Ref.current.position.set(0, 0, 0);
+      if (segment3Ref.current) segment3Ref.current.position.set(2.0, 0, 0);
+      
+      if (groupRef.current) {
+        const rotateProgress = (cycle - 0.8) / 0.2;
+        groupRef.current.rotation.x = rotateProgress * Math.PI * 2;
+      }
+    }
+  });
+
   return (
-    <group>
-      {/* Left half - Purple section matching image */}
+    <group ref={groupRef}>
+      {/* Green segment */}
       <mesh 
-        ref={meshRef} 
-        geometry={leftHalf} 
-        position={[-1.0, 0, 0]} 
+        ref={segment1Ref} 
+        geometry={segmentGeometry} 
+        position={[-2.0, 0, 0]} 
         castShadow 
         receiveShadow
       >
         <meshPhysicalMaterial
-          color="#6366f1" // Purple from image
+          color="#99f859" // Bright green
           transparent={true}
           opacity={0.85}
-          roughness={0.9}
-          metalness={0.1}
-          transmission={0.3}
-          thickness={0.5}
-          clearcoat={0.3}
-          clearcoatRoughness={0.7}
-          emissive="#6366f1"
-          emissiveIntensity={0.05}
+          roughness={0.8}
+          metalness={0.2}
+          transmission={0.4}
+          thickness={0.3}
+          clearcoat={0.4}
+          clearcoatRoughness={0.6}
+          emissive="#99f859"
+          emissiveIntensity={0.08}
         />
       </mesh>
 
-      {/* Right half - Green section matching image */}
+      {/* Purple segment */}
       <mesh 
-        geometry={rightHalf} 
-        position={[1.0, 0, 0]} 
+        ref={segment2Ref} 
+        geometry={segmentGeometry} 
+        position={[0, 0, 0]} 
         castShadow 
         receiveShadow
       >
         <meshPhysicalMaterial
-          color="#84cc16" // Bright green from image
+          color="#7459f8" // Regular purple
           transparent={true}
           opacity={0.85}
-          roughness={0.9}
-          metalness={0.1}
-          transmission={0.3}
-          thickness={0.5}
-          clearcoat={0.3}
-          clearcoatRoughness={0.7}
-          emissive="#84cc16"
-          emissiveIntensity={0.05}
+          roughness={0.8}
+          metalness={0.2}
+          transmission={0.4}
+          thickness={0.3}
+          clearcoat={0.4}
+          clearcoatRoughness={0.6}
+          emissive="#7459f8"
+          emissiveIntensity={0.08}
         />
       </mesh>
 
-      {/* Internal glow lights */}
+      {/* Soft purple segment */}
+      <mesh 
+        ref={segment3Ref} 
+        geometry={segmentGeometry} 
+        position={[2.0, 0, 0]} 
+        castShadow 
+        receiveShadow
+      >
+        <meshPhysicalMaterial
+          color="#c6e2ff" // Soft purple
+          transparent={true}
+          opacity={0.85}
+          roughness={0.8}
+          metalness={0.2}
+          transmission={0.4}
+          thickness={0.3}
+          clearcoat={0.4}
+          clearcoatRoughness={0.6}
+          emissive="#c6e2ff"
+          emissiveIntensity={0.06}
+        />
+      </mesh>
+
+      {/* Glow lights for each segment */}
       <pointLight
-        position={[-1.0, 0, 0]}
-        color="#6366f1"
-        intensity={0.3}
-        distance={4}
+        position={[-2.0, 0, 0]}
+        color="#99f859"
+        intensity={0.4}
+        distance={3}
       />
       <pointLight
-        position={[1.0, 0, 0]}
-        color="#84cc16"
+        position={[0, 0, 0]}
+        color="#7459f8"
+        intensity={0.4}
+        distance={3}
+      />
+      <pointLight
+        position={[2.0, 0, 0]}
+        color="#c6e2ff"
         intensity={0.3}
-        distance={4}
+        distance={3}
       />
     </group>
   );

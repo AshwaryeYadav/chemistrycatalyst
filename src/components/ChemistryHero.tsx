@@ -6,161 +6,104 @@ import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** UC Berkeley Campanile tower - Detailed model based on GrabCAD reference */
-const CampanileMesh = memo(function CampanileMesh() {
-  const geom = useMemo(() => {
-    const group = new THREE.Group();
+/** Frosted Glass Column - Modern 3D asset with purple and green accents */
+const FrostedColumn = memo(function FrostedColumn() {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  const { mainColumn, accentBands, innerLights } = useMemo(() => {
+    // Main frosted glass column
+    const mainGeometry = new THREE.CylinderGeometry(1.0, 1.0, 7.0, 32);
     
-    // Foundation/Base platform (wider and more substantial)
-    const foundationGeom = new THREE.BoxGeometry(3.2, 0.4, 3.2);
-    const foundationMesh = new THREE.Mesh(foundationGeom);
-    foundationMesh.position.y = -3.2;
-    group.add(foundationMesh);
+    // Purple and green accent bands
+    const bandGeometry = new THREE.CylinderGeometry(1.05, 1.05, 0.3, 32);
     
-    // Lower base section
-    const lowerBaseGeom = new THREE.BoxGeometry(2.8, 0.6, 2.8);
-    const lowerBaseMesh = new THREE.Mesh(lowerBaseGeom);
-    lowerBaseMesh.position.y = -2.6;
-    group.add(lowerBaseMesh);
+    // Inner light-emitting cores
+    const lightGeometry = new THREE.CylinderGeometry(0.3, 0.3, 6.5, 16);
     
-    // Main tower shaft (taller and more proportioned)
-    const shaftGeom = new THREE.BoxGeometry(1.2, 4.5, 1.2);
-    const shaftMesh = new THREE.Mesh(shaftGeom);
-    shaftMesh.position.y = -0.25;
-    group.add(shaftMesh);
-    
-    // Mid-level detail band
-    const midBandGeom = new THREE.BoxGeometry(1.4, 0.2, 1.4);
-    const midBandMesh = new THREE.Mesh(midBandGeom);
-    midBandMesh.position.y = 1.0;
-    group.add(midBandMesh);
-    
-    // Clock level section
-    const clockLevelGeom = new THREE.BoxGeometry(1.3, 0.8, 1.3);
-    const clockLevelMesh = new THREE.Mesh(clockLevelGeom);
-    clockLevelMesh.position.y = 1.8;
-    group.add(clockLevelMesh);
-    
-    // Add clock faces (simplified as inset rectangles)
-    const clockFaceGeom = new THREE.BoxGeometry(0.1, 0.4, 0.4);
-    
-    // Front clock face
-    const frontClockMesh = new THREE.Mesh(clockFaceGeom);
-    frontClockMesh.position.set(0.7, 1.8, 0);
-    group.add(frontClockMesh);
-    
-    // Back clock face
-    const backClockMesh = new THREE.Mesh(clockFaceGeom);
-    backClockMesh.position.set(-0.7, 1.8, 0);
-    group.add(backClockMesh);
-    
-    // Left clock face
-    const leftClockGeom = new THREE.BoxGeometry(0.4, 0.4, 0.1);
-    const leftClockMesh = new THREE.Mesh(leftClockGeom);
-    leftClockMesh.position.set(0, 1.8, 0.7);
-    group.add(leftClockMesh);
-    
-    // Right clock face
-    const rightClockMesh = new THREE.Mesh(leftClockGeom);
-    rightClockMesh.position.set(0, 1.8, -0.7);
-    group.add(rightClockMesh);
-    
-    // Upper belfry section (with arched openings)
-    const belfryGeom = new THREE.BoxGeometry(1.8, 1.2, 1.8);
-    const belfryMesh = new THREE.Mesh(belfryGeom);
-    belfryMesh.position.y = 3.1;
-    group.add(belfryMesh);
-    
-    // Belfry arched openings (simplified as rectangular cutouts)
-    const archGeom = new THREE.BoxGeometry(0.1, 0.8, 0.6);
-    
-    // Front arch
-    const frontArchMesh = new THREE.Mesh(archGeom);
-    frontArchMesh.position.set(0.95, 3.1, 0);
-    group.add(frontArchMesh);
-    
-    // Back arch
-    const backArchMesh = new THREE.Mesh(archGeom);
-    backArchMesh.position.set(-0.95, 3.1, 0);
-    group.add(backArchMesh);
-    
-    // Side arches
-    const sideArchGeom = new THREE.BoxGeometry(0.6, 0.8, 0.1);
-    const leftArchMesh = new THREE.Mesh(sideArchGeom);
-    leftArchMesh.position.set(0, 3.1, 0.95);
-    group.add(leftArchMesh);
-    
-    const rightArchMesh = new THREE.Mesh(sideArchGeom);
-    rightArchMesh.position.set(0, 3.1, -0.95);
-    group.add(rightArchMesh);
-    
-    // Crown/cornice section
-    const crownGeom = new THREE.BoxGeometry(2.0, 0.3, 2.0);
-    const crownMesh = new THREE.Mesh(crownGeom);
-    crownMesh.position.y = 3.85;
-    group.add(crownMesh);
-    
-    // Roof structure (pyramidal)
-    const roofGeom = new THREE.ConeGeometry(1.1, 0.8, 4);
-    const roofMesh = new THREE.Mesh(roofGeom);
-    roofMesh.position.y = 4.4;
-    roofMesh.rotation.y = Math.PI / 4; // Rotate 45 degrees for square base
-    group.add(roofMesh);
-    
-    // Final spire/finial
-    const spireGeom = new THREE.ConeGeometry(0.2, 0.8, 8);
-    const spireMesh = new THREE.Mesh(spireGeom);
-    spireMesh.position.y = 5.0;
-    group.add(spireMesh);
-    
-    // Convert group to single geometry
-    const finalGeom = new THREE.BufferGeometry();
-    const vertices: number[] = [];
-    const indices: number[] = [];
-    let indexOffset = 0;
-    
-    group.children.forEach((child) => {
-      const mesh = child as THREE.Mesh;
-      const geom = mesh.geometry as THREE.BufferGeometry;
-      geom.computeBoundingBox();
-      
-      const positions = geom.attributes.position.array;
-      const meshIndices = geom.index?.array || [];
-      
-      // Apply position offset
-      for (let i = 0; i < positions.length; i += 3) {
-        vertices.push(
-          positions[i] + mesh.position.x,
-          positions[i + 1] + mesh.position.y,
-          positions[i + 2] + mesh.position.z
-        );
-      }
-      
-      // Add indices with offset
-      for (let i = 0; i < meshIndices.length; i++) {
-        indices.push(meshIndices[i] + indexOffset);
-      }
-      
-      indexOffset += positions.length / 3;
-    });
-    
-    finalGeom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-    finalGeom.setIndex(indices);
-    finalGeom.computeVertexNormals();
-    finalGeom.center();
-    
-    return finalGeom;
+    return {
+      mainColumn: mainGeometry,
+      accentBands: bandGeometry,
+      innerLights: lightGeometry
+    };
   }, []);
 
   return (
-    <mesh geometry={geom} castShadow receiveShadow>
-      <meshStandardMaterial 
-        color="hsl(35, 25%, 88%)" 
-        metalness={0.02} 
-        roughness={0.3}
-        // Clean light stone color matching the reference
+    <group>
+      {/* Main frosted glass column */}
+      <mesh ref={meshRef} geometry={mainColumn} position={[0, 0, 0]} castShadow receiveShadow>
+        <meshPhysicalMaterial
+          color="#9d7ff7"
+          transparent={true}
+          opacity={0.75}
+          roughness={0.9}
+          metalness={0.1}
+          transmission={0.3}
+          thickness={0.5}
+          clearcoat={0.3}
+          clearcoatRoughness={0.7}
+        />
+      </mesh>
+
+      {/* Purple accent band - upper */}
+      <mesh geometry={accentBands} position={[0, 2.0, 0]} castShadow>
+        <meshPhysicalMaterial
+          color="#7459f8"
+          transparent={true}
+          opacity={0.8}
+          roughness={0.8}
+          metalness={0.2}
+          transmission={0.4}
+          emissive="#7459f8"
+          emissiveIntensity={0.1}
+        />
+      </mesh>
+
+      {/* Green accent band - lower */}
+      <mesh geometry={accentBands} position={[0, -2.0, 0]} castShadow>
+        <meshPhysicalMaterial
+          color="#99f859"
+          transparent={true}
+          opacity={0.8}
+          roughness={0.8}
+          metalness={0.2}
+          transmission={0.4}
+          emissive="#99f859"
+          emissiveIntensity={0.1}
+        />
+      </mesh>
+
+      {/* Inner light core - purple glow */}
+      <mesh geometry={innerLights} position={[0, 1.0, 0]}>
+        <meshBasicMaterial
+          color="#7459f8"
+          transparent={true}
+          opacity={0.3}
+        />
+      </mesh>
+
+      {/* Inner light core - green glow */}
+      <mesh geometry={innerLights} position={[0, -1.0, 0]}>
+        <meshBasicMaterial
+          color="#99f859"
+          transparent={true}
+          opacity={0.3}
+        />
+      </mesh>
+
+      {/* Internal point lights for glow effects */}
+      <pointLight
+        position={[0, 1.5, 0]}
+        color="#7459f8"
+        intensity={0.5}
+        distance={3}
       />
-    </mesh>
+      <pointLight
+        position={[0, -1.5, 0]}
+        color="#99f859"
+        intensity={0.5}
+        distance={3}
+      />
+    </group>
   );
 });
 
@@ -173,7 +116,7 @@ function RotatingCampanile() {
 
   useFrame((_s, dt) => {
     if (group.current && autoRotate && !isDragging) {
-      group.current.rotation.y += dt * 0.25;
+      group.current.rotation.x += dt * 0.5; // X-axis rotation for frosted column
     }
   });
 
@@ -192,8 +135,8 @@ function RotatingCampanile() {
       y: event.clientY - previousMousePosition.y
     };
 
-    group.current.rotation.y += deltaMove.x * 0.01;
     group.current.rotation.x += deltaMove.y * 0.01;
+    group.current.rotation.z += deltaMove.x * 0.01;
     
     setPreviousMousePosition({ x: event.clientX, y: event.clientY });
   };
@@ -212,7 +155,7 @@ function RotatingCampanile() {
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
     >
-      <CampanileMesh />
+      <FrostedColumn />
     </group>
   );
 }

@@ -333,6 +333,7 @@ export function ChemistryHero() {
     ["TRM Labs", "Basis Theory", "Medium"],
     ["ServiceTitan", "Pave", "Sprig"],
     ["Rutter", "Equals", "Macro"],
+    ["Decagon", "Wrapbook", "Notion"],
   ];
   const descriptions = ["scientists.", "founders.", "researchers.", "innovators."];
 

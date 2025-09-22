@@ -429,6 +429,15 @@ export function ChemistryHero() {
         overflow: hidden;
         text-align: center;
       }
+      
+      /* Mobile-specific adjustments for the I */
+      @media (max-width: 640px) {
+        .i-slot {
+          --iWidth: 0.32em;
+          --iHeight: 0.88em;
+          --iBaseline: -0.12em;
+        }
+      }
       .i-layer{
         position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
         will-change: opacity, transform;

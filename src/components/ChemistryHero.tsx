@@ -9,66 +9,96 @@ import * as THREE from "three";
 /** Loading Bar with Bouncing Segments */
 const FrostedColumn = memo(function FrostedColumn() {
   const groupRef = useRef<THREE.Group>(null);
-  const segment1Ref = useRef<THREE.Mesh>(null);
-  const segment2Ref = useRef<THREE.Mesh>(null);
-  const segment3Ref = useRef<THREE.Mesh>(null);
+  const purpleRef = useRef<THREE.Mesh>(null);      // Left - purple
+  const lightPurpleRef = useRef<THREE.Mesh>(null); // Middle - light purple
+  const greenRef = useRef<THREE.Mesh>(null);       // Right - green (longer)
   
-  const segmentGeometry = useMemo(() => {
-    // Long, skinny rectangular segments
-    return new THREE.BoxGeometry(1.5, 0.4, 0.4);
+  const { regularSegment, longSegment } = useMemo(() => {
+    // Regular segments for purple segments
+    const regular = new THREE.BoxGeometry(1.2, 0.4, 0.4);
+    // Longer segment for green
+    const long = new THREE.BoxGeometry(2.0, 0.4, 0.4);
+    
+    return {
+      regularSegment: regular,
+      longSegment: long
+    };
   }, []);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
     
-    // Animation cycle: 4 seconds total
-    const cycle = (time % 4.0) / 4.0;
+    // Slower animation cycle: 8 seconds total
+    const cycle = (time % 8.0) / 8.0;
     
-    if (cycle < 0.6) {
-      // Phase 1: Bouncing segments (0-2.4s)
-      const bounceTime = cycle * 6.67; // Scale to make bouncing faster
+    if (cycle < 0.5) {
+      // Phase 1: Bouncing and spinning (0-4s)
+      const bounceTime = cycle * 2; // Scale for bounce timing
       
-      if (segment1Ref.current) {
-        const bounce1 = Math.sin(bounceTime * 2) * 0.3;
-        segment1Ref.current.position.set(-2.0, bounce1, 0);
+      // Purple (left) bounces first
+      if (purpleRef.current) {
+        const bounce = Math.sin(bounceTime * 3) * 0.4;
+        const spin = bounceTime * Math.PI * 2;
+        purpleRef.current.position.set(-2.2, bounce, 0);
+        purpleRef.current.rotation.z = spin;
       }
       
-      if (segment2Ref.current) {
-        const bounce2 = Math.sin((bounceTime - 0.3) * 2) * 0.3;
-        segment2Ref.current.position.set(0, bounce2, 0);
+      // Light purple (middle) bounces after delay
+      if (lightPurpleRef.current) {
+        const delayedBounce = Math.max(0, bounceTime - 0.3);
+        const bounce = Math.sin(delayedBounce * 3) * 0.4;
+        const spin = delayedBounce * Math.PI * 2;
+        lightPurpleRef.current.position.set(0, bounce, 0);
+        lightPurpleRef.current.rotation.z = spin;
       }
       
-      if (segment3Ref.current) {
-        const bounce3 = Math.sin((bounceTime - 0.6) * 2) * 0.3;
-        segment3Ref.current.position.set(2.0, bounce3, 0);
+      // Green (right) bounces last and spins differently
+      if (greenRef.current) {
+        const delayedBounce = Math.max(0, bounceTime - 0.6);
+        const bounce = Math.sin(delayedBounce * 3) * 0.4;
+        const spin = delayedBounce * Math.PI * 1.5; // Different spin speed
+        greenRef.current.position.set(2.4, bounce, 0);
+        greenRef.current.rotation.y = spin;
       }
-    } else if (cycle < 0.8) {
-      // Phase 2: Join together (2.4-3.2s)
-      const joinProgress = (cycle - 0.6) / 0.2;
+    } else if (cycle < 0.75) {
+      // Phase 2: Join together (4-6s)
+      const joinProgress = (cycle - 0.5) / 0.25;
       const easeJoin = 1 - Math.pow(1 - joinProgress, 3);
       
-      if (segment1Ref.current) {
-        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.6) * 20) * 0.3);
-        segment1Ref.current.position.set(-2.0, yPos, 0);
+      if (purpleRef.current) {
+        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.5) * 15) * 0.2);
+        purpleRef.current.position.set(-2.2, yPos, 0);
+        purpleRef.current.rotation.z = (1 - easeJoin) * Math.PI * 4;
       }
       
-      if (segment2Ref.current) {
-        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.6 - 0.3) * 20) * 0.3);
-        segment2Ref.current.position.set(0, yPos, 0);
+      if (lightPurpleRef.current) {
+        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.5) * 15) * 0.2);
+        lightPurpleRef.current.position.set(0, yPos, 0);
+        lightPurpleRef.current.rotation.z = (1 - easeJoin) * Math.PI * 4;
       }
       
-      if (segment3Ref.current) {
-        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.6 - 0.6) * 20) * 0.3);
-        segment3Ref.current.position.set(2.0, yPos, 0);
+      if (greenRef.current) {
+        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.5) * 15) * 0.2);
+        greenRef.current.position.set(2.4, yPos, 0);
+        greenRef.current.rotation.y = (1 - easeJoin) * Math.PI * 3;
       }
     } else {
-      // Phase 3: Rotate as one unit (3.2-4s)
-      if (segment1Ref.current) segment1Ref.current.position.set(-2.0, 0, 0);
-      if (segment2Ref.current) segment2Ref.current.position.set(0, 0, 0);
-      if (segment3Ref.current) segment3Ref.current.position.set(2.0, 0, 0);
+      // Phase 3: Rotate as one unit (6-8s)
+      if (purpleRef.current) {
+        purpleRef.current.position.set(-2.2, 0, 0);
+        purpleRef.current.rotation.set(0, 0, 0);
+      }
+      if (lightPurpleRef.current) {
+        lightPurpleRef.current.position.set(0, 0, 0);
+        lightPurpleRef.current.rotation.set(0, 0, 0);
+      }
+      if (greenRef.current) {
+        greenRef.current.position.set(2.4, 0, 0);
+        greenRef.current.rotation.set(0, 0, 0);
+      }
       
       if (groupRef.current) {
-        const rotateProgress = (cycle - 0.8) / 0.2;
+        const rotateProgress = (cycle - 0.75) / 0.25;
         groupRef.current.rotation.x = rotateProgress * Math.PI * 2;
       }
     }
@@ -76,39 +106,16 @@ const FrostedColumn = memo(function FrostedColumn() {
 
   return (
     <group ref={groupRef}>
-      {/* Green segment */}
+      {/* Purple segment - Left */}
       <mesh 
-        ref={segment1Ref} 
-        geometry={segmentGeometry} 
-        position={[-2.0, 0, 0]} 
+        ref={purpleRef} 
+        geometry={regularSegment} 
+        position={[-2.2, 0, 0]} 
         castShadow 
         receiveShadow
       >
         <meshPhysicalMaterial
-          color="#99f859" // Bright green
-          transparent={true}
-          opacity={0.85}
-          roughness={0.8}
-          metalness={0.2}
-          transmission={0.4}
-          thickness={0.3}
-          clearcoat={0.4}
-          clearcoatRoughness={0.6}
-          emissive="#99f859"
-          emissiveIntensity={0.08}
-        />
-      </mesh>
-
-      {/* Purple segment */}
-      <mesh 
-        ref={segment2Ref} 
-        geometry={segmentGeometry} 
-        position={[0, 0, 0]} 
-        castShadow 
-        receiveShadow
-      >
-        <meshPhysicalMaterial
-          color="#7459f8" // Regular purple
+          color="#7459f8" // Actual purple color
           transparent={true}
           opacity={0.85}
           roughness={0.8}
@@ -122,11 +129,11 @@ const FrostedColumn = memo(function FrostedColumn() {
         />
       </mesh>
 
-      {/* Soft purple segment */}
+      {/* Light purple segment - Middle */}
       <mesh 
-        ref={segment3Ref} 
-        geometry={segmentGeometry} 
-        position={[2.0, 0, 0]} 
+        ref={lightPurpleRef} 
+        geometry={regularSegment} 
+        position={[0, 0, 0]} 
         castShadow 
         receiveShadow
       >
@@ -145,23 +152,46 @@ const FrostedColumn = memo(function FrostedColumn() {
         />
       </mesh>
 
+      {/* Green segment - Right (longer) */}
+      <mesh 
+        ref={greenRef} 
+        geometry={longSegment} 
+        position={[2.4, 0, 0]} 
+        castShadow 
+        receiveShadow
+      >
+        <meshPhysicalMaterial
+          color="#99f859" // Bright green
+          transparent={true}
+          opacity={0.85}
+          roughness={0.8}
+          metalness={0.2}
+          transmission={0.4}
+          thickness={0.3}
+          clearcoat={0.4}
+          clearcoatRoughness={0.6}
+          emissive="#99f859"
+          emissiveIntensity={0.08}
+        />
+      </mesh>
+
       {/* Glow lights for each segment */}
       <pointLight
-        position={[-2.0, 0, 0]}
-        color="#99f859"
-        intensity={0.4}
-        distance={3}
-      />
-      <pointLight
-        position={[0, 0, 0]}
+        position={[-2.2, 0, 0]}
         color="#7459f8"
         intensity={0.4}
         distance={3}
       />
       <pointLight
-        position={[2.0, 0, 0]}
+        position={[0, 0, 0]}
         color="#c6e2ff"
         intensity={0.3}
+        distance={3}
+      />
+      <pointLight
+        position={[2.4, 0, 0]}
+        color="#99f859"
+        intensity={0.4}
         distance={3}
       />
     </group>

@@ -292,11 +292,10 @@ function RotatingCampanile() {
 const HeroCampanile3D = memo(function HeroCampanile3D() {
   return (
     <div
-      className="mx-auto mb-2 md:mb-4"
+      className="mx-auto mb-2 md:mb-4 w-full max-w-[320px] sm:max-w-[420px] md:max-w-[480px]"
       style={{
-        width: "480px",
-        height: "420px",
-        // Much larger container for seamless rotation without clipping
+        height: "280px",
+        // Responsive container that scales down for mobile
       }}
       aria-hidden
     >

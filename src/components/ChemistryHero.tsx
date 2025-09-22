@@ -420,16 +420,24 @@ export function ChemistryHero() {
                 <span className="i-layer i-text">I</span>
                 <span className="i-layer i-tower">
                   <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" style={{verticalAlign: 'baseline'}}>
-                    {/* Campanile with base aligned to text baseline - teal color */}
+                    {/* Gradient definitions */}
+                    <defs>
+                      <linearGradient id="campanileGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="hsl(var(--campanile-gradient-start))" />
+                        <stop offset="100%" stopColor="hsl(var(--campanile-gradient-end))" />
+                      </linearGradient>
+                    </defs>
+                    
+                    {/* Campanile with base aligned to text baseline - light purple to green gradient */}
                     
                     {/* Base - positioned at text baseline level */}
-                    <rect x="12" y="68" width="11" height="8" fill="hsl(180, 75%, 55%)" />
+                    <rect x="12" y="68" width="11" height="8" fill="url(#campanileGradient)" />
                     
                     {/* Main tower shaft - shortened */}
-                    <rect x="12" y="25" width="11" height="43" fill="hsl(180, 75%, 55%)" />
+                    <rect x="12" y="25" width="11" height="43" fill="url(#campanileGradient)" />
                     
                     {/* Upper belfry section */}
-                    <rect x="10" y="13" width="15" height="12" fill="hsl(180, 75%, 55%)" />
+                    <rect x="10" y="13" width="15" height="12" fill="url(#campanileGradient)" />
                     
                     {/* Gothic arched openings */}
                     <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
@@ -443,10 +451,10 @@ export function ChemistryHero() {
                     <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
                     
                     {/* Crown/cornice */}
-                    <rect x="9" y="11" width="17" height="2" fill="hsl(180, 75%, 55%)" />
+                    <rect x="9" y="11" width="17" height="2" fill="url(#campanileGradient)" />
                     
                     {/* Detailed spire */}
-                    <polygon points="17.5,2 26,11 9,11" fill="hsl(180, 75%, 55%)" />
+                    <polygon points="17.5,2 26,11 9,11" fill="url(#campanileGradient)" />
                   </svg>
                 </span>
               </span>
@@ -470,10 +478,10 @@ export function ChemistryHero() {
         {/* body */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
-            {">"} A year-long fellowship for Berkeley's top{" "}
+            <span className="text-[hsl(var(--terminal-green))]">{">"}</span> A year-long fellowship for Berkeley's top{" "}
             <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
               {typingText}
-              <span className="animate-pulse ml-0.5 text-[#1e40af]">|</span>
+              <span className="animate-pulse ml-0.5 text-[hsl(var(--terminal-green))]">|</span>
             </span>
           </div>
           <div
@@ -481,7 +489,7 @@ export function ChemistryHero() {
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            {">"} Backed by investors behind{" "}
+            <span className="text-[hsl(var(--terminal-green))]">{">"}</span> Backed by investors behind{" "}
             <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
               <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
               {", "}

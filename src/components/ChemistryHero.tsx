@@ -39,7 +39,7 @@ const FrostedColumn = memo(function FrostedColumn() {
       if (purpleRef.current) {
         const bounce = Math.sin(bounceTime * 3) * 0.4;
         const spin = bounceTime * Math.PI * 2;
-        purpleRef.current.position.set(-2.2, bounce, 0);
+        purpleRef.current.position.set(-3.0, bounce, 0);
         purpleRef.current.rotation.z = spin;
       }
       
@@ -57,43 +57,49 @@ const FrostedColumn = memo(function FrostedColumn() {
         const delayedBounce = Math.max(0, bounceTime - 0.6);
         const bounce = Math.sin(delayedBounce * 3) * 0.4;
         const spin = delayedBounce * Math.PI * 1.5; // Different spin speed
-        greenRef.current.position.set(2.4, bounce, 0);
+        greenRef.current.position.set(3.2, bounce, 0);
         greenRef.current.rotation.y = spin;
       }
     } else if (cycle < 0.75) {
-      // Phase 2: Join together (4-6s)
+      // Phase 2: Join together (4-6s) - Move to touching positions
       const joinProgress = (cycle - 0.5) / 0.25;
       const easeJoin = 1 - Math.pow(1 - joinProgress, 3);
       
       if (purpleRef.current) {
+        const startX = -3.0;
+        const endX = -1.2; // Final position when joined
+        const xPos = startX + (endX - startX) * easeJoin;
         const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.5) * 15) * 0.2);
-        purpleRef.current.position.set(-2.2, yPos, 0);
+        purpleRef.current.position.set(xPos, yPos, 0);
         purpleRef.current.rotation.z = (1 - easeJoin) * Math.PI * 4;
       }
       
       if (lightPurpleRef.current) {
         const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.5) * 15) * 0.2);
-        lightPurpleRef.current.position.set(0, yPos, 0);
+        lightPurpleRef.current.position.set(0, yPos, 0); // Already in center
         lightPurpleRef.current.rotation.z = (1 - easeJoin) * Math.PI * 4;
       }
       
       if (greenRef.current) {
+        const startX = 3.2;
+        const endX = 1.6; // Final position when joined
+        const xPos = startX + (endX - startX) * easeJoin;
         const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.5) * 15) * 0.2);
-        greenRef.current.position.set(2.4, yPos, 0);
+        greenRef.current.position.set(xPos, yPos, 0);
         greenRef.current.rotation.y = (1 - easeJoin) * Math.PI * 3;
       }
     } else {
-      // Phase 3: Rotate as one unit (6-8s)
+      // Phase 3: Rotate as one unit (6-8s) - Keep joined positions
       if (purpleRef.current) {
-        purpleRef.current.position.set(-2.2, 0, 0);
+        purpleRef.current.position.set(-1.2, 0, 0); // Touching position
         purpleRef.current.rotation.set(0, 0, 0);
       }
       if (lightPurpleRef.current) {
-        lightPurpleRef.current.position.set(0, 0, 0);
+        lightPurpleRef.current.position.set(0, 0, 0); // Center position
         lightPurpleRef.current.rotation.set(0, 0, 0);
       }
       if (greenRef.current) {
-        greenRef.current.position.set(2.4, 0, 0);
+        greenRef.current.position.set(1.6, 0, 0); // Touching position
         greenRef.current.rotation.set(0, 0, 0);
       }
       

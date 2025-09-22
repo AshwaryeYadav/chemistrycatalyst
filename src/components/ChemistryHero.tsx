@@ -1,4 +1,4 @@
-// src/components/LightspeedHero.tsx
+// src/components/ChemistryHero.tsx
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState, memo, useMemo } from "react";
 
@@ -173,7 +173,7 @@ function RotatingCampanile() {
 
   useFrame((_s, dt) => {
     if (group.current && autoRotate && !isDragging) {
-      group.current.rotation.y += dt * 0.25;
+      group.current.rotation.y += dt * 0.15; // Slow 8-12s rotation
     }
   });
 
@@ -207,7 +207,7 @@ function RotatingCampanile() {
   return (
     <group 
       ref={group} 
-      scale={[0.6, 0.6, 0.6]}
+      scale={[0.7, 0.7, 0.7]}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -216,38 +216,6 @@ function RotatingCampanile() {
     </group>
   );
 }
-
-/** Top artwork: standalone 3D Campanile above the wordmark */
-const HeroCampanile3D = memo(function HeroCampanile3D() {
-  return (
-    <div
-      className="mx-auto mb-6 md:mb-8"
-      style={{
-        width: "320px",
-        height: "280px",
-        // Much larger container for seamless rotation without clipping
-      }}
-      aria-hidden
-    >
-      <Canvas
-        dpr={[1, 2]}
-        camera={{ position: [8.0, 6.0, 12.0], fov: 20 }}
-        style={{ width: "100%", height: "100%", display: "block" }}
-        shadows
-      >
-        <ambientLight intensity={0.25} />
-        <directionalLight
-          position={[3, 6, 5]}
-          castShadow
-          intensity={1.1}
-          shadow-mapSize={[1024, 1024]}
-        />
-        <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
-        <RotatingCampanile />
-      </Canvas>
-    </div>
-  );
-});
 
 /* --------------------------------- Hero --------------------------------- */
 
@@ -265,7 +233,6 @@ export function ChemistryHero() {
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentDescription, setCurrentDescription] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [iAsTower, setIAsTower] = useState(false);
   const [typingText, setTypingText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -281,7 +248,7 @@ export function ChemistryHero() {
     return () => clearInterval(id);
   }, [isPaused, companyGroups.length]);
 
-  // Typing animation effect
+  // Typing animation effect - slower and more tasteful
   useEffect(() => {
     const currentWord = descriptions[currentDescription];
     let timeout: NodeJS.Timeout;
@@ -293,14 +260,14 @@ export function ChemistryHero() {
           setIsDeleting(false);
           setCurrentDescription((p) => (p + 1) % descriptions.length);
         }
-      }, 80);
+      }, 60); // Faster deletion
     } else {
       if (typingText === currentWord) {
         timeout = setTimeout(() => setIsDeleting(true), 2000);
       } else {
         timeout = setTimeout(() => {
           setTypingText(currentWord.substring(0, typingText.length + 1));
-        }, 120);
+        }, 35); // 30-40ms/char as specified
       }
     }
 
@@ -314,27 +281,11 @@ export function ChemistryHero() {
     }
   }, []);
 
-  // mouse tilt (subtle 3D feel on the whole wordmark)
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const el = containerRef.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left - r.width / 2) / r.width;
-      const y = (e.clientY - r.top - r.height / 2) / r.height;
-      setMousePosition({ x: x * 20, y: y * 20 });
-    };
-    const el = containerRef.current;
-    if (!el) return;
-    el.addEventListener("mousemove", handleMouseMove);
-    return () => el.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  // morph I
+  // morph I - slower animation
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
-    const id = setInterval(() => setIAsTower((v) => !v), 6000);
+    const id = setInterval(() => setIAsTower((v) => !v), 8000); // Slower transition
     return () => clearInterval(id);
   }, []);
 
@@ -357,8 +308,8 @@ export function ChemistryHero() {
       .i-layer{
         position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
         will-change: opacity, transform;
-        transition: opacity .32s cubic-bezier(.2,.7,.2,1),
-                    transform .38s cubic-bezier(.3,.7,.2,1);
+        transition: opacity .4s cubic-bezier(.2,.7,.2,1),
+                    transform .45s cubic-bezier(.3,.7,.2,1);
       }
       .i-text  { opacity:1;  transform: translateY(0)    scale(1); }
       .i-tower { opacity:0;  transform: translateY(3%)   scale(.985) translateX(var(--towerNudgeX)); }
@@ -366,17 +317,6 @@ export function ChemistryHero() {
       .i-slot.on .i-tower { opacity:1; transform: translateY(0%)   scale(1)    translateX(var(--towerNudgeX)); }
       @media (prefers-reduced-motion: reduce){
         .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
-      }
-      
-      @keyframes subtle-pulse {
-        0%, 100% { 
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% { 
-          opacity: 0.85;
-          transform: scale(1.02);
-        }
       }
     `;
     document.head.appendChild(style);
@@ -387,128 +327,180 @@ export function ChemistryHero() {
     <div
       ref={containerRef}
       className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden"
-      style={{ perspective: "1000px" }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-[#ED6C5C]/10 opacity-40" />
-      <div className="absolute inset-0 opacity-[0.03] bg-noise" />
-
-      <div className="max-w-2xl mx-auto px-8 py-16 md:py-20 text-center relative z-10">
-        {/* 3D Campanile artwork ABOVE the wordmark */}
-        <HeroCampanile3D />
-
-        <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
-          <h1
-            className="text-5xl md:text-7xl font-display font-semibold tracking-tight leading-tight"
-            style={{
-              display: "inline-block",
-              transform: `rotateX(${-mousePosition.y * 0.45}deg) rotateY(${mousePosition.x * 0.45}deg) translateZ(18px)`,
-              transformStyle: "preserve-3d",
-            }}
-          >
-            {/* CHEMISTRY with purple-white glow */}
-            <div 
-              className="text-white bg-gradient-chemistry-glow bg-clip-text"
+      {/* Grain/noise overlay */}
+      <div className="absolute inset-0 bg-noise opacity-[0.12]" />
+      
+      <div className="w-full max-w-7xl mx-auto px-8 py-16 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-16 items-center min-h-[80vh]">
+          
+          {/* LEFT: 3D Campanile */}
+          <div className="flex items-center justify-center lg:justify-start order-2 lg:order-1">
+            <div
+              className="relative"
               style={{
-                textShadow: `var(--shadow-chemistry-text)`,
-                filter: 'drop-shadow(0 0 20px rgba(168, 85, 247, 0.3))',
-                transform: `translateZ(12px) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
+                width: "400px",
+                height: "400px",
+              }}
+              aria-hidden
+            >
+              <Canvas
+                dpr={[1, 2]}
+                camera={{ position: [8.0, 6.0, 12.0], fov: 20 }}
+                style={{ width: "100%", height: "100%", display: "block" }}
+                shadows
+              >
+                <ambientLight intensity={0.25} />
+                <directionalLight
+                  position={[3, 6, 5]}
+                  castShadow
+                  intensity={1.1}
+                  shadow-mapSize={[1024, 1024]}
+                />
+                <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
+                <RotatingCampanile />
+              </Canvas>
+            </div>
+          </div>
+
+          {/* RIGHT: Stacked Typography */}
+          <div className="space-y-16 order-1 lg:order-2">
+            
+            {/* Hero Title - Huge breathing room */}
+            <div 
+              className="opacity-0 animate-[fade-in_0.45s_ease-out_0.1s_forwards]" 
+              style={{ 
+                marginTop: "max(14vh, 2rem)", 
+                marginBottom: "max(8vh, 2rem)",
+                maxWidth: "70ch" 
               }}
             >
-              {/* CHEM + ISTRY with morphing I */}
-              <span>CHEM</span>
-              <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
-                <span className="i-layer i-text">I</span>
-                <span className="i-layer i-tower">
-                  <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" style={{verticalAlign: 'baseline'}}>
-                    {/* Campanile with base aligned to text baseline - teal color */}
-                    
-                    {/* Base - positioned at text baseline level */}
-                    <rect x="12" y="68" width="11" height="8" fill="hsl(180, 75%, 55%)" />
-                    
-                    {/* Main tower shaft - shortened */}
-                    <rect x="12" y="25" width="11" height="43" fill="hsl(180, 75%, 55%)" />
-                    
-                    {/* Upper belfry section */}
-                    <rect x="10" y="13" width="15" height="12" fill="hsl(180, 75%, 55%)" />
-                    
-                    {/* Gothic arched openings */}
-                    <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
-                    <path d="M 17 17 Q 19 14 21 17 L 21 22 L 17 22 Z" fill="rgba(0,0,0,0.4)" />
-                    <path d="M 22 17 Q 24 14 26 17 L 26 22 L 22 22 Z" fill="rgba(0,0,0,0.4)" />
-                    
-                    {/* Small upper windows */}
-                    <rect x="13" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                    <rect x="16" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                    <rect x="19" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                    <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                    
-                    {/* Crown/cornice */}
-                    <rect x="9" y="11" width="17" height="2" fill="hsl(180, 75%, 55%)" />
-                    
-                    {/* Detailed spire */}
-                    <polygon points="17.5,2 26,11 9,11" fill="hsl(180, 75%, 55%)" />
-                  </svg>
+              <div className="space-y-4 text-center lg:text-left">
+                {/* CHEMISTRY */}
+                <h1 
+                  className="text-6xl xl:text-8xl font-display font-black tracking-tight leading-none"
+                  style={{
+                    letterSpacing: "-1%",
+                    fontWeight: 900,
+                  }}
+                >
+                  <div 
+                    className="text-soft-gray relative"
+                    style={{
+                      filter: 'drop-shadow(var(--shadow-text-glow))'
+                    }}
+                  >
+                    {/* CHEM + ISTRY with morphing I */}
+                    <span>CHEM</span>
+                    <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
+                      <span className="i-layer i-text">I</span>
+                      <span className="i-layer i-tower">
+                        <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" style={{verticalAlign: 'baseline'}}>
+                          {/* Campanile with electric purple color */}
+                          <rect x="12" y="68" width="11" height="8" fill="hsl(var(--electric-purple))" />
+                          <rect x="12" y="25" width="11" height="43" fill="hsl(var(--electric-purple))" />
+                          <rect x="10" y="13" width="15" height="12" fill="hsl(var(--electric-purple))" />
+                          <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
+                          <path d="M 17 17 Q 19 14 21 17 L 21 22 L 17 22 Z" fill="rgba(0,0,0,0.4)" />
+                          <path d="M 22 17 Q 24 14 26 17 L 26 22 L 22 22 Z" fill="rgba(0,0,0,0.4)" />
+                          <rect x="13" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                          <rect x="16" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                          <rect x="19" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                          <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                          <rect x="9" y="11" width="17" height="2" fill="hsl(var(--electric-purple))" />
+                          <polygon points="17.5,2 26,11 9,11" fill="hsl(var(--electric-purple))" />
+                        </svg>
+                      </span>
+                    </span>
+                    <span>STRY</span>
+                  </div>
+                </h1>
+                
+                {/* FELLOWS with purple glow behind */}
+                <h1 
+                  className="text-6xl xl:text-8xl font-display font-black tracking-tight leading-none text-soft-gray relative"
+                  style={{
+                    letterSpacing: "-1%",
+                    fontWeight: 900,
+                  }}
+                >
+                  {/* Purple glow behind */}
+                  <div 
+                    className="absolute inset-0 -z-10"
+                    style={{
+                      background: 'radial-gradient(ellipse 120% 80% at 50% 50%, hsl(var(--electric-purple) / 0.15) 0%, transparent 60%)',
+                      filter: 'blur(40px)',
+                    }}
+                  />
+                  FELLOWS
+                </h1>
+              </div>
+            </div>
+
+            {/* Terminal Lines */}
+            <div className="space-y-6 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards]">
+              
+              {/* First terminal line */}
+              <div 
+                className="font-mono text-lg leading-relaxed text-center lg:text-left" 
+                style={{ lineHeight: 1.6, maxWidth: "70ch" }}
+              >
+                <span className="text-acid-green mr-3">{">"}</span>
+                <span className="text-soft-gray">
+                  A year-long fellowship for Berkeley's top{" "}
+                  <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
+                    {typingText}
+                    <span 
+                      className="animate-pulse ml-0.5" 
+                      style={{ 
+                        color: 'hsl(var(--acid-green))',
+                        animationDuration: '1s' 
+                      }}
+                    >
+                      |
+                    </span>
+                  </span>
                 </span>
-              </span>
-              <span>STRY</span>
-            </div>
-            {/* FELLOWS with teal-blue glow */}
-            <div 
-              className="text-white bg-gradient-fellows-glow bg-clip-text"
-              style={{
-                textShadow: `var(--shadow-fellows-text)`,
-                filter: 'drop-shadow(0 0 15px rgba(20, 184, 166, 0.3))',
-                transform: 'translateZ(8px)',
-                marginTop: '-0.2em'
-              }}
-            >
-              FELLOWS
-            </div>
-          </h1>
-        </div>
+              </div>
 
-        {/* body */}
-        <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
-          <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
-            {">"} A year-long fellowship for Berkeley's top{" "}
-            <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
-              {typingText}
-              <span className="animate-pulse ml-0.5 text-[#1e40af]">|</span>
-            </span>
-          </div>
-          <div
-            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-          >
-            {">"} Join the companies behind{" "}
-            <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
-              <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
-              {", "}
-              <span className="text-white font-medium">{companyGroups[currentGroup][1]}</span>
-              {", "}
-              <span className="text-white font-medium">{companyGroups[currentGroup][2]}</span>
-            </span>
-            .
-          </div>
-        </div>
+              {/* Second terminal line */}
+              <div
+                className="font-mono text-lg leading-relaxed cursor-pointer transition-colors hover:text-white/90 text-center lg:text-left"
+                style={{ lineHeight: 1.6, maxWidth: "70ch" }}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+              >
+                <span className="text-acid-green mr-3">{">"}</span>
+                <span className="text-soft-gray">
+                  Backed by founders of{" "}
+                  <span className="text-white font-medium">Pave</span>
+                  {", "}
+                  <span className="text-white font-medium">Persona</span>
+                  {", "}
+                  <span className="text-white font-medium">Pilot</span>
+                  .
+                </span>
+              </div>
+            </div>
 
-        <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
-          <Button
-            size="xl"
-            className="w-56 mx-auto py-4 text-base font-bold text-white border border-[#1e40af]/40 rounded-full bg-[#1e40af]/35 backdrop-blur-xl hover:bg-[#1e40af]/55 hover:border-[#1e40af]/70 hover:text-white hover:shadow-[0_0_30px_rgba(30,64,175,0.8)] hover:scale-105 transform transition-all duration-300"
-            style={{
-              animation: 'subtle-pulse 3s ease-in-out infinite'
-            }}
-            onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
-          >
-            APPLY
-          </Button>
+            {/* CTA Button */}
+            <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards] text-center lg:text-left">
+              <Button
+                size="xl"
+                className="px-12 py-6 text-lg font-bold bg-gradient-green-cta border-0 rounded-full text-black hover:scale-105 transform transition-all duration-300 shadow-green-glow hover:shadow-button-glow"
+                onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
+              >
+                APPLY
+              </Button>
+            </div>
+
+          </div>
         </div>
       </div>
 
+      {/* Footer */}
       <footer className="absolute bottom-0 left-0 right-0 p-6 text-center">
-        <div className="text-xs font-mono text-white/40">CHEMISTRY VC © 2025</div>
+        <div className="text-xs font-mono text-soft-gray/60">CHEMISTRY VC © 2025</div>
       </footer>
     </div>
   );

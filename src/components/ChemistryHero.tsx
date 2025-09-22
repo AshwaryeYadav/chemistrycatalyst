@@ -550,7 +550,7 @@ export function ChemistryHero() {
         {/* body */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
-            <span style={{ color: 'hsl(96, 92%, 66%)' }}>{">"}</span> A year-long fellowship for Berkeley's top{" "}
+            <span style={{ color: 'hsl(96, 92%, 66%)' }}>{">"}</span> A tight-knit community for Berkeley's top{" "}
             <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
               {typingText}
               <span style={{ color: 'hsl(96, 92%, 66%)' }} className="animate-pulse ml-0.5">|</span>
@@ -580,7 +580,7 @@ export function ChemistryHero() {
             style={{
               animation: 'subtle-pulse 3s ease-in-out infinite'
             }}
-            onClick={() => window.open("https://form.typeform.com/to/iETE0PZy", "_blank")}
+            onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
           >
             APPLY
           </Button>

@@ -383,7 +383,6 @@ export function ChemistryHero() {
                     fontWeight: 200,
                     letterSpacing: "0.02em",
                     lineHeight: 0.95,
-                    perspective: '1000px',
                   }}
                 >
                   <div 
@@ -393,22 +392,7 @@ export function ChemistryHero() {
                       WebkitBackgroundClip: 'text',
                       backgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
-                      textShadow: `
-                        0 1px 0 #e5e7eb,
-                        0 2px 0 #d1d5db,
-                        0 3px 0 #b5b8bc,
-                        0 4px 0 #9ca0a5,
-                        0 5px 0 #83888d,
-                        0 6px 1px rgba(0,0,0,.1),
-                        0 0 5px rgba(0,0,0,.1),
-                        0 1px 3px rgba(0,0,0,.3),
-                        0 3px 5px rgba(0,0,0,.2),
-                        0 5px 10px rgba(0,0,0,.25),
-                        0 10px 10px rgba(0,0,0,.2),
-                        0 20px 20px rgba(0,0,0,.15)
-                      `,
-                      transform: 'rotateX(15deg) rotateY(-5deg)',
-                      transformStyle: 'preserve-3d',
+                      textShadow: '0 0 20px rgba(229, 231, 235, 0.3)'
                     }}
                   >
                     {/* CHEM + ISTRY with morphing I */}
@@ -466,25 +450,9 @@ export function ChemistryHero() {
                     WebkitBackgroundClip: 'text',
                     backgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    textShadow: `
-                      0 1px 0 #9ca3af,
-                      0 2px 0 #6b7280,
-                      0 3px 0 #4b5563,
-                      0 4px 0 #374151,
-                      0 5px 0 #1f2937,
-                      0 6px 1px rgba(0,0,0,.1),
-                      0 0 5px rgba(0,0,0,.1),
-                      0 1px 3px rgba(0,0,0,.3),
-                      0 3px 5px rgba(0,0,0,.2),
-                      0 5px 10px rgba(0,0,0,.25),
-                      0 10px 10px rgba(0,0,0,.2),
-                      0 20px 20px rgba(0,0,0,.15)
-                    `,
+                    textShadow: '0 0 30px rgba(156, 163, 175, 0.5)',
                     marginTop: '10px',
-                    display: 'block',
-                    transform: 'rotateX(15deg) rotateY(5deg)',
-                    transformStyle: 'preserve-3d',
-                    perspective: '1000px'
+                    display: 'block'
                   }}
                 >
                   {/* Purple glow behind */}

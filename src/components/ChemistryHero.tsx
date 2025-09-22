@@ -324,12 +324,15 @@ const HeroCampanile3D = memo(function HeroCampanile3D() {
 
 export function ChemistryHero() {
   const companyGroups = [
-    ["Moderna", "Ginkgo Bioworks", "Platform.sh"],
-    ["Recursion", "Benchling", "Zymergen"],
-    ["Twist Bioscience", "Synthace", "TeselaGen"],
-    ["Emerald Cloud Lab", "Strateos", "Transcriptic"],
-    ["Zymeworks", "AbCellera", "Adimab"],
-    ["Gensyn", "Labguru", "Science Exchange"],
+    ["Plaid", "Persona", "Pilot"],
+    ["Bridge", "Anrok", "Intercom"],
+    ["Nova Credit", "Moov", "Sanlo"],
+    ["Twitch", "Twilio", "SendGrid"],
+    ["PagerDuty", "Intercom", "LaunchDarkly"],
+    ["Periscope Data", "Okera", "Applitools"],
+    ["TRM Labs", "Basis Theory", "Medium"],
+    ["ServiceTitan", "Pave", "Sprig"],
+    ["Rutter", "Equals", "Macro"],
   ];
   const descriptions = ["scientists.", "founders.", "researchers.", "innovators."];
 

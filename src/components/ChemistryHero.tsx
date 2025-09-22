@@ -292,12 +292,13 @@ function RotatingCampanile() {
 const HeroCampanile3D = memo(function HeroCampanile3D() {
   return (
     <div
-      className="mx-auto mb-2 md:mb-4 flex justify-center"
+      className="mx-auto mb-2 md:mb-4"
       style={{
         width: "min(480px, 90vw)",
-        height: "min(420px, 35vh)",
+        height: "min(420px, 50vh)",
         maxWidth: "480px",
-        // Much larger container for seamless rotation without clipping
+        maxHeight: "420px",
+        // Responsive container that adapts to screen size
       }}
       aria-hidden
     >
@@ -413,7 +414,7 @@ export function ChemistryHero() {
     return () => clearInterval(id);
   }, []);
 
-  // CSS for tighter IN-SLOT morph (unchanged)
+  // CSS for tighter IN-SLOT morph with mobile optimization
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
@@ -429,15 +430,6 @@ export function ChemistryHero() {
         overflow: hidden;
         text-align: center;
       }
-      
-      /* Mobile-specific adjustments for the I */
-      @media (max-width: 640px) {
-        .i-slot {
-          --iWidth: 0.32em;
-          --iHeight: 0.88em;
-          --iBaseline: -0.12em;
-        }
-      }
       .i-layer{
         position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;
         will-change: opacity, transform;
@@ -448,6 +440,33 @@ export function ChemistryHero() {
       .i-tower { opacity:0;  transform: translateY(3%)   scale(.985) translateX(var(--towerNudgeX)); }
       .i-slot.on .i-text  { opacity:0; transform: translateY(-3%)  scale(.985); }
       .i-slot.on .i-tower { opacity:1; transform: translateY(0%)   scale(1)    translateX(var(--towerNudgeX)); }
+      
+      /* Mobile optimizations */
+      @media (max-width: 768px) {
+        .i-slot {
+          --iWidth: 0.32em;
+          --iHeight: 0.88em;
+          --iBaseline: -0.12em;
+          --towerNudgeX: 1px;
+        }
+        .i-tower {
+          transform: translateY(2%) scale(.99) translateX(var(--towerNudgeX));
+        }
+        .i-slot.on .i-tower {
+          transform: translateY(-1%) scale(1.02) translateX(var(--towerNudgeX));
+        }
+      }
+      
+      /* Small mobile adjustments */
+      @media (max-width: 480px) {
+        .i-slot {
+          --iWidth: 0.30em;
+          --iHeight: 0.85em;
+          --iBaseline: -0.10em;
+          --towerNudgeX: 2px;
+        }
+      }
+      
       @media (prefers-reduced-motion: reduce){
         .i-layer{ transition:opacity .2s ease !important; transform:none !important; }
       }
@@ -590,7 +609,7 @@ export function ChemistryHero() {
             style={{
               animation: 'subtle-pulse 3s ease-in-out infinite'
             }}
-            onClick={() => window.open("https://form.typeform.com/to/iETE0PZy", "_blank")}
+            onClick={() => window.open("https://form.typeform.com/to/vMxYsW4Y", "_blank")}
           >
             APPLY
           </Button>

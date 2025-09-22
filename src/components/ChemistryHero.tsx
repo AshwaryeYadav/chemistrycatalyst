@@ -380,21 +380,37 @@ export function ChemistryHero() {
                 <h1 
                   className="text-6xl xl:text-8xl font-display leading-none"
                   style={{
-                    fontWeight: 200,
-                    letterSpacing: "0.02em",
+                    fontWeight: 600,
+                    letterSpacing: "0.04em",
                     lineHeight: 0.95,
                   }}
                 >
                   <div 
                     className="relative"
                     style={{
-                      background: 'linear-gradient(135deg, #ffffff 0%, #e5e7eb 50%, #d1d5db 100%)',
+                      background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #a855f7 100%)',
                       WebkitBackgroundClip: 'text',
                       backgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
-                      textShadow: '0 0 20px rgba(229, 231, 235, 0.3)'
+                      textShadow: '0 4px 20px rgba(59, 130, 246, 0.4), 0 8px 40px rgba(139, 92, 246, 0.3)',
+                      filter: 'drop-shadow(0 4px 8px rgba(59, 130, 246, 0.2))'
                     }}
                   >
+                    {/* Glow effect behind CHEMISTRY */}
+                    <div 
+                      className="absolute inset-0 -z-10"
+                      style={{
+                        background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #a855f7 100%)',
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        filter: 'blur(20px)',
+                        opacity: 0.6
+                      }}
+                    >
+                      CHEMISTRY
+                    </div>
+                    
                     {/* CHEM + ISTRY with morphing I */}
                     <span>CHEM</span>
                     <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
@@ -439,28 +455,42 @@ export function ChemistryHero() {
                   </div>
                 </h1>
                 
-                {/* FELLOWS with purple glow behind */}
+                {/* FELLOWS with bold impact */}
                 <h1 
                   className="text-6xl xl:text-8xl font-display leading-none relative"
                   style={{
-                    fontWeight: 200,
-                    letterSpacing: "0.02em",
+                    fontWeight: 600,
+                    letterSpacing: "0.04em",
                     lineHeight: 0.95,
-                    background: 'linear-gradient(135deg, #ffffff 0%, #9ca3af 50%, #6b7280 100%)',
+                    background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 30%, #8b5cf6 70%, #a855f7 100%)',
                     WebkitBackgroundClip: 'text',
                     backgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    textShadow: '0 0 30px rgba(156, 163, 175, 0.5)',
-                    marginTop: '10px',
-                    display: 'block'
+                    textShadow: '0 4px 20px rgba(6, 182, 212, 0.4), 0 8px 40px rgba(59, 130, 246, 0.3)',
+                    marginTop: '16px',
+                    display: 'block',
+                    filter: 'drop-shadow(0 6px 12px rgba(59, 130, 246, 0.3))'
                   }}
                 >
-                  {/* Purple glow behind */}
+                  {/* Multiple glow layers behind FELLOWS */}
+                  <div 
+                    className="absolute inset-0 -z-20"
+                    style={{
+                      background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 30%, #8b5cf6 70%, #a855f7 100%)',
+                      WebkitBackgroundClip: 'text',
+                      backgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      filter: 'blur(30px)',
+                      opacity: 0.7
+                    }}
+                  >
+                    FELLOWS
+                  </div>
                   <div 
                     className="absolute inset-0 -z-10"
                     style={{
-                      background: 'radial-gradient(ellipse 120% 80% at 50% 50%, hsl(var(--electric-purple) / 0.15) 0%, transparent 60%)',
-                      filter: 'blur(40px)',
+                      background: 'radial-gradient(ellipse 150% 100% at 50% 50%, rgba(59, 130, 246, 0.2) 0%, transparent 70%)',
+                      filter: 'blur(60px)',
                     }}
                   />
                   FELLOWS

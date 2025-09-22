@@ -278,7 +278,7 @@ function RotatingCampanile() {
   return (
     <group 
       ref={group} 
-      scale={[0.6, 0.6, 0.6]}
+      scale={[0.9, 0.9, 0.9]}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -294,8 +294,8 @@ const HeroCampanile3D = memo(function HeroCampanile3D() {
     <div
       className="mx-auto mb-6 md:mb-8"
       style={{
-        width: "320px",
-        height: "280px",
+        width: "480px",
+        height: "420px",
         // Much larger container for seamless rotation without clipping
       }}
       aria-hidden

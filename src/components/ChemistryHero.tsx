@@ -463,7 +463,7 @@ export function ChemistryHero() {
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-[#ED6C5C]/10 opacity-40" />
       <div className="absolute inset-0 opacity-[0.03] bg-noise" />
 
-      <div className="max-w-2xl mx-auto px-8 py-16 md:py-20 text-center relative z-10">
+      <div className="w-full mx-auto px-4 py-16 md:py-20 text-center relative z-10">
         {/* 3D Campanile artwork ABOVE the wordmark */}
         <HeroCampanile3D />
 

@@ -434,8 +434,8 @@ export function ChemistryHero() {
       @media (max-width: 640px) {
         .i-slot {
           --iWidth: 0.32em;
-          --iHeight: 0.93em;
-          --iBaseline: -0.08em;
+          --iHeight: 0.88em;
+          --iBaseline: -0.12em;
         }
       }
       .i-layer{

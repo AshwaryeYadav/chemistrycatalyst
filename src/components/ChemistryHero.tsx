@@ -269,7 +269,45 @@ export function ChemistryHero() {
   const [iAsTower, setIAsTower] = useState(false);
   const [typingText, setTypingText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Terminal typing states
+  const [terminalLine1, setTerminalLine1] = useState("");
+  const [terminalLine2, setTerminalLine2] = useState("");
+  const [showCursor1, setShowCursor1] = useState(true);
+  const [showCursor2, setShowCursor2] = useState(false);
+  
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const fullLine1 = "> A year-long fellowship for Berkeley's top ";
+  const fullLine2 = "> Backed by investors behind ";
+
+  // Terminal typing animations
+  useEffect(() => {
+    let timeout1: NodeJS.Timeout;
+    
+    if (terminalLine1.length < fullLine1.length) {
+      timeout1 = setTimeout(() => {
+        setTerminalLine1(fullLine1.substring(0, terminalLine1.length + 1));
+      }, 50);
+    } else {
+      setShowCursor1(false);
+      
+      // Start second line after first is complete
+      let timeout2: NodeJS.Timeout;
+      if (terminalLine2.length < fullLine2.length) {
+        setShowCursor2(true);
+        timeout2 = setTimeout(() => {
+          setTerminalLine2(fullLine2.substring(0, terminalLine2.length + 1));
+        }, 80);
+      } else {
+        setShowCursor2(false);
+      }
+      
+      return () => clearTimeout(timeout2);
+    }
+    
+    return () => clearTimeout(timeout1);
+  }, [terminalLine1, terminalLine2, fullLine1, fullLine2]);
 
   // cycles
   useEffect(() => {
@@ -452,9 +490,9 @@ export function ChemistryHero() {
               </span>
               <span>STRY</span>
             </div>
-            {/* FELLOWS with teal-blue glow */}
+            {/* FELLOWS with enhanced glow */}
             <div 
-              className="text-white bg-gradient-fellows-glow bg-clip-text"
+              className="text-white bg-gradient-fellows-glow bg-clip-text relative"
               style={{
                 textShadow: `var(--shadow-fellows-text)`,
                 filter: 'drop-shadow(0 0 15px rgba(20, 184, 166, 0.3))',
@@ -462,6 +500,16 @@ export function ChemistryHero() {
                 marginTop: '-0.2em'
               }}
             >
+              {/* Background glow layer */}
+              <div 
+                className="absolute inset-0 text-transparent bg-gradient-fellows-glow bg-clip-text blur-md scale-110 opacity-60"
+                style={{
+                  filter: 'blur(8px)',
+                  zIndex: -1
+                }}
+              >
+                FELLOWS
+              </div>
               FELLOWS
             </div>
           </h1>
@@ -470,26 +518,32 @@ export function ChemistryHero() {
         {/* body */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
-            {">"} A year-long fellowship for Berkeley's top{" "}
-            <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
-              {typingText}
-              <span className="animate-pulse ml-0.5 text-[#1e40af]">|</span>
-            </span>
+            <span className="inline-block">{terminalLine1}</span>
+            {showCursor1 && <span className="typing-cursor text-chemistry-teal">█</span>}
+            {!showCursor1 && (
+              <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
+                {typingText}
+                <span className="typing-cursor ml-0.5 text-chemistry-blue">█</span>
+              </span>
+            )}
           </div>
           <div
             className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            {">"} Backed by investors behind{" "}
-            <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
-              <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
-              {", "}
-              <span className="text-white font-medium">{companyGroups[currentGroup][1]}</span>
-              {", "}
-              <span className="text-white font-medium">{companyGroups[currentGroup][2]}</span>
-            </span>
-            .
+            <span className="inline-block">{terminalLine2}</span>
+            {showCursor2 && <span className="typing-cursor text-chemistry-teal">█</span>}
+            {!showCursor2 && terminalLine2.length === fullLine2.length && (
+              <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
+                <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
+                {", "}
+                <span className="text-white font-medium">{companyGroups[currentGroup][1]}</span>
+                {", "}
+                <span className="text-white font-medium">{companyGroups[currentGroup][2]}</span>
+                .
+              </span>
+            )}
           </div>
         </div>
 

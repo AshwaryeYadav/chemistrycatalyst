@@ -73,7 +73,7 @@ All colors MUST be HSL.
     --shadow-fellows-text: 0 0 20px hsl(var(--chemistry-teal) / 0.4), 0 0 40px hsl(var(--chemistry-blue-light) / 0.2);
     
     /* Typography */
-    --font-display: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: "Space Grotesk", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
     
     /* Animations */
     --transition-elite: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -144,6 +144,34 @@ All colors MUST be HSL.
     50% {
       transform: translateY(-10px) rotate(1deg);
     }
+  }
+  
+  @keyframes typewriter {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+  
+  @keyframes blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+  
+  .typing-line {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typewriter 2s steps(40, end) forwards;
+  }
+  
+  .typing-cursor {
+    animation: blink 1s infinite;
   }
   
   .bg-noise {

@@ -92,9 +92,9 @@ export default {
 				'elite': 'cubic-bezier(0.4, 0, 0.2, 1)',
 			},
 			fontFamily: {
-				'sans': ['Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
-				'display': ['Inter', 'SF Pro Display', 'sans-serif'],
-				'mono': ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
+				'sans': ['Space Grotesk', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+				'display': ['Space Grotesk', 'SF Pro Display', 'sans-serif'],
+				'mono': ['IBM Plex Mono', 'JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

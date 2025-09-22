@@ -387,23 +387,41 @@ export function ChemistryHero() {
                   <div 
                     className="relative"
                     style={{
-                      background: 'linear-gradient(135deg, #ffffff 0%, #8b5cf6 50%, #3b82f6 100%)',
+                      background: 'linear-gradient(135deg, #ffffff 0%, #e5e7eb 50%, #d1d5db 100%)',
                       WebkitBackgroundClip: 'text',
                       backgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
-                      textShadow: '0 0 30px rgba(139, 92, 246, 0.5)'
+                      textShadow: '0 0 20px rgba(229, 231, 235, 0.3)'
                     }}
                   >
                     {/* CHEM + ISTRY with morphing I */}
                     <span>CHEM</span>
                     <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
-                      <span className="i-layer i-text">I</span>
+                      <span 
+                        className="i-layer i-text"
+                        style={{
+                          background: 'linear-gradient(135deg, #c084fc 0%, #e879f9 50%, #f0abfc 100%)',
+                          WebkitBackgroundClip: 'text',
+                          backgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          textShadow: '0 0 25px rgba(192, 132, 252, 0.6)'
+                        }}
+                      >
+                        I
+                      </span>
                       <span className="i-layer i-tower">
                         <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" style={{verticalAlign: 'baseline'}}>
-                          {/* Campanile with electric purple color */}
-                          <rect x="12" y="68" width="11" height="8" fill="hsl(var(--electric-purple))" />
-                          <rect x="12" y="25" width="11" height="43" fill="hsl(var(--electric-purple))" />
-                          <rect x="10" y="13" width="15" height="12" fill="hsl(var(--electric-purple))" />
+                          {/* Campanile with light purple gradient */}
+                          <defs>
+                            <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" stopColor="#c084fc" />
+                              <stop offset="50%" stopColor="#e879f9" />
+                              <stop offset="100%" stopColor="#f0abfc" />
+                            </linearGradient>
+                          </defs>
+                          <rect x="12" y="68" width="11" height="8" fill="url(#purpleGradient)" />
+                          <rect x="12" y="25" width="11" height="43" fill="url(#purpleGradient)" />
+                          <rect x="10" y="13" width="15" height="12" fill="url(#purpleGradient)" />
                           <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
                           <path d="M 17 17 Q 19 14 21 17 L 21 22 L 17 22 Z" fill="rgba(0,0,0,0.4)" />
                           <path d="M 22 17 Q 24 14 26 17 L 26 22 L 22 22 Z" fill="rgba(0,0,0,0.4)" />
@@ -411,8 +429,8 @@ export function ChemistryHero() {
                           <rect x="16" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
                           <rect x="19" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
                           <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                          <rect x="9" y="11" width="17" height="2" fill="hsl(var(--electric-purple))" />
-                          <polygon points="17.5,2 26,11 9,11" fill="hsl(var(--electric-purple))" />
+                          <rect x="9" y="11" width="17" height="2" fill="url(#purpleGradient)" />
+                          <polygon points="17.5,2 26,11 9,11" fill="url(#purpleGradient)" />
                         </svg>
                       </span>
                     </span>

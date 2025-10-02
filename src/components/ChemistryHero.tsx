@@ -12,10 +12,10 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
   const lavenderRef = useRef<THREE.Mesh>(null);
   const greenRef = useRef<THREE.Mesh>(null);
   
-  // Optimized geometries with reduced segments for better performance
-  const blueGeometry = useMemo(() => new THREE.BoxGeometry(1.2, 1, 0.4, 16, 16, 16), []);
-  const lavenderGeometry = useMemo(() => new THREE.BoxGeometry(1.2, 1, 0.4, 16, 16, 16), []);
-  const greenGeometry = useMemo(() => new THREE.BoxGeometry(1.8, 1, 0.4, 16, 16, 16), []);
+  // High-resolution geometries for crisp edges
+  const blueGeometry = useMemo(() => new THREE.BoxGeometry(1.2, 1, 0.4, 24, 24, 24), []);
+  const lavenderGeometry = useMemo(() => new THREE.BoxGeometry(1.2, 1, 0.4, 24, 24, 24), []);
+  const greenGeometry = useMemo(() => new THREE.BoxGeometry(1.8, 1, 0.4, 24, 24, 24), []);
   
   // Memoized materials for better performance
   const blueMaterial = useMemo(() => new THREE.MeshStandardMaterial({
@@ -359,17 +359,17 @@ const HeroEllipses3D = memo(function HeroEllipses3D() {
       aria-hidden
     >
       <Canvas
-        dpr={[1, 1.5]}
+        dpr={[1, 2]}
         frameloop="always"
         camera={{ position: [0, 0, 8], fov: 35 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         flat
         gl={{ 
-          antialias: false, 
+          antialias: true, 
           alpha: true, 
           powerPreference: "high-performance",
           stencil: false,
-          depth: false
+          depth: true
         }}
         performance={{ min: 0.5, max: 1, debounce: 200 }}
       >

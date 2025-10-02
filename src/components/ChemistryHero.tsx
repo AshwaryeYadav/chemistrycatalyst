@@ -17,26 +17,14 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
   useFrame((state) => {
     const time = state.clock.elapsedTime;
     
-    // Create distinct phases: spread out with bouncing, then come together
-    const cycleTime = time % 4; // 4 second cycle
-    const isComingTogether = cycleTime > 2; // Last 2 seconds: come together
+    // Horizontal animation: boxes come together and spread apart
+    const cycle = (Math.sin(time * 0.6) + 1) / 2; // 0 to 1
+    const spread = cycle * 2.5 + 0.6; // varies from 0.6 (close) to 3.1 (far)
     
-    // Horizontal spread: wide when bouncing, tight when together
-    let spread;
-    if (isComingTogether) {
-      const progress = (cycleTime - 2) / 2; // 0 to 1
-      spread = 3.0 - (progress * 2.3); // 3.0 to 0.7
-    } else {
-      spread = 3.0; // Spread apart
-    }
-    
-    // Vertical bouncing - more active when spread, calmer when together
-    const bounceIntensity = isComingTogether ? 0.3 : 0.8;
-    const bounceSpeed = isComingTogether ? 3 : 2.5;
-    
-    const blueBounce = Math.sin(time * bounceSpeed) * bounceIntensity;
-    const lavenderBounce = Math.sin(time * bounceSpeed + Math.PI * 0.66) * bounceIntensity;
-    const greenBounce = Math.sin(time * bounceSpeed + Math.PI * 1.33) * bounceIntensity;
+    // Vertical bouncing for each box (different phases)
+    const blueBounce = Math.sin(time * 2) * 0.8;
+    const lavenderBounce = Math.sin(time * 2 + Math.PI * 0.5) * 0.8;
+    const greenBounce = Math.sin(time * 2 + Math.PI) * 0.8;
     
     // Blue box (left)
     if (blueRef.current) {

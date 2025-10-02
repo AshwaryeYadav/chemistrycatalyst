@@ -37,24 +37,24 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         if (blueRef.current) {
           blueRef.current.position.set(-1.2, 0, 0);
           blueRef.current.scale.set(pulse, pulse, pulse);
-          blueRef.current.rotation.x = time * 0.2;
-          blueRef.current.rotation.y = time * 0.3;
+          blueRef.current.rotation.x = time * 0.5;
+          blueRef.current.rotation.y = time * 0.4;
         }
         
         if (lavenderRef.current) {
           const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
           lavenderRef.current.position.set(0, 0, 0);
           lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse);
-          lavenderRef.current.rotation.x = time * 0.2 + Math.PI * 0.66;
-          lavenderRef.current.rotation.y = time * 0.3 + Math.PI * 0.66;
+          lavenderRef.current.rotation.x = time * 0.5 + Math.PI * 0.66;
+          lavenderRef.current.rotation.y = time * 0.4 + Math.PI * 0.66;
         }
         
         if (greenRef.current) {
           const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
           greenRef.current.position.set(1.5, 0, 0);
           greenRef.current.scale.set(greenPulse, greenPulse, greenPulse);
-          greenRef.current.rotation.x = time * 0.2 + Math.PI * 1.33;
-          greenRef.current.rotation.y = time * 0.3 + Math.PI * 1.33;
+          greenRef.current.rotation.x = time * 0.5 + Math.PI * 1.33;
+          greenRef.current.rotation.y = time * 0.4 + Math.PI * 1.33;
         }
       } else {
         if (blueRef.current) blueRef.current.position.set(-1.2, 0, 0);
@@ -62,26 +62,47 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         if (greenRef.current) greenRef.current.position.set(1.5, 0, 0);
       }
     }
-    // Phase 2: Transition to loading (8-9s)
-    else if (cycleTime < 9) {
-      const transitionProgress = (cycleTime - 8);
-      const easeInOut = transitionProgress < 0.5 
-        ? 2 * transitionProgress * transitionProgress 
-        : 1 - Math.pow(-2 * transitionProgress + 2, 2) / 2;
+    // Phase 2: Transition to loading (8-10s) - Smooth spiral down
+    else if (cycleTime < 10) {
+      const transitionProgress = (cycleTime - 8) / 2;
+      const easeOut = 1 - Math.pow(1 - transitionProgress, 3);
       
-      [blueRef, lavenderRef, greenRef].forEach((ref) => {
-        if (ref.current) {
-          ref.current.rotation.x *= (1 - easeInOut);
-          ref.current.rotation.y *= (1 - easeInOut);
-          const currentScale = ref.current.scale.x;
-          const newScale = currentScale * (1 - easeInOut) + 1 * easeInOut;
-          ref.current.scale.set(newScale, newScale, newScale);
-        }
-      });
+      if (blueRef.current) {
+        const rotDecay = Math.pow(1 - transitionProgress, 2);
+        const spiralY = Math.sin(transitionProgress * Math.PI * 3) * 0.3 * (1 - transitionProgress);
+        blueRef.current.position.set(-1.2, spiralY, 0);
+        blueRef.current.rotation.x *= rotDecay;
+        blueRef.current.rotation.y *= rotDecay;
+        const pulse = Math.sin(time * 1.2) * 0.15 + 1;
+        const targetScale = 1 + (pulse - 1) * (1 - easeOut);
+        blueRef.current.scale.set(targetScale, targetScale, targetScale);
+      }
+      
+      if (lavenderRef.current) {
+        const rotDecay = Math.pow(1 - transitionProgress, 2);
+        const spiralY = Math.sin((transitionProgress + 0.1) * Math.PI * 3) * 0.3 * (1 - transitionProgress);
+        lavenderRef.current.position.set(0, spiralY, 0);
+        lavenderRef.current.rotation.x *= rotDecay;
+        lavenderRef.current.rotation.y *= rotDecay;
+        const pulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
+        const targetScale = 1 + (pulse - 1) * (1 - easeOut);
+        lavenderRef.current.scale.set(targetScale, targetScale, targetScale);
+      }
+      
+      if (greenRef.current) {
+        const rotDecay = Math.pow(1 - transitionProgress, 2);
+        const spiralY = Math.sin((transitionProgress + 0.2) * Math.PI * 3) * 0.3 * (1 - transitionProgress);
+        greenRef.current.position.set(1.5, spiralY, 0);
+        greenRef.current.rotation.x *= rotDecay;
+        greenRef.current.rotation.y *= rotDecay;
+        const pulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
+        const targetScale = 1 + (pulse - 1) * (1 - easeOut);
+        greenRef.current.scale.set(targetScale, targetScale, targetScale);
+      }
     }
-    // Phase 3: Loading animation (9-13s) - Sequential bouncing with gaps
-    else if (cycleTime < 13) {
-      const loadingProgress = cycleTime - 9;
+    // Phase 3: Loading animation (10-14s) - Sequential bouncing with gaps
+    else if (cycleTime < 14) {
+      const loadingProgress = cycleTime - 10;
       const bounceFreq = 2.5;
       
       if (blueRef.current) {
@@ -116,9 +137,9 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         greenRef.current.rotation.y = 0;
       }
     }
-    // Phase 3.5: Gap closing transition (13-13.5s) - Smoothly close gaps
-    else if (cycleTime < 13.5) {
-      const transitionProgress = (cycleTime - 13) / 0.5;
+    // Phase 3.5: Gap closing transition (14-14.5s) - Smoothly close gaps
+    else if (cycleTime < 14.5) {
+      const transitionProgress = (cycleTime - 14) / 0.5;
       const easeOut = 1 - Math.pow(1 - transitionProgress, 3);
       
       if (blueRef.current) {
@@ -144,7 +165,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         greenRef.current.rotation.y = 0;
       }
     }
-    // Phase 4: Rectangle state - Stay stable (13.5-27s)
+    // Phase 4: Rectangle state - Stay stable (14.5-27s)
     else if (cycleTime < 27) {
       if (blueRef.current) {
         blueRef.current.position.set(-1.2, 0, 0);
@@ -165,40 +186,40 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         greenRef.current.rotation.y = 0;
       }
     }
-    // Phase 5: Transition back to starting state (27-29s)
+    // Phase 5: Transition back to starting state (27-29s) - Smooth wake-up
     else {
       const transitionProgress = (cycleTime - 27) / 2;
-      const easeInOut = transitionProgress < 0.5 
-        ? 2 * transitionProgress * transitionProgress 
-        : 1 - Math.pow(-2 * transitionProgress + 2, 2) / 2;
+      const easeInOutSmooth = transitionProgress < 0.5 
+        ? 4 * transitionProgress * transitionProgress * transitionProgress
+        : 1 - Math.pow(-2 * transitionProgress + 2, 3) / 2;
       
-      const targetRotSpeed = time * 0.2 * easeInOut;
+      const rotAcceleration = Math.pow(easeInOutSmooth, 2);
       
       if (blueRef.current) {
         blueRef.current.position.set(-1.2, 0, 0);
         const targetScale = Math.sin(time * 1.2) * 0.15 + 1;
-        const currentScale = 1 + (targetScale - 1) * easeInOut;
+        const currentScale = 1 + (targetScale - 1) * easeInOutSmooth;
         blueRef.current.scale.set(currentScale, currentScale, currentScale);
-        blueRef.current.rotation.x = targetRotSpeed;
-        blueRef.current.rotation.y = targetRotSpeed * 1.5;
+        blueRef.current.rotation.x = time * 0.5 * rotAcceleration;
+        blueRef.current.rotation.y = time * 0.4 * rotAcceleration;
       }
       
       if (lavenderRef.current) {
         lavenderRef.current.position.set(0, 0, 0);
         const targetScale = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
-        const currentScale = 1 + (targetScale - 1) * easeInOut;
+        const currentScale = 1 + (targetScale - 1) * easeInOutSmooth;
         lavenderRef.current.scale.set(currentScale, currentScale, currentScale);
-        lavenderRef.current.rotation.x = targetRotSpeed + Math.PI * 0.66 * easeInOut;
-        lavenderRef.current.rotation.y = targetRotSpeed * 1.5 + Math.PI * 0.66 * easeInOut;
+        lavenderRef.current.rotation.x = (time * 0.5 + Math.PI * 0.66) * rotAcceleration;
+        lavenderRef.current.rotation.y = (time * 0.4 + Math.PI * 0.66) * rotAcceleration;
       }
       
       if (greenRef.current) {
         greenRef.current.position.set(1.5, 0, 0);
         const targetScale = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
-        const currentScale = 1 + (targetScale - 1) * easeInOut;
+        const currentScale = 1 + (targetScale - 1) * easeInOutSmooth;
         greenRef.current.scale.set(currentScale, currentScale, currentScale);
-        greenRef.current.rotation.x = targetRotSpeed + Math.PI * 1.33 * easeInOut;
-        greenRef.current.rotation.y = targetRotSpeed * 1.5 + Math.PI * 1.33 * easeInOut;
+        greenRef.current.rotation.x = (time * 0.5 + Math.PI * 1.33) * rotAcceleration;
+        greenRef.current.rotation.y = (time * 0.4 + Math.PI * 1.33) * rotAcceleration;
       }
     }
   });

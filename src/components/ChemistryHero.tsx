@@ -6,237 +6,131 @@ import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** Loading Bar with Bouncing Segments */
-const FrostedColumn = memo(function FrostedColumn() {
-  const groupRef = useRef<THREE.Group>(null);
-  const purpleRef = useRef<THREE.Mesh>(null);      // Left - purple
-  const lightPurpleRef = useRef<THREE.Mesh>(null); // Middle - light purple
-  const greenRef = useRef<THREE.Mesh>(null);       // Right - green (longer)
+/** Animated Ellipses - Chemistry Logo Style */
+const AnimatedEllipses = memo(function AnimatedEllipses() {
+  const blueRef = useRef<THREE.Mesh>(null);
+  const lavenderRef = useRef<THREE.Mesh>(null);
+  const greenRef = useRef<THREE.Mesh>(null);
   
-  const { regularSegment, longSegment } = useMemo(() => {
-    // Regular segments for purple segments
-    const regular = new THREE.BoxGeometry(1.2, 0.4, 0.4);
-    // Longer segment for green
-    const long = new THREE.BoxGeometry(2.0, 0.4, 0.4);
-    
-    return {
-      regularSegment: regular,
-      longSegment: long
-    };
-  }, []);
+  const sphereGeometry = useMemo(() => new THREE.SphereGeometry(0.5, 32, 32), []);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
     
-    // Extended animation cycle: 18 seconds total
-    const cycle = (time % 18.0) / 18.0;
+    // Smooth pulsing animation
+    const pulse = Math.sin(time * 1.2) * 0.15 + 1;
     
-    if (cycle < 0.22) {
-      // Phase 1: Bouncing and spinning (0-4s)
-      const bounceTime = cycle * 4.5; // Scale for bounce timing
-      
-      // Purple (left) bounces first
-      if (purpleRef.current) {
-        const bounce = Math.sin(bounceTime * 3) * 0.4;
-        const spin = bounceTime * Math.PI * 2;
-        purpleRef.current.position.set(-3.0, bounce, 0);
-        purpleRef.current.rotation.z = spin;
-      }
-      
-      // Light purple (middle) bounces after delay
-      if (lightPurpleRef.current) {
-        const delayedBounce = Math.max(0, bounceTime - 0.3);
-        const bounce = Math.sin(delayedBounce * 3) * 0.4;
-        const spin = delayedBounce * Math.PI * 2;
-        lightPurpleRef.current.position.set(0, bounce, 0);
-        lightPurpleRef.current.rotation.z = spin;
-      }
-      
-      // Green (right) bounces last and spins differently
-      if (greenRef.current) {
-        const delayedBounce = Math.max(0, bounceTime - 0.6);
-        const bounce = Math.sin(delayedBounce * 3) * 0.4;
-        const spin = delayedBounce * Math.PI * 1.5;
-        greenRef.current.position.set(3.2, bounce, 0);
-        greenRef.current.rotation.y = spin;
-      }
-    } else if (cycle < 0.33) {
-      // Phase 2: Join together (4-6s)
-      const joinProgress = (cycle - 0.22) / 0.11;
-      const easeJoin = 1 - Math.pow(1 - joinProgress, 3);
-      
-      if (purpleRef.current) {
-        const startX = -3.0;
-        const endX = -1.2;
-        const xPos = startX + (endX - startX) * easeJoin;
-        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.22) * 15) * 0.2);
-        purpleRef.current.position.set(xPos, yPos, 0);
-        purpleRef.current.rotation.z = (1 - easeJoin) * Math.PI * 4;
-      }
-      
-      if (lightPurpleRef.current) {
-        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.22) * 15) * 0.2);
-        lightPurpleRef.current.position.set(0, yPos, 0);
-        lightPurpleRef.current.rotation.z = (1 - easeJoin) * Math.PI * 4;
-      }
-      
-      if (greenRef.current) {
-        const startX = 3.2;
-        const endX = 1.6;
-        const xPos = startX + (endX - startX) * easeJoin;
-        const yPos = (1 - easeJoin) * (Math.sin((cycle - 0.22) * 15) * 0.2);
-        greenRef.current.position.set(xPos, yPos, 0);
-        greenRef.current.rotation.y = (1 - easeJoin) * Math.PI * 3;
-      }
-    } else if (cycle < 0.89) {
-      // Phase 3: Stay joined and rotate (6-16s) - 10 seconds
-      if (purpleRef.current) {
-        purpleRef.current.position.set(-1.2, 0, 0);
-        purpleRef.current.rotation.set(0, 0, 0);
-      }
-      if (lightPurpleRef.current) {
-        lightPurpleRef.current.position.set(0, 0, 0);
-        lightPurpleRef.current.rotation.set(0, 0, 0);
-      }
-      if (greenRef.current) {
-        greenRef.current.position.set(1.6, 0, 0);
-        greenRef.current.rotation.set(0, 0, 0);
-      }
-      
-      if (groupRef.current) {
-        const rotateProgress = (cycle - 0.33) / 0.56;
-        groupRef.current.rotation.x = rotateProgress * Math.PI * 6; // Multiple rotations
-      }
-    } else {
-      // Phase 4: Slowly separate (16-18s)
-      const separateProgress = (cycle - 0.89) / 0.11;
-      const easeSeparate = separateProgress * separateProgress * (3 - 2 * separateProgress); // Smooth ease
-      
-      // Reset group rotation gradually
-      if (groupRef.current) {
-        groupRef.current.rotation.x = (1 - easeSeparate) * Math.PI * 6;
-      }
-      
-      if (purpleRef.current) {
-        const startX = -1.2;
-        const endX = -3.0;
-        const xPos = startX + (endX - startX) * easeSeparate;
-        // Add slight bounce as they separate
-        const bounce = easeSeparate * Math.sin(separateProgress * Math.PI * 4) * 0.1;
-        purpleRef.current.position.set(xPos, bounce, 0);
-      }
-      
-      if (lightPurpleRef.current) {
-        const bounce = easeSeparate * Math.sin((separateProgress - 0.2) * Math.PI * 4) * 0.1;
-        lightPurpleRef.current.position.set(0, bounce, 0);
-      }
-      
-      if (greenRef.current) {
-        const startX = 1.6;
-        const endX = 3.2;
-        const xPos = startX + (endX - startX) * easeSeparate;
-        const bounce = easeSeparate * Math.sin((separateProgress - 0.4) * Math.PI * 4) * 0.1;
-        greenRef.current.position.set(xPos, bounce, 0);
-      }
+    // Blue ellipse (left)
+    if (blueRef.current) {
+      blueRef.current.scale.set(pulse, pulse * 0.8, pulse);
+      blueRef.current.rotation.z = time * 0.3;
+    }
+    
+    // Lavender ellipse (center)
+    if (lavenderRef.current) {
+      const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
+      lavenderRef.current.scale.set(lavenderPulse, lavenderPulse * 0.8, lavenderPulse);
+      lavenderRef.current.rotation.z = time * 0.3 + Math.PI * 0.66;
+    }
+    
+    // Green ellipse (right)
+    if (greenRef.current) {
+      const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
+      greenRef.current.scale.set(greenPulse, greenPulse * 0.8, greenPulse);
+      greenRef.current.rotation.z = time * 0.3 + Math.PI * 1.33;
     }
   });
 
   return (
-    <group ref={groupRef}>
-      {/* Purple segment - Left */}
+    <group>
+      {/* Blue ellipse - Left */}
       <mesh 
-        ref={purpleRef} 
-        geometry={regularSegment} 
-        position={[-2.2, 0, 0]} 
+        ref={blueRef} 
+        geometry={sphereGeometry} 
+        position={[-1.8, 0, 0]} 
         castShadow 
         receiveShadow
       >
         <meshPhysicalMaterial
-          color="#7459f8" // Actual purple color
+          color="hsl(235, 75%, 45%)"
           transparent={true}
-          opacity={0.85}
-          roughness={0.8}
-          metalness={0.2}
-          transmission={0.4}
-          thickness={0.3}
-          clearcoat={0.4}
-          clearcoatRoughness={0.6}
-          emissive="#7459f8"
-          emissiveIntensity={0.08}
+          opacity={0.9}
+          roughness={0.3}
+          metalness={0.1}
+          clearcoat={0.8}
+          clearcoatRoughness={0.2}
+          emissive="hsl(235, 75%, 45%)"
+          emissiveIntensity={0.3}
         />
       </mesh>
 
-      {/* Light purple segment - Middle */}
+      {/* Lavender ellipse - Center */}
       <mesh 
-        ref={lightPurpleRef} 
-        geometry={regularSegment} 
+        ref={lavenderRef} 
+        geometry={sphereGeometry} 
         position={[0, 0, 0]} 
         castShadow 
         receiveShadow
       >
         <meshPhysicalMaterial
-          color="#c6e2ff" // Soft purple
+          color="hsl(260, 50%, 70%)"
           transparent={true}
-          opacity={0.85}
-          roughness={0.8}
-          metalness={0.2}
-          transmission={0.4}
-          thickness={0.3}
-          clearcoat={0.4}
-          clearcoatRoughness={0.6}
-          emissive="#c6e2ff"
-          emissiveIntensity={0.06}
+          opacity={0.9}
+          roughness={0.3}
+          metalness={0.1}
+          clearcoat={0.8}
+          clearcoatRoughness={0.2}
+          emissive="hsl(260, 50%, 70%)"
+          emissiveIntensity={0.3}
         />
       </mesh>
 
-      {/* Green segment - Right (longer) */}
+      {/* Green ellipse - Right */}
       <mesh 
         ref={greenRef} 
-        geometry={longSegment} 
-        position={[2.4, 0, 0]} 
+        geometry={sphereGeometry} 
+        position={[1.8, 0, 0]} 
         castShadow 
         receiveShadow
       >
         <meshPhysicalMaterial
-          color="#99f859" // Bright green
+          color="hsl(85, 95%, 65%)"
           transparent={true}
-          opacity={0.85}
-          roughness={0.8}
-          metalness={0.2}
-          transmission={0.4}
-          thickness={0.3}
-          clearcoat={0.4}
-          clearcoatRoughness={0.6}
-          emissive="#99f859"
-          emissiveIntensity={0.08}
+          opacity={0.9}
+          roughness={0.3}
+          metalness={0.1}
+          clearcoat={0.8}
+          clearcoatRoughness={0.2}
+          emissive="hsl(85, 95%, 65%)"
+          emissiveIntensity={0.3}
         />
       </mesh>
 
-      {/* Glow lights for each segment */}
+      {/* Glow lights */}
       <pointLight
-        position={[-2.2, 0, 0]}
-        color="#7459f8"
-        intensity={0.4}
-        distance={3}
+        position={[-1.8, 0, 0]}
+        color="hsl(235, 75%, 45%)"
+        intensity={0.8}
+        distance={4}
       />
       <pointLight
         position={[0, 0, 0]}
-        color="#c6e2ff"
-        intensity={0.3}
-        distance={3}
+        color="hsl(260, 50%, 70%)"
+        intensity={0.8}
+        distance={4}
       />
       <pointLight
-        position={[2.4, 0, 0]}
-        color="#99f859"
-        intensity={0.4}
-        distance={3}
+        position={[1.8, 0, 0]}
+        color="hsl(85, 95%, 65%)"
+        intensity={0.8}
+        distance={4}
       />
     </group>
   );
 });
 
-/** Interactive rotating Campanile with mouse controls */
-function RotatingCampanile() {
+/** Interactive rotating ellipses with mouse controls */
+function RotatingEllipses() {
   const group = useRef<THREE.Group>(null!);
   const [isDragging, setIsDragging] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
@@ -244,7 +138,7 @@ function RotatingCampanile() {
 
   useFrame((_s, dt) => {
     if (group.current && autoRotate && !isDragging) {
-      group.current.rotation.x += dt * 0.5; // X-axis rotation for frosted column
+      group.current.rotation.y += dt * 0.5;
     }
   });
 
@@ -263,57 +157,55 @@ function RotatingCampanile() {
       y: event.clientY - previousMousePosition.y
     };
 
+    group.current.rotation.y += deltaMove.x * 0.01;
     group.current.rotation.x += deltaMove.y * 0.01;
-    group.current.rotation.z += deltaMove.x * 0.01;
     
     setPreviousMousePosition({ x: event.clientX, y: event.clientY });
   };
 
   const handlePointerUp = () => {
     setIsDragging(false);
-    // Resume auto-rotation immediately
     setAutoRotate(true);
   };
 
   return (
     <group 
       ref={group} 
-      scale={[0.9, 0.9, 0.9]}
+      scale={[1.2, 1.2, 1.2]}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
     >
-      <FrostedColumn />
+      <AnimatedEllipses />
     </group>
   );
 }
 
-/** Top artwork: standalone 3D Campanile above the wordmark */
-const HeroCampanile3D = memo(function HeroCampanile3D() {
+/** Top artwork: animated 3D ellipses above the wordmark */
+const HeroEllipses3D = memo(function HeroEllipses3D() {
   return (
     <div
       className="mx-auto mb-2 md:mb-4 w-full max-w-[320px] sm:max-w-[420px] md:max-w-[480px]"
       style={{
         height: "280px",
-        // Responsive container that scales down for mobile
       }}
       aria-hidden
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [8.0, 6.0, 12.0], fov: 20 }}
+        camera={{ position: [0, 0, 8], fov: 35 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         shadows
       >
-        <ambientLight intensity={0.25} />
+        <ambientLight intensity={0.4} />
         <directionalLight
-          position={[3, 6, 5]}
+          position={[5, 5, 5]}
           castShadow
-          intensity={1.1}
+          intensity={1.5}
           shadow-mapSize={[1024, 1024]}
         />
-        <hemisphereLight args={["#ffffff", "#222222", 0.35]} />
-        <RotatingCampanile />
+        <hemisphereLight args={["#ffffff", "#000000", 0.5]} />
+        <RotatingEllipses />
       </Canvas>
     </div>
   );
@@ -466,8 +358,8 @@ export function ChemistryHero() {
       <div className="absolute inset-0 opacity-[0.03] bg-noise" />
 
       <div className="w-full mx-auto px-4 py-16 md:py-20 text-center relative z-10">
-        {/* 3D Campanile artwork ABOVE the wordmark */}
-        <HeroCampanile3D />
+        {/* 3D Ellipses artwork ABOVE the wordmark */}
+        <HeroEllipses3D />
 
         <div className="mb-8 opacity-0 animate-[fade-in_0.8s_ease-out_0.4s_forwards]">
           <h1
@@ -478,62 +370,18 @@ export function ChemistryHero() {
               transformStyle: "preserve-3d",
             }}
           >
-            {/* CHEMISTRY with softer purple glow */}
+            {/* CHEMISTRY with Pantone color glow */}
             <div 
               className="text-white/90 bg-gradient-chemistry-glow bg-clip-text"
               style={{
-                textShadow: `var(--shadow-chemistry-text)`,
+                textShadow: `0 0 20px hsl(260 50% 70% / 0.3), 0 0 40px hsl(85 95% 65% / 0.2)`,
                 filter: 'drop-shadow(0 0 15px rgba(168, 85, 247, 0.2))',
                 transform: `translateZ(12px) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
               }}
             >
-              {/* CHEM + ISTRY with morphing I */}
-              <span>CHEM</span>
-              <span className={`i-slot ${iAsTower ? 'on' : ''}`}>
-                <span className="i-layer i-text">I</span>
-                <span className="i-layer i-tower">
-                  <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" style={{verticalAlign: 'baseline'}}>
-                    {/* Gradient definitions */}
-                    <defs>
-                      <linearGradient id="campanileGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="hsl(var(--campanile-gradient-start))" />
-                        <stop offset="100%" stopColor="hsl(var(--campanile-gradient-end))" />
-                      </linearGradient>
-                    </defs>
-                    
-                    {/* Campanile with base aligned to text baseline - light purple to green gradient */}
-                    
-                    {/* Base - positioned at text baseline level */}
-                    <rect x="12" y="68" width="11" height="8" fill="url(#campanileGradient)" />
-                    
-                    {/* Main tower shaft - shortened */}
-                    <rect x="12" y="25" width="11" height="43" fill="url(#campanileGradient)" />
-                    
-                    {/* Upper belfry section */}
-                    <rect x="10" y="13" width="15" height="12" fill="url(#campanileGradient)" />
-                    
-                    {/* Gothic arched openings */}
-                    <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
-                    <path d="M 17 17 Q 19 14 21 17 L 21 22 L 17 22 Z" fill="rgba(0,0,0,0.4)" />
-                    <path d="M 22 17 Q 24 14 26 17 L 26 22 L 22 22 Z" fill="rgba(0,0,0,0.4)" />
-                    
-                    {/* Small upper windows */}
-                    <rect x="13" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                    <rect x="16" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                    <rect x="19" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                    <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
-                    
-                    {/* Crown/cornice */}
-                    <rect x="9" y="11" width="17" height="2" fill="url(#campanileGradient)" />
-                    
-                    {/* Detailed spire */}
-                    <polygon points="17.5,2 26,11 9,11" fill="url(#campanileGradient)" />
-                  </svg>
-                </span>
-              </span>
-              <span>STRY</span>
+              CHEMISTRY
             </div>
-            {/* FELLOWS softer */}
+            {/* CATALYST PROGRAM */}
             <div 
               className="text-white/85"
               style={{
@@ -541,7 +389,7 @@ export function ChemistryHero() {
                 marginTop: '-0.2em'
               }}
             >
-              FELLOWS
+              CATALYST PROGRAM
             </div>
           </h1>
         </div>
@@ -549,10 +397,10 @@ export function ChemistryHero() {
         {/* body */}
         <div className="mb-12 opacity-0 animate-[fade-in_0.8s_ease-out_0.6s_forwards] space-y-4">
           <div className="text-lg font-mono text-white/90 leading-relaxed tracking-wide">
-            <span style={{ color: 'hsl(96, 92%, 66%)' }}>{">"}</span> A tight-knit community for Berkeley's top{" "}
+            <span style={{ color: 'hsl(85, 95%, 65%)' }}>{">"}</span> A tight-knit community for Berkeley's top{" "}
             <span className="text-white font-medium relative inline-block min-w-[160px] text-left">
               {typingText}
-              <span style={{ color: 'hsl(96, 92%, 66%)' }} className="animate-pulse ml-0.5">|</span>
+              <span style={{ color: 'hsl(85, 95%, 65%)' }} className="animate-pulse ml-0.5">|</span>
             </span>
           </div>
           <div
@@ -560,7 +408,7 @@ export function ChemistryHero() {
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            <span style={{ color: 'hsl(96, 92%, 66%)' }}>{">"}</span> Backed by investors behind{" "}
+            <span style={{ color: 'hsl(85, 95%, 65%)' }}>{">"}</span> In partnership with Chemistry, an early-stage venture firm led by investors who have backed companies such as{" "}
             <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
               <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
               {", "}
@@ -587,7 +435,7 @@ export function ChemistryHero() {
       </div>
 
       <footer className="absolute bottom-0 left-0 right-0 p-6 text-center">
-        <div className="text-xs font-mono text-white/40">CHEMISTRY VC © 2025</div>
+        <div className="text-xs font-mono text-white/40">CHEMISTRY VC 2025</div>
       </footer>
     </div>
   );

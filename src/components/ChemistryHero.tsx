@@ -381,7 +381,7 @@ export function ChemistryHero() {
             >
               CHEMISTRY
             </div>
-            {/* CATALYST PROGRAM */}
+            {/* CATALYST */}
             <div 
               className="text-white/85"
               style={{
@@ -389,7 +389,7 @@ export function ChemistryHero() {
                 marginTop: '-0.2em'
               }}
             >
-              CATALYST PROGRAM
+              CATALYST
             </div>
           </h1>
         </div>
@@ -434,9 +434,6 @@ export function ChemistryHero() {
         </div>
       </div>
 
-      <footer className="absolute bottom-0 left-0 right-0 p-6 text-center">
-        <div className="text-xs font-mono text-white/40">CHEMISTRY VC 2025</div>
-      </footer>
     </div>
   );
 }

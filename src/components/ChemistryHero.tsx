@@ -17,37 +17,34 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
   useFrame((state) => {
     const time = state.clock.elapsedTime;
     
-    // Horizontal animation: boxes come together and spread apart
-    const cycle = (Math.sin(time * 0.6) + 1) / 2; // 0 to 1
-    const spread = cycle * 2.5 + 0.6; // varies from 0.6 (close) to 3.1 (far)
+    // Cycle animation: boxes come together and then spread apart
+    const cycle = (Math.sin(time * 0.5) + 1) / 2; // 0 to 1, smooth oscillation
+    const spread = cycle * 2.5 + 0.6; // varies from 0.6 (close together) to 3.1 (far apart)
     
-    // Vertical bouncing for each box (different phases)
-    const blueBounce = Math.sin(time * 2) * 0.8;
-    const lavenderBounce = Math.sin(time * 2 + Math.PI * 0.5) * 0.8;
-    const greenBounce = Math.sin(time * 2 + Math.PI) * 0.8;
+    // Smooth pulsing animation
+    const pulse = Math.sin(time * 1.2) * 0.08 + 1;
     
     // Blue box (left)
     if (blueRef.current) {
       blueRef.current.position.x = -spread;
-      blueRef.current.position.y = blueBounce;
+      blueRef.current.scale.set(pulse, pulse, pulse * 0.3);
       blueRef.current.rotation.y = time * 0.15;
-      blueRef.current.scale.set(1, 1, 0.3);
     }
     
-    // Lavender box (center)
+    // Lavender box (center) - stays at center
     if (lavenderRef.current) {
+      const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.08 + 1;
       lavenderRef.current.position.x = 0;
-      lavenderRef.current.position.y = lavenderBounce;
+      lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse * 0.3);
       lavenderRef.current.rotation.y = time * 0.15 + Math.PI * 0.66;
-      lavenderRef.current.scale.set(1, 1, 0.3);
     }
     
     // Green box (right)
     if (greenRef.current) {
+      const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.08 + 1;
       greenRef.current.position.x = spread;
-      greenRef.current.position.y = greenBounce;
+      greenRef.current.scale.set(greenPulse, greenPulse, greenPulse * 0.3);
       greenRef.current.rotation.y = time * 0.15 + Math.PI * 1.33;
-      greenRef.current.scale.set(1, 1, 0.3);
     }
   });
 

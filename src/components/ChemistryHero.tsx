@@ -12,7 +12,10 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
   const lavenderRef = useRef<THREE.Mesh>(null);
   const greenRef = useRef<THREE.Mesh>(null);
   
-  const boxGeometry = useMemo(() => new THREE.BoxGeometry(1, 1, 1, 32, 32, 32), []);
+  // Rectangular geometries - green is longer
+  const blueGeometry = useMemo(() => new THREE.BoxGeometry(1.2, 1, 0.4, 32, 32, 32), []);
+  const lavenderGeometry = useMemo(() => new THREE.BoxGeometry(1.2, 1, 0.4, 32, 32, 32), []);
+  const greenGeometry = useMemo(() => new THREE.BoxGeometry(1.8, 1, 0.4, 32, 32, 32), []);
   const startTimeRef = useRef<number | null>(null);
 
   useFrame((state) => {
@@ -37,8 +40,8 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         const yPos = bouncePhase * 1.5;
         const scale = 1 + bouncePhase * 0.2;
         
-        blueRef.current.position.set(-1.8, yPos, 0);
-        blueRef.current.scale.set(scale, scale, scale * 0.4);
+        blueRef.current.position.set(-1.5, yPos, 0);
+        blueRef.current.scale.set(scale, scale, scale);
         blueRef.current.rotation.x = 0;
         blueRef.current.rotation.y = 0;
       }
@@ -51,7 +54,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         const scale = 1 + bouncePhase * 0.2;
         
         lavenderRef.current.position.set(0, yPos, 0);
-        lavenderRef.current.scale.set(scale, scale, scale * 0.4);
+        lavenderRef.current.scale.set(scale, scale, scale);
         lavenderRef.current.rotation.x = 0;
         lavenderRef.current.rotation.y = 0;
       }
@@ -64,7 +67,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         const scale = 1 + bouncePhase * 0.2;
         
         greenRef.current.position.set(1.8, yPos, 0);
-        greenRef.current.scale.set(scale, scale, scale * 0.4);
+        greenRef.current.scale.set(scale, scale, scale);
         greenRef.current.rotation.x = 0;
         greenRef.current.rotation.y = 0;
       }
@@ -84,7 +87,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
           const targetScale = 1;
           const currentScale = ref.current.scale.x;
           const newScale = currentScale * (1 - easeOut) + targetScale * easeOut;
-          ref.current.scale.set(newScale, newScale, newScale * 0.4);
+          ref.current.scale.set(newScale, newScale, newScale);
         }
       });
     }
@@ -96,8 +99,8 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         
         // Blue box (left)
         if (blueRef.current) {
-          blueRef.current.position.set(-1.8, 0, 0);
-          blueRef.current.scale.set(pulse, pulse, pulse * 0.4);
+          blueRef.current.position.set(-1.5, 0, 0);
+          blueRef.current.scale.set(pulse, pulse, pulse);
           blueRef.current.rotation.x = time * 0.2;
           blueRef.current.rotation.y = time * 0.3;
         }
@@ -106,7 +109,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         if (lavenderRef.current) {
           const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
           lavenderRef.current.position.set(0, 0, 0);
-          lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse * 0.4);
+          lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse);
           lavenderRef.current.rotation.x = time * 0.2 + Math.PI * 0.66;
           lavenderRef.current.rotation.y = time * 0.3 + Math.PI * 0.66;
         }
@@ -115,13 +118,13 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         if (greenRef.current) {
           const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
           greenRef.current.position.set(1.8, 0, 0);
-          greenRef.current.scale.set(greenPulse, greenPulse, greenPulse * 0.4);
+          greenRef.current.scale.set(greenPulse, greenPulse, greenPulse);
           greenRef.current.rotation.x = time * 0.2 + Math.PI * 1.33;
           greenRef.current.rotation.y = time * 0.3 + Math.PI * 1.33;
         }
       } else {
         // When dragging, maintain positions
-        if (blueRef.current) blueRef.current.position.set(-1.8, 0, 0);
+        if (blueRef.current) blueRef.current.position.set(-1.5, 0, 0);
         if (lavenderRef.current) lavenderRef.current.position.set(0, 0, 0);
         if (greenRef.current) greenRef.current.position.set(1.8, 0, 0);
       }
@@ -133,8 +136,8 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
       {/* Blue box - Left */}
       <mesh 
         ref={blueRef} 
-        geometry={boxGeometry} 
-        position={[-1.8, 0, 0]} 
+        geometry={blueGeometry} 
+        position={[-1.5, 0, 0]} 
         castShadow 
         receiveShadow
       >
@@ -154,7 +157,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
       {/* Lavender box - Center */}
       <mesh 
         ref={lavenderRef} 
-        geometry={boxGeometry} 
+        geometry={lavenderGeometry} 
         position={[0, 0, 0]} 
         castShadow 
         receiveShadow
@@ -172,10 +175,10 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         />
       </mesh>
 
-      {/* Green box - Right */}
+      {/* Green box - Right (longer) */}
       <mesh 
         ref={greenRef} 
-        geometry={boxGeometry} 
+        geometry={greenGeometry} 
         position={[1.8, 0, 0]} 
         castShadow 
         receiveShadow
@@ -195,7 +198,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
 
       {/* Glow lights */}
       <pointLight
-        position={[-1.8, 0, 0]}
+        position={[-1.5, 0, 0]}
         color="hsl(235, 75%, 45%)"
         intensity={1.2}
         distance={5}

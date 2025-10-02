@@ -12,7 +12,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
   const lavenderRef = useRef<THREE.Mesh>(null);
   const greenRef = useRef<THREE.Mesh>(null);
   
-  const sphereGeometry = useMemo(() => new THREE.SphereGeometry(0.5, 32, 32), []);
+  const boxGeometry = useMemo(() => new THREE.BoxGeometry(1, 1, 1, 32, 32, 32), []);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
@@ -20,33 +20,36 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
     // Smooth pulsing animation
     const pulse = Math.sin(time * 1.2) * 0.15 + 1;
     
-    // Blue ellipse (left)
+    // Blue box (left)
     if (blueRef.current) {
-      blueRef.current.scale.set(pulse, pulse * 0.8, pulse);
-      blueRef.current.rotation.z = time * 0.3;
+      blueRef.current.scale.set(pulse, pulse, pulse * 0.4);
+      blueRef.current.rotation.x = time * 0.2;
+      blueRef.current.rotation.y = time * 0.3;
     }
     
-    // Lavender ellipse (center)
+    // Lavender box (center)
     if (lavenderRef.current) {
       const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
-      lavenderRef.current.scale.set(lavenderPulse, lavenderPulse * 0.8, lavenderPulse);
-      lavenderRef.current.rotation.z = time * 0.3 + Math.PI * 0.66;
+      lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse * 0.4);
+      lavenderRef.current.rotation.x = time * 0.2 + Math.PI * 0.66;
+      lavenderRef.current.rotation.y = time * 0.3 + Math.PI * 0.66;
     }
     
-    // Green ellipse (right)
+    // Green box (right)
     if (greenRef.current) {
       const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
-      greenRef.current.scale.set(greenPulse, greenPulse * 0.8, greenPulse);
-      greenRef.current.rotation.z = time * 0.3 + Math.PI * 1.33;
+      greenRef.current.scale.set(greenPulse, greenPulse, greenPulse * 0.4);
+      greenRef.current.rotation.x = time * 0.2 + Math.PI * 1.33;
+      greenRef.current.rotation.y = time * 0.3 + Math.PI * 1.33;
     }
   });
 
   return (
     <group>
-      {/* Blue ellipse - Left */}
+      {/* Blue box - Left */}
       <mesh 
         ref={blueRef} 
-        geometry={sphereGeometry} 
+        geometry={boxGeometry} 
         position={[-1.8, 0, 0]} 
         castShadow 
         receiveShadow
@@ -54,20 +57,20 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
         <meshPhysicalMaterial
           color="hsl(235, 75%, 45%)"
           transparent={true}
-          opacity={0.9}
-          roughness={0.3}
-          metalness={0.1}
-          clearcoat={0.8}
-          clearcoatRoughness={0.2}
+          opacity={0.95}
+          roughness={0.2}
+          metalness={0.2}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
           emissive="hsl(235, 75%, 45%)"
-          emissiveIntensity={0.3}
+          emissiveIntensity={0.4}
         />
       </mesh>
 
-      {/* Lavender ellipse - Center */}
+      {/* Lavender box - Center */}
       <mesh 
         ref={lavenderRef} 
-        geometry={sphereGeometry} 
+        geometry={boxGeometry} 
         position={[0, 0, 0]} 
         castShadow 
         receiveShadow
@@ -75,20 +78,20 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
         <meshPhysicalMaterial
           color="hsl(260, 50%, 70%)"
           transparent={true}
-          opacity={0.9}
-          roughness={0.3}
-          metalness={0.1}
-          clearcoat={0.8}
-          clearcoatRoughness={0.2}
+          opacity={0.95}
+          roughness={0.2}
+          metalness={0.2}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
           emissive="hsl(260, 50%, 70%)"
-          emissiveIntensity={0.3}
+          emissiveIntensity={0.4}
         />
       </mesh>
 
-      {/* Green ellipse - Right */}
+      {/* Green box - Right */}
       <mesh 
         ref={greenRef} 
-        geometry={sphereGeometry} 
+        geometry={boxGeometry} 
         position={[1.8, 0, 0]} 
         castShadow 
         receiveShadow
@@ -96,13 +99,13 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
         <meshPhysicalMaterial
           color="hsl(85, 95%, 65%)"
           transparent={true}
-          opacity={0.9}
-          roughness={0.3}
-          metalness={0.1}
-          clearcoat={0.8}
-          clearcoatRoughness={0.2}
+          opacity={0.95}
+          roughness={0.2}
+          metalness={0.2}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
           emissive="hsl(85, 95%, 65%)"
-          emissiveIntensity={0.3}
+          emissiveIntensity={0.4}
         />
       </mesh>
 
@@ -110,20 +113,20 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
       <pointLight
         position={[-1.8, 0, 0]}
         color="hsl(235, 75%, 45%)"
-        intensity={0.8}
-        distance={4}
+        intensity={1.2}
+        distance={5}
       />
       <pointLight
         position={[0, 0, 0]}
         color="hsl(260, 50%, 70%)"
-        intensity={0.8}
-        distance={4}
+        intensity={1.2}
+        distance={5}
       />
       <pointLight
         position={[1.8, 0, 0]}
         color="hsl(85, 95%, 65%)"
-        intensity={0.8}
-        distance={4}
+        intensity={1.2}
+        distance={5}
       />
     </group>
   );
@@ -423,9 +426,19 @@ export function ChemistryHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-bold text-white border border-green-500/40 rounded-full bg-green-600/35 backdrop-blur-xl hover:bg-green-600/55 hover:border-green-500/70 hover:text-white hover:shadow-[0_0_30px_rgba(34,197,94,0.8)] hover:scale-105 transform transition-all duration-300"
+            className="w-56 mx-auto py-4 text-base font-bold rounded-full backdrop-blur-xl hover:scale-105 transform transition-all duration-300"
             style={{
+              background: 'linear-gradient(135deg, hsl(85, 95%, 65%) 0%, hsl(85, 95%, 75%) 100%)',
+              color: 'hsl(235, 75%, 25%)',
+              border: '2px solid hsl(85, 95%, 75%)',
+              boxShadow: '0 0 25px hsl(85, 95%, 65% / 0.5), inset 0 1px 0 hsl(85, 95%, 85%)',
               animation: 'subtle-pulse 3s ease-in-out infinite'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 40px hsl(85, 95%, 65% / 0.8), inset 0 1px 0 hsl(85, 95%, 85%)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 25px hsl(85, 95%, 65% / 0.5), inset 0 1px 0 hsl(85, 95%, 85%)';
             }}
             onClick={() => window.open("https://form.typeform.com/to/iETE0PZy", "_blank")}
           >

@@ -6,41 +6,125 @@ import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-/** Animated Ellipses - Chemistry Logo Style */
-const AnimatedEllipses = memo(function AnimatedEllipses() {
+/** Animated Ellipses - Chemistry Logo Style with Loading Animation */
+const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDragging: boolean }) {
   const blueRef = useRef<THREE.Mesh>(null);
   const lavenderRef = useRef<THREE.Mesh>(null);
   const greenRef = useRef<THREE.Mesh>(null);
   
   const boxGeometry = useMemo(() => new THREE.BoxGeometry(1, 1, 1, 32, 32, 32), []);
+  const startTimeRef = useRef<number | null>(null);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
     
-    // Smooth pulsing animation
-    const pulse = Math.sin(time * 1.2) * 0.15 + 1;
-    
-    // Blue box (left)
-    if (blueRef.current) {
-      blueRef.current.scale.set(pulse, pulse, pulse * 0.4);
-      blueRef.current.rotation.x = time * 0.2;
-      blueRef.current.rotation.y = time * 0.3;
+    // Initialize start time
+    if (startTimeRef.current === null) {
+      startTimeRef.current = time;
     }
     
-    // Lavender box (center)
-    if (lavenderRef.current) {
-      const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
-      lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse * 0.4);
-      lavenderRef.current.rotation.x = time * 0.2 + Math.PI * 0.66;
-      lavenderRef.current.rotation.y = time * 0.3 + Math.PI * 0.66;
-    }
+    // 20-second cycle
+    const cycleTime = (time - startTimeRef.current) % 20;
     
-    // Green box (right)
-    if (greenRef.current) {
-      const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
-      greenRef.current.scale.set(greenPulse, greenPulse, greenPulse * 0.4);
-      greenRef.current.rotation.x = time * 0.2 + Math.PI * 1.33;
-      greenRef.current.rotation.y = time * 0.3 + Math.PI * 1.33;
+    // Phase 1: Loading animation (0-4s) - Sequential bouncing dots
+    if (cycleTime < 4) {
+      const loadingProgress = cycleTime;
+      const bounceFreq = 2.5;
+      
+      // Blue box (left) - bounces first
+      if (blueRef.current) {
+        const bouncePhase = Math.max(0, Math.sin(loadingProgress * bounceFreq) * Math.exp(-loadingProgress * 0.3));
+        const yPos = bouncePhase * 1.5;
+        const scale = 1 + bouncePhase * 0.2;
+        
+        blueRef.current.position.set(-1.8, yPos, 0);
+        blueRef.current.scale.set(scale, scale, scale * 0.4);
+        blueRef.current.rotation.x = 0;
+        blueRef.current.rotation.y = 0;
+      }
+      
+      // Lavender box (center) - bounces with delay
+      if (lavenderRef.current) {
+        const delay = 0.15;
+        const bouncePhase = Math.max(0, Math.sin((loadingProgress - delay) * bounceFreq) * Math.exp(-(loadingProgress - delay) * 0.3));
+        const yPos = bouncePhase * 1.5;
+        const scale = 1 + bouncePhase * 0.2;
+        
+        lavenderRef.current.position.set(0, yPos, 0);
+        lavenderRef.current.scale.set(scale, scale, scale * 0.4);
+        lavenderRef.current.rotation.x = 0;
+        lavenderRef.current.rotation.y = 0;
+      }
+      
+      // Green box (right) - bounces last
+      if (greenRef.current) {
+        const delay = 0.3;
+        const bouncePhase = Math.max(0, Math.sin((loadingProgress - delay) * bounceFreq) * Math.exp(-(loadingProgress - delay) * 0.3));
+        const yPos = bouncePhase * 1.5;
+        const scale = 1 + bouncePhase * 0.2;
+        
+        greenRef.current.position.set(1.8, yPos, 0);
+        greenRef.current.scale.set(scale, scale, scale * 0.4);
+        greenRef.current.rotation.x = 0;
+        greenRef.current.rotation.y = 0;
+      }
+    }
+    // Phase 2: Transition to stable state (4-5s)
+    else if (cycleTime < 5) {
+      const transitionProgress = (cycleTime - 4) / 1;
+      const easeOut = 1 - Math.pow(1 - transitionProgress, 3);
+      
+      [blueRef, lavenderRef, greenRef].forEach((ref, idx) => {
+        if (ref.current) {
+          const targetY = 0;
+          const currentY = ref.current.position.y;
+          ref.current.position.y = currentY * (1 - easeOut) + targetY * easeOut;
+          
+          // Smooth scale transition
+          const targetScale = 1;
+          const currentScale = ref.current.scale.x;
+          const newScale = currentScale * (1 - easeOut) + targetScale * easeOut;
+          ref.current.scale.set(newScale, newScale, newScale * 0.4);
+        }
+      });
+    }
+    // Phase 3: Interactive rotation state (5-20s)
+    else {
+      // Only rotate if not being dragged by user
+      if (!isDragging) {
+        const pulse = Math.sin(time * 1.2) * 0.15 + 1;
+        
+        // Blue box (left)
+        if (blueRef.current) {
+          blueRef.current.position.set(-1.8, 0, 0);
+          blueRef.current.scale.set(pulse, pulse, pulse * 0.4);
+          blueRef.current.rotation.x = time * 0.2;
+          blueRef.current.rotation.y = time * 0.3;
+        }
+        
+        // Lavender box (center)
+        if (lavenderRef.current) {
+          const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
+          lavenderRef.current.position.set(0, 0, 0);
+          lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse * 0.4);
+          lavenderRef.current.rotation.x = time * 0.2 + Math.PI * 0.66;
+          lavenderRef.current.rotation.y = time * 0.3 + Math.PI * 0.66;
+        }
+        
+        // Green box (right)
+        if (greenRef.current) {
+          const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
+          greenRef.current.position.set(1.8, 0, 0);
+          greenRef.current.scale.set(greenPulse, greenPulse, greenPulse * 0.4);
+          greenRef.current.rotation.x = time * 0.2 + Math.PI * 1.33;
+          greenRef.current.rotation.y = time * 0.3 + Math.PI * 1.33;
+        }
+      } else {
+        // When dragging, maintain positions
+        if (blueRef.current) blueRef.current.position.set(-1.8, 0, 0);
+        if (lavenderRef.current) lavenderRef.current.position.set(0, 0, 0);
+        if (greenRef.current) greenRef.current.position.set(1.8, 0, 0);
+      }
     }
   });
 
@@ -179,7 +263,7 @@ function RotatingEllipses() {
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
     >
-      <AnimatedEllipses />
+      <AnimatedEllipses isDragging={isDragging} />
     </group>
   );
 }

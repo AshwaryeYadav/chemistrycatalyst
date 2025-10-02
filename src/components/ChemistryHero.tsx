@@ -493,7 +493,7 @@ export function ChemistryHero() {
       .i-slot{
         --iWidth: 0.35em;
         --iHeight: 0.92em;
-        --iBaseline: -0.15em;
+        --iBaseline: -0.18em;
         --towerNudgeX: 0px;
         position: relative; display:inline-block;
         inline-size: var(--iWidth);
@@ -501,6 +501,11 @@ export function ChemistryHero() {
         vertical-align: var(--iBaseline);
         overflow: hidden;
         text-align: center;
+      }
+      @media (min-width: 768px) {
+        .i-slot {
+          --iBaseline: -0.15em;
+        }
       }
       .i-layer{
         position:absolute; inset:0; display:flex; align-items:flex-end; justify-content:center;

@@ -17,9 +17,9 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
   useFrame((state) => {
     const time = state.clock.elapsedTime;
     
-    // Cycle animation: boxes come together and then disperse
-    const cycle = (Math.sin(time * 0.4) + 1) / 2; // 0 to 1
-    const spread = 3 - cycle * 1.5; // varies from 3 to 1.5
+    // Cycle animation: boxes come together and then spread apart
+    const cycle = (Math.sin(time * 0.5) + 1) / 2; // 0 to 1, smooth oscillation
+    const spread = cycle * 2.5 + 0.6; // varies from 0.6 (close together) to 3.1 (far apart)
     
     // Smooth pulsing animation
     const pulse = Math.sin(time * 1.2) * 0.08 + 1;
@@ -28,15 +28,15 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
     if (blueRef.current) {
       blueRef.current.position.x = -spread;
       blueRef.current.scale.set(pulse, pulse, pulse * 0.3);
-      blueRef.current.rotation.y = time * 0.2;
+      blueRef.current.rotation.y = time * 0.15;
     }
     
-    // Lavender box (center)
+    // Lavender box (center) - stays at center
     if (lavenderRef.current) {
       const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.08 + 1;
       lavenderRef.current.position.x = 0;
       lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse * 0.3);
-      lavenderRef.current.rotation.y = time * 0.2 + Math.PI * 0.66;
+      lavenderRef.current.rotation.y = time * 0.15 + Math.PI * 0.66;
     }
     
     // Green box (right)
@@ -44,7 +44,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
       const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.08 + 1;
       greenRef.current.position.x = spread;
       greenRef.current.scale.set(greenPulse, greenPulse, greenPulse * 0.3);
-      greenRef.current.rotation.y = time * 0.2 + Math.PI * 1.33;
+      greenRef.current.rotation.y = time * 0.15 + Math.PI * 1.33;
     }
   });
 

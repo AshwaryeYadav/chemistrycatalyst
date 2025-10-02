@@ -12,10 +12,42 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
   const lavenderRef = useRef<THREE.Mesh>(null);
   const greenRef = useRef<THREE.Mesh>(null);
   
-  // Rectangular geometries - green is longer
-  const blueGeometry = useMemo(() => new THREE.BoxGeometry(1.2, 1, 0.4, 32, 32, 32), []);
-  const lavenderGeometry = useMemo(() => new THREE.BoxGeometry(1.2, 1, 0.4, 32, 32, 32), []);
-  const greenGeometry = useMemo(() => new THREE.BoxGeometry(1.8, 1, 0.4, 32, 32, 32), []);
+  // Optimized geometries with reduced segments for better performance
+  const blueGeometry = useMemo(() => new THREE.BoxGeometry(1.2, 1, 0.4, 16, 16, 16), []);
+  const lavenderGeometry = useMemo(() => new THREE.BoxGeometry(1.2, 1, 0.4, 16, 16, 16), []);
+  const greenGeometry = useMemo(() => new THREE.BoxGeometry(1.8, 1, 0.4, 16, 16, 16), []);
+  
+  // Memoized materials for better performance
+  const blueMaterial = useMemo(() => new THREE.MeshStandardMaterial({
+    color: new THREE.Color("hsl(235, 75%, 45%)"),
+    transparent: true,
+    opacity: 0.95,
+    roughness: 0.3,
+    metalness: 0.3,
+    emissive: new THREE.Color("hsl(235, 75%, 45%)"),
+    emissiveIntensity: 0.3,
+  }), []);
+  
+  const lavenderMaterial = useMemo(() => new THREE.MeshStandardMaterial({
+    color: new THREE.Color("hsl(260, 50%, 70%)"),
+    transparent: true,
+    opacity: 0.95,
+    roughness: 0.3,
+    metalness: 0.3,
+    emissive: new THREE.Color("hsl(260, 50%, 70%)"),
+    emissiveIntensity: 0.3,
+  }), []);
+  
+  const greenMaterial = useMemo(() => new THREE.MeshStandardMaterial({
+    color: new THREE.Color("hsl(85, 95%, 65%)"),
+    transparent: true,
+    opacity: 0.95,
+    roughness: 0.3,
+    metalness: 0.3,
+    emissive: new THREE.Color("hsl(85, 95%, 65%)"),
+    emissiveIntensity: 0.3,
+  }), []);
+  
   const startTimeRef = useRef<number | null>(null);
 
   useFrame((state, delta) => {
@@ -227,83 +259,38 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
       <mesh 
         ref={blueRef} 
         geometry={blueGeometry} 
+        material={blueMaterial}
         position={[-1.2, 0, 0]} 
-        castShadow 
-        receiveShadow
-      >
-        <meshPhysicalMaterial
-          color="hsl(235, 75%, 45%)"
-          transparent={true}
-          opacity={0.95}
-          roughness={0.2}
-          metalness={0.2}
-          clearcoat={1}
-          clearcoatRoughness={0.1}
-          emissive="hsl(235, 75%, 45%)"
-          emissiveIntensity={0.4}
-        />
-      </mesh>
+        castShadow={false}
+        frustumCulled={true}
+      />
 
       {/* Lavender box - Center */}
       <mesh 
         ref={lavenderRef} 
         geometry={lavenderGeometry} 
+        material={lavenderMaterial}
         position={[0, 0, 0]} 
-        castShadow 
-        receiveShadow
-      >
-        <meshPhysicalMaterial
-          color="hsl(260, 50%, 70%)"
-          transparent={true}
-          opacity={0.95}
-          roughness={0.2}
-          metalness={0.2}
-          clearcoat={1}
-          clearcoatRoughness={0.1}
-          emissive="hsl(260, 50%, 70%)"
-          emissiveIntensity={0.4}
-        />
-      </mesh>
+        castShadow={false}
+        frustumCulled={true}
+      />
 
       {/* Green box - Right (longer) */}
       <mesh 
         ref={greenRef} 
         geometry={greenGeometry} 
+        material={greenMaterial}
         position={[1.5, 0, 0]} 
-        castShadow 
-        receiveShadow
-      >
-        <meshPhysicalMaterial
-          color="hsl(85, 95%, 65%)"
-          transparent={true}
-          opacity={0.95}
-          roughness={0.2}
-          metalness={0.2}
-          clearcoat={1}
-          clearcoatRoughness={0.1}
-          emissive="hsl(85, 95%, 65%)"
-          emissiveIntensity={0.4}
-        />
-      </mesh>
+        castShadow={false}
+        frustumCulled={true}
+      />
 
-      {/* Glow lights */}
+      {/* Optimized single ambient light */}
       <pointLight
-        position={[-1.2, 0, 0]}
-        color="hsl(235, 75%, 45%)"
-        intensity={1.2}
-        distance={5}
-      />
-      <pointLight
-        position={[0, 0, 0]}
-        color="hsl(260, 50%, 70%)"
-        intensity={1.2}
-        distance={5}
-      />
-      <pointLight
-        position={[1.5, 0, 0]}
-        color="hsl(85, 95%, 65%)"
-        intensity={1.2}
-        distance={5}
+        position={[0, 0, 2]}
+        color="#ffffff"
+        intensity={0.8}
+        distance={8}
       />
     </group>
   );
@@ -372,22 +359,25 @@ const HeroEllipses3D = memo(function HeroEllipses3D() {
       aria-hidden
     >
       <Canvas
-        dpr={[1, 2]}
+        dpr={[1, 1.5]}
         frameloop="always"
         camera={{ position: [0, 0, 8], fov: 35 }}
         style={{ width: "100%", height: "100%", display: "block" }}
-        shadows
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-        performance={{ min: 0.5 }}
+        flat
+        gl={{ 
+          antialias: false, 
+          alpha: true, 
+          powerPreference: "high-performance",
+          stencil: false,
+          depth: false
+        }}
+        performance={{ min: 0.5, max: 1, debounce: 200 }}
       >
-        <ambientLight intensity={0.4} />
+        <ambientLight intensity={0.6} />
         <directionalLight
           position={[5, 5, 5]}
-          castShadow
-          intensity={1.5}
-          shadow-mapSize={[1024, 1024]}
+          intensity={1.2}
         />
-        <hemisphereLight args={["#ffffff", "#000000", 0.5]} />
         <RotatingEllipses />
       </Canvas>
     </div>

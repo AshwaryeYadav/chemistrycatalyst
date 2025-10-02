@@ -29,11 +29,14 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
     // 29-second cycle: start → load → rectangle → back to start
     const cycleTime = (time - startTimeRef.current) % 29;
     
+    // Pre-calculate common values to reduce per-frame calculations
+    const pulse = Math.sin(time * 1.2) * 0.15 + 1;
+    const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
+    const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
+    
     // Phase 1: Starting state - Interactive rotation (0-8s)
     if (cycleTime < 8) {
       if (!isDragging) {
-        const pulse = Math.sin(time * 1.2) * 0.15 + 1;
-        
         if (blueRef.current) {
           blueRef.current.position.set(-1.2, 0, 0);
           blueRef.current.scale.set(pulse, pulse, pulse);
@@ -42,7 +45,6 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         }
         
         if (lavenderRef.current) {
-          const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
           lavenderRef.current.position.set(0, 0, 0);
           lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse);
           lavenderRef.current.rotation.x = time * 0.5 + Math.PI * 0.66;
@@ -50,7 +52,6 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         }
         
         if (greenRef.current) {
-          const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
           greenRef.current.position.set(1.5, 0, 0);
           greenRef.current.scale.set(greenPulse, greenPulse, greenPulse);
           greenRef.current.rotation.x = time * 0.5 + Math.PI * 1.33;
@@ -64,39 +65,35 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
     }
     // Phase 2: Transition to loading (8-10s) - Smooth spiral down
     else if (cycleTime < 10) {
-      const transitionProgress = (cycleTime - 8) / 2;
-      const easeOut = 1 - Math.pow(1 - transitionProgress, 3);
+      const transitionProgress = (cycleTime - 8) * 0.5; // Pre-calculate division
+      const oneMinusProg = 1 - transitionProgress;
+      const easeOut = 1 - oneMinusProg * oneMinusProg * oneMinusProg;
+      const rotDecay = oneMinusProg * oneMinusProg;
       
       if (blueRef.current) {
-        const rotDecay = Math.pow(1 - transitionProgress, 2);
-        const spiralY = Math.sin(transitionProgress * Math.PI * 3) * 0.3 * (1 - transitionProgress);
+        const spiralY = Math.sin(transitionProgress * 9.42) * 0.3 * oneMinusProg; // 9.42 ≈ Math.PI * 3
         blueRef.current.position.set(-1.2, spiralY, 0);
         blueRef.current.rotation.x *= rotDecay;
         blueRef.current.rotation.y *= rotDecay;
-        const pulse = Math.sin(time * 1.2) * 0.15 + 1;
-        const targetScale = 1 + (pulse - 1) * (1 - easeOut);
+        const targetScale = 1 + (pulse - 1) * oneMinusProg;
         blueRef.current.scale.set(targetScale, targetScale, targetScale);
       }
       
       if (lavenderRef.current) {
-        const rotDecay = Math.pow(1 - transitionProgress, 2);
-        const spiralY = Math.sin((transitionProgress + 0.1) * Math.PI * 3) * 0.3 * (1 - transitionProgress);
+        const spiralY = Math.sin((transitionProgress + 0.1) * 9.42) * 0.3 * oneMinusProg;
         lavenderRef.current.position.set(0, spiralY, 0);
         lavenderRef.current.rotation.x *= rotDecay;
         lavenderRef.current.rotation.y *= rotDecay;
-        const pulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
-        const targetScale = 1 + (pulse - 1) * (1 - easeOut);
+        const targetScale = 1 + (lavenderPulse - 1) * oneMinusProg;
         lavenderRef.current.scale.set(targetScale, targetScale, targetScale);
       }
       
       if (greenRef.current) {
-        const rotDecay = Math.pow(1 - transitionProgress, 2);
-        const spiralY = Math.sin((transitionProgress + 0.2) * Math.PI * 3) * 0.3 * (1 - transitionProgress);
+        const spiralY = Math.sin((transitionProgress + 0.2) * 9.42) * 0.3 * oneMinusProg;
         greenRef.current.position.set(1.5, spiralY, 0);
         greenRef.current.rotation.x *= rotDecay;
         greenRef.current.rotation.y *= rotDecay;
-        const pulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
-        const targetScale = 1 + (pulse - 1) * (1 - easeOut);
+        const targetScale = 1 + (greenPulse - 1) * oneMinusProg;
         greenRef.current.scale.set(targetScale, targetScale, targetScale);
       }
     }
@@ -375,12 +372,13 @@ const HeroEllipses3D = memo(function HeroEllipses3D() {
       aria-hidden
     >
       <Canvas
-        dpr={[2, 2]}
+        dpr={[1, 2]}
         frameloop="always"
         camera={{ position: [0, 0, 8], fov: 35 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         shadows
-        gl={{ antialias: true, alpha: true }}
+        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        performance={{ min: 0.5 }}
       >
         <ambientLight intensity={0.4} />
         <directionalLight

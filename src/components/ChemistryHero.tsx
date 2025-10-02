@@ -26,78 +26,14 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
       startTimeRef.current = time;
     }
     
-    // 25-second cycle with seamless transition
-    const cycleTime = (time - startTimeRef.current) % 25;
+    // 30-second cycle: start → load → rectangle → back to start
+    const cycleTime = (time - startTimeRef.current) % 30;
     
-    // Phase 1: Loading animation (0-4s) - Sequential bouncing dots
-    if (cycleTime < 4) {
-      const loadingProgress = cycleTime;
-      const bounceFreq = 2.5;
-      
-      // Blue box (left) - bounces first
-      if (blueRef.current) {
-        const bouncePhase = Math.max(0, Math.sin(loadingProgress * bounceFreq) * Math.exp(-loadingProgress * 0.3));
-        const yPos = bouncePhase * 1.5;
-        const scale = 1 + bouncePhase * 0.2;
-        
-        blueRef.current.position.set(-1.2, yPos, 0);
-        blueRef.current.scale.set(scale, scale, scale);
-        blueRef.current.rotation.x = 0;
-        blueRef.current.rotation.y = 0;
-      }
-      
-      // Lavender box (center) - bounces with delay
-      if (lavenderRef.current) {
-        const delay = 0.15;
-        const bouncePhase = Math.max(0, Math.sin((loadingProgress - delay) * bounceFreq) * Math.exp(-(loadingProgress - delay) * 0.3));
-        const yPos = bouncePhase * 1.5;
-        const scale = 1 + bouncePhase * 0.2;
-        
-        lavenderRef.current.position.set(0, yPos, 0);
-        lavenderRef.current.scale.set(scale, scale, scale);
-        lavenderRef.current.rotation.x = 0;
-        lavenderRef.current.rotation.y = 0;
-      }
-      
-      // Green box (right) - bounces last
-      if (greenRef.current) {
-        const delay = 0.3;
-        const bouncePhase = Math.max(0, Math.sin((loadingProgress - delay) * bounceFreq) * Math.exp(-(loadingProgress - delay) * 0.3));
-        const yPos = bouncePhase * 1.5;
-        const scale = 1 + bouncePhase * 0.2;
-        
-        greenRef.current.position.set(1.5, yPos, 0);
-        greenRef.current.scale.set(scale, scale, scale);
-        greenRef.current.rotation.x = 0;
-        greenRef.current.rotation.y = 0;
-      }
-    }
-    // Phase 2: Transition to stable state (4-5s)
-    else if (cycleTime < 5) {
-      const transitionProgress = (cycleTime - 4) / 1;
-      const easeOut = 1 - Math.pow(1 - transitionProgress, 3);
-      
-      [blueRef, lavenderRef, greenRef].forEach((ref, idx) => {
-        if (ref.current) {
-          const targetY = 0;
-          const currentY = ref.current.position.y;
-          ref.current.position.y = currentY * (1 - easeOut) + targetY * easeOut;
-          
-          // Smooth scale transition
-          const targetScale = 1;
-          const currentScale = ref.current.scale.x;
-          const newScale = currentScale * (1 - easeOut) + targetScale * easeOut;
-          ref.current.scale.set(newScale, newScale, newScale);
-        }
-      });
-    }
-    // Phase 3: Interactive rotation state (5-23s)
-    else if (cycleTime < 23) {
-      // Only rotate if not being dragged by user
+    // Phase 1: Starting state - Interactive rotation (0-8s)
+    if (cycleTime < 8) {
       if (!isDragging) {
         const pulse = Math.sin(time * 1.2) * 0.15 + 1;
         
-        // Blue box (left)
         if (blueRef.current) {
           blueRef.current.position.set(-1.2, 0, 0);
           blueRef.current.scale.set(pulse, pulse, pulse);
@@ -105,7 +41,6 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
           blueRef.current.rotation.y = time * 0.3;
         }
         
-        // Lavender box (center)
         if (lavenderRef.current) {
           const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
           lavenderRef.current.position.set(0, 0, 0);
@@ -114,7 +49,6 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
           lavenderRef.current.rotation.y = time * 0.3 + Math.PI * 0.66;
         }
         
-        // Green box (right)
         if (greenRef.current) {
           const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
           greenRef.current.position.set(1.5, 0, 0);
@@ -123,40 +57,120 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
           greenRef.current.rotation.y = time * 0.3 + Math.PI * 1.33;
         }
       } else {
-        // When dragging, maintain positions
         if (blueRef.current) blueRef.current.position.set(-1.2, 0, 0);
         if (lavenderRef.current) lavenderRef.current.position.set(0, 0, 0);
         if (greenRef.current) greenRef.current.position.set(1.5, 0, 0);
       }
     }
-    // Phase 4: Slowly separate and prepare for loop (23-25s)
-    else {
-      const transitionProgress = (cycleTime - 23) / 2;
-      const easeOut = 1 - Math.pow(1 - transitionProgress, 3);
+    // Phase 2: Transition to loading (8-9s)
+    else if (cycleTime < 9) {
+      const transitionProgress = (cycleTime - 8);
+      const easeInOut = transitionProgress < 0.5 
+        ? 2 * transitionProgress * transitionProgress 
+        : 1 - Math.pow(-2 * transitionProgress + 2, 2) / 2;
       
-      // Slowly decrease rotation speed (damping)
-      const rotationDamping = 1 - easeOut;
-      const slowTime = time * rotationDamping * 0.1;
+      [blueRef, lavenderRef, greenRef].forEach((ref) => {
+        if (ref.current) {
+          ref.current.rotation.x *= (1 - easeInOut);
+          ref.current.rotation.y *= (1 - easeInOut);
+          const currentScale = ref.current.scale.x;
+          const newScale = currentScale * (1 - easeInOut) + 1 * easeInOut;
+          ref.current.scale.set(newScale, newScale, newScale);
+        }
+      });
+    }
+    // Phase 3: Loading animation (9-13s) - Sequential bouncing
+    else if (cycleTime < 13) {
+      const loadingProgress = cycleTime - 9;
+      const bounceFreq = 2.5;
       
+      if (blueRef.current) {
+        const bouncePhase = Math.max(0, Math.sin(loadingProgress * bounceFreq) * Math.exp(-loadingProgress * 0.3));
+        const yPos = bouncePhase * 1.5;
+        const scale = 1 + bouncePhase * 0.2;
+        blueRef.current.position.set(-1.2, yPos, 0);
+        blueRef.current.scale.set(scale, scale, scale);
+        blueRef.current.rotation.x = 0;
+        blueRef.current.rotation.y = 0;
+      }
+      
+      if (lavenderRef.current) {
+        const delay = 0.15;
+        const bouncePhase = Math.max(0, Math.sin((loadingProgress - delay) * bounceFreq) * Math.exp(-(loadingProgress - delay) * 0.3));
+        const yPos = bouncePhase * 1.5;
+        const scale = 1 + bouncePhase * 0.2;
+        lavenderRef.current.position.set(0, yPos, 0);
+        lavenderRef.current.scale.set(scale, scale, scale);
+        lavenderRef.current.rotation.x = 0;
+        lavenderRef.current.rotation.y = 0;
+      }
+      
+      if (greenRef.current) {
+        const delay = 0.3;
+        const bouncePhase = Math.max(0, Math.sin((loadingProgress - delay) * bounceFreq) * Math.exp(-(loadingProgress - delay) * 0.3));
+        const yPos = bouncePhase * 1.5;
+        const scale = 1 + bouncePhase * 0.2;
+        greenRef.current.position.set(1.5, yPos, 0);
+        greenRef.current.scale.set(scale, scale, scale);
+        greenRef.current.rotation.x = 0;
+        greenRef.current.rotation.y = 0;
+      }
+    }
+    // Phase 4: Rectangle state - Stay stable (13-25s)
+    else if (cycleTime < 25) {
       if (blueRef.current) {
         blueRef.current.position.set(-1.2, 0, 0);
         blueRef.current.scale.set(1, 1, 1);
-        blueRef.current.rotation.x = slowTime * 0.2;
-        blueRef.current.rotation.y = slowTime * 0.3;
+        blueRef.current.rotation.x = 0;
+        blueRef.current.rotation.y = 0;
+      }
+      if (lavenderRef.current) {
+        lavenderRef.current.position.set(0, 0, 0);
+        lavenderRef.current.scale.set(1, 1, 1);
+        lavenderRef.current.rotation.x = 0;
+        lavenderRef.current.rotation.y = 0;
+      }
+      if (greenRef.current) {
+        greenRef.current.position.set(1.5, 0, 0);
+        greenRef.current.scale.set(1, 1, 1);
+        greenRef.current.rotation.x = 0;
+        greenRef.current.rotation.y = 0;
+      }
+    }
+    // Phase 5: Transition back to starting state (25-30s)
+    else {
+      const transitionProgress = (cycleTime - 25) / 5;
+      const easeInOut = transitionProgress < 0.5 
+        ? 2 * transitionProgress * transitionProgress 
+        : 1 - Math.pow(-2 * transitionProgress + 2, 2) / 2;
+      
+      const targetRotSpeed = time * 0.2 * easeInOut;
+      
+      if (blueRef.current) {
+        blueRef.current.position.set(-1.2, 0, 0);
+        const targetScale = Math.sin(time * 1.2) * 0.15 + 1;
+        const currentScale = 1 + (targetScale - 1) * easeInOut;
+        blueRef.current.scale.set(currentScale, currentScale, currentScale);
+        blueRef.current.rotation.x = targetRotSpeed;
+        blueRef.current.rotation.y = targetRotSpeed * 1.5;
       }
       
       if (lavenderRef.current) {
         lavenderRef.current.position.set(0, 0, 0);
-        lavenderRef.current.scale.set(1, 1, 1);
-        lavenderRef.current.rotation.x = slowTime * 0.2;
-        lavenderRef.current.rotation.y = slowTime * 0.3;
+        const targetScale = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
+        const currentScale = 1 + (targetScale - 1) * easeInOut;
+        lavenderRef.current.scale.set(currentScale, currentScale, currentScale);
+        lavenderRef.current.rotation.x = targetRotSpeed + Math.PI * 0.66 * easeInOut;
+        lavenderRef.current.rotation.y = targetRotSpeed * 1.5 + Math.PI * 0.66 * easeInOut;
       }
       
       if (greenRef.current) {
         greenRef.current.position.set(1.5, 0, 0);
-        greenRef.current.scale.set(1, 1, 1);
-        greenRef.current.rotation.x = slowTime * 0.2;
-        greenRef.current.rotation.y = slowTime * 0.3;
+        const targetScale = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
+        const currentScale = 1 + (targetScale - 1) * easeInOut;
+        greenRef.current.scale.set(currentScale, currentScale, currentScale);
+        greenRef.current.rotation.x = targetRotSpeed + Math.PI * 1.33 * easeInOut;
+        greenRef.current.rotation.y = targetRotSpeed * 1.5 + Math.PI * 1.33 * easeInOut;
       }
     }
   });

@@ -129,27 +129,35 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         if (greenRef.current) greenRef.current.position.set(1.5, 0, 0);
       }
     }
-    // Phase 4: Transition back to loading (23-25s)
+    // Phase 4: Slowly separate and prepare for loop (23-25s)
     else {
       const transitionProgress = (cycleTime - 23) / 2;
-      const easeInOut = transitionProgress < 0.5 
-        ? 2 * transitionProgress * transitionProgress 
-        : 1 - Math.pow(-2 * transitionProgress + 2, 2) / 2;
+      const easeOut = 1 - Math.pow(1 - transitionProgress, 3);
       
-      // Smoothly transition rotation back to 0
-      [blueRef, lavenderRef, greenRef].forEach((ref, idx) => {
-        if (ref.current) {
-          const targetRotX = 0;
-          const targetRotY = 0;
-          ref.current.rotation.x *= (1 - easeInOut);
-          ref.current.rotation.y *= (1 - easeInOut);
-          
-          // Maintain positions during transition
-          const positions = [-1.2, 0, 1.5];
-          ref.current.position.set(positions[idx], 0, 0);
-          ref.current.scale.set(1, 1, 1);
-        }
-      });
+      // Slowly decrease rotation speed (damping)
+      const rotationDamping = 1 - easeOut;
+      const slowTime = time * rotationDamping * 0.1;
+      
+      if (blueRef.current) {
+        blueRef.current.position.set(-1.2, 0, 0);
+        blueRef.current.scale.set(1, 1, 1);
+        blueRef.current.rotation.x = slowTime * 0.2;
+        blueRef.current.rotation.y = slowTime * 0.3;
+      }
+      
+      if (lavenderRef.current) {
+        lavenderRef.current.position.set(0, 0, 0);
+        lavenderRef.current.scale.set(1, 1, 1);
+        lavenderRef.current.rotation.x = slowTime * 0.2;
+        lavenderRef.current.rotation.y = slowTime * 0.3;
+      }
+      
+      if (greenRef.current) {
+        greenRef.current.position.set(1.5, 0, 0);
+        greenRef.current.scale.set(1, 1, 1);
+        greenRef.current.rotation.x = slowTime * 0.2;
+        greenRef.current.rotation.y = slowTime * 0.3;
+      }
     }
   });
 

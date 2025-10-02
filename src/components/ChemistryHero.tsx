@@ -528,6 +528,18 @@ export function ChemistryHero() {
           transform: scale(1.02);
         }
       }
+      
+      @keyframes gradient-shift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
     `;
     document.head.appendChild(style);
     return () => style.remove();
@@ -589,16 +601,16 @@ export function ChemistryHero() {
             </span>
           </div>
           <div
-            className="text-sm md:text-base font-mono text-white/50 tracking-wide cursor-pointer transition-colors hover:text-white/70 max-w-3xl mx-auto"
+            className="text-sm md:text-base font-mono text-white/50 tracking-wide cursor-pointer transition-colors hover:text-white/70 max-w-2xl mx-auto"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            <div>
+            <div className="mb-1">
               <span style={{ color: 'hsl(85, 95%, 65%)' }}>{">"}</span> In partnership with Chemistry, an early-stage venture firm
             </div>
-            <div className="md:pl-4">
+            <div className="pl-4">
               led by investors who have backed companies such as{" "}
-              <span className="inline-block transition-all duration-500 ease-in-out transform">
+              <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
                 <span className="text-white/90 font-medium">{companyGroups[currentGroup][0]}</span>
                 {", "}
                 <span className="text-white/90 font-medium">{companyGroups[currentGroup][1]}</span>
@@ -613,21 +625,20 @@ export function ChemistryHero() {
         <div className="opacity-0 animate-[fade-in_0.8s_ease-out_0.8s_forwards]">
           <Button
             size="xl"
-            className="w-56 mx-auto py-4 text-base font-bold rounded-full backdrop-blur-xl hover:scale-105 transform transition-all duration-300"
+            className="w-56 mx-auto py-4 text-base font-bold rounded-full backdrop-blur-xl hover:scale-105 transform transition-all duration-300 relative overflow-hidden"
             style={{
               background: 'linear-gradient(135deg, hsl(260, 50%, 75%) 0%, hsl(235, 75%, 65%) 50%, hsl(85, 95%, 70%) 100%)',
+              backgroundSize: '200% 200%',
               color: 'hsl(235, 75%, 15%)',
               border: '2px solid hsl(260, 50%, 85%)',
               boxShadow: '0 0 30px hsl(260, 50%, 70% / 0.6), 0 0 60px hsl(85, 95%, 65% / 0.4), inset 0 1px 0 hsl(260, 50%, 90%)',
-              animation: 'subtle-pulse 3s ease-in-out infinite'
+              animation: 'subtle-pulse 3s ease-in-out infinite, gradient-shift 4s ease infinite'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.boxShadow = '0 0 45px hsl(260, 50%, 70% / 0.9), 0 0 80px hsl(85, 95%, 65% / 0.6), inset 0 1px 0 hsl(260, 50%, 95%)';
-              e.currentTarget.style.background = 'linear-gradient(135deg, hsl(260, 50%, 80%) 0%, hsl(235, 75%, 70%) 50%, hsl(85, 95%, 75%) 100%)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow = '0 0 30px hsl(260, 50%, 70% / 0.6), 0 0 60px hsl(85, 95%, 65% / 0.4), inset 0 1px 0 hsl(260, 50%, 90%)';
-              e.currentTarget.style.background = 'linear-gradient(135deg, hsl(260, 50%, 75%) 0%, hsl(235, 75%, 65%) 50%, hsl(85, 95%, 70%) 100%)';
             }}
             onClick={() => window.open("https://form.typeform.com/to/iETE0PZy", "_blank")}
           >

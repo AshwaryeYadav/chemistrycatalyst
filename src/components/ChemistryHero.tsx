@@ -26,8 +26,8 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
       startTimeRef.current = time;
     }
     
-    // 30-second cycle: start → load → rectangle → back to start
-    const cycleTime = (time - startTimeRef.current) % 30;
+    // 29-second cycle: start → load → rectangle → back to start
+    const cycleTime = (time - startTimeRef.current) % 29;
     
     // Phase 1: Starting state - Interactive rotation (0-8s)
     if (cycleTime < 8) {
@@ -79,7 +79,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         }
       });
     }
-    // Phase 3: Loading animation (9-13s) - Sequential bouncing
+    // Phase 3: Loading animation (9-13s) - Sequential bouncing with gaps
     else if (cycleTime < 13) {
       const loadingProgress = cycleTime - 9;
       const bounceFreq = 2.5;
@@ -88,7 +88,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         const bouncePhase = Math.max(0, Math.sin(loadingProgress * bounceFreq) * Math.exp(-loadingProgress * 0.3));
         const yPos = bouncePhase * 1.5;
         const scale = 1 + bouncePhase * 0.2;
-        blueRef.current.position.set(-1.2, yPos, 0);
+        blueRef.current.position.set(-1.4, yPos, 0);
         blueRef.current.scale.set(scale, scale, scale);
         blueRef.current.rotation.x = 0;
         blueRef.current.rotation.y = 0;
@@ -110,14 +110,42 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         const bouncePhase = Math.max(0, Math.sin((loadingProgress - delay) * bounceFreq) * Math.exp(-(loadingProgress - delay) * 0.3));
         const yPos = bouncePhase * 1.5;
         const scale = 1 + bouncePhase * 0.2;
-        greenRef.current.position.set(1.5, yPos, 0);
+        greenRef.current.position.set(1.7, yPos, 0);
         greenRef.current.scale.set(scale, scale, scale);
         greenRef.current.rotation.x = 0;
         greenRef.current.rotation.y = 0;
       }
     }
-    // Phase 4: Rectangle state - Stay stable (13-25s)
-    else if (cycleTime < 25) {
+    // Phase 3.5: Gap closing transition (13-13.5s) - Smoothly close gaps
+    else if (cycleTime < 13.5) {
+      const transitionProgress = (cycleTime - 13) / 0.5;
+      const easeOut = 1 - Math.pow(1 - transitionProgress, 3);
+      
+      if (blueRef.current) {
+        const xPos = -1.4 + (-1.2 - (-1.4)) * easeOut;
+        blueRef.current.position.set(xPos, 0, 0);
+        blueRef.current.scale.set(1, 1, 1);
+        blueRef.current.rotation.x = 0;
+        blueRef.current.rotation.y = 0;
+      }
+      
+      if (lavenderRef.current) {
+        lavenderRef.current.position.set(0, 0, 0);
+        lavenderRef.current.scale.set(1, 1, 1);
+        lavenderRef.current.rotation.x = 0;
+        lavenderRef.current.rotation.y = 0;
+      }
+      
+      if (greenRef.current) {
+        const xPos = 1.7 + (1.5 - 1.7) * easeOut;
+        greenRef.current.position.set(xPos, 0, 0);
+        greenRef.current.scale.set(1, 1, 1);
+        greenRef.current.rotation.x = 0;
+        greenRef.current.rotation.y = 0;
+      }
+    }
+    // Phase 4: Rectangle state - Stay stable (13.5-27s)
+    else if (cycleTime < 27) {
       if (blueRef.current) {
         blueRef.current.position.set(-1.2, 0, 0);
         blueRef.current.scale.set(1, 1, 1);
@@ -137,9 +165,9 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         greenRef.current.rotation.y = 0;
       }
     }
-    // Phase 5: Transition back to starting state (25-30s)
+    // Phase 5: Transition back to starting state (27-29s)
     else {
-      const transitionProgress = (cycleTime - 25) / 5;
+      const transitionProgress = (cycleTime - 27) / 2;
       const easeInOut = transitionProgress < 0.5 
         ? 2 * transitionProgress * transitionProgress 
         : 1 - Math.pow(-2 * transitionProgress + 2, 2) / 2;

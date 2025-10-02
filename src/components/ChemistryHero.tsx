@@ -578,14 +578,42 @@ export function ChemistryHero() {
               <span className={`i-slot ${iAsTower ? "on" : ""}`}>
                 <span className="i-layer i-text">I</span>
                 <span className="i-layer i-tower">
-                  <svg
-                    viewBox="0 0 20 50"
-                    style={{ width: "0.35em", height: "auto" }}
-                    fill="currentColor"
-                  >
-                    <rect x="7" y="0" width="6" height="12" />
-                    <rect x="6" y="12" width="8" height="3" />
-                    <rect x="8" y="15" width="4" height="35" />
+                  <svg width="0.35em" height="0.92em" viewBox="0 0 35 92" style={{verticalAlign: 'baseline'}}>
+                    {/* Gradient definitions */}
+                    <defs>
+                      <linearGradient id="campanileGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#c6e2ff" />
+                        <stop offset="100%" stopColor="#99f859" />
+                      </linearGradient>
+                    </defs>
+                    
+                    {/* Campanile with base aligned to text baseline - light purple to green gradient */}
+                    
+                    {/* Base - positioned at text baseline level */}
+                    <rect x="12" y="68" width="11" height="8" fill="url(#campanileGradient)" />
+                    
+                    {/* Main tower shaft - shortened */}
+                    <rect x="12" y="25" width="11" height="43" fill="url(#campanileGradient)" />
+                    
+                    {/* Upper belfry section */}
+                    <rect x="10" y="13" width="15" height="12" fill="url(#campanileGradient)" />
+                    
+                    {/* Gothic arched openings */}
+                    <path d="M 12 17 Q 14 14 16 17 L 16 22 L 12 22 Z" fill="rgba(0,0,0,0.4)" />
+                    <path d="M 17 17 Q 19 14 21 17 L 21 22 L 17 22 Z" fill="rgba(0,0,0,0.4)" />
+                    <path d="M 22 17 Q 24 14 26 17 L 26 22 L 22 22 Z" fill="rgba(0,0,0,0.4)" />
+                    
+                    {/* Small upper windows */}
+                    <rect x="13" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    <rect x="16" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    <rect x="19" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    <rect x="22" y="15" width="1.5" height="3" fill="rgba(0,0,0,0.3)" />
+                    
+                    {/* Crown/cornice */}
+                    <rect x="9" y="11" width="17" height="2" fill="url(#campanileGradient)" />
+                    
+                    {/* Detailed spire */}
+                    <polygon points="17.5,2 26,11 9,11" fill="url(#campanileGradient)" />
                   </svg>
                 </span>
               </span>

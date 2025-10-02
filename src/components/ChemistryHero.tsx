@@ -656,7 +656,7 @@ export function ChemistryHero() {
             </div>
             <div className="pl-4">
               led by investors who have backed companies such as{" "}
-              <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
+              <span className="inline-block transition-all duration-500 ease-in-out transform md:whitespace-nowrap">
                 <span className="text-white/90 font-medium">{companyGroups[currentGroup][0]}</span>
                 {", "}
                 <span className="text-white/90 font-medium">{companyGroups[currentGroup][1]}</span>

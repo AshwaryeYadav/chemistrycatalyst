@@ -574,7 +574,22 @@ export function ChemistryHero() {
                 transform: `translateZ(12px) rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)`,
               }}
             >
-              CHEMISTRY
+              CHEM
+              <span className={`i-slot ${iAsTower ? "on" : ""}`}>
+                <span className="i-layer i-text">I</span>
+                <span className="i-layer i-tower">
+                  <svg
+                    viewBox="0 0 20 50"
+                    style={{ width: "0.35em", height: "auto" }}
+                    fill="currentColor"
+                  >
+                    <rect x="7" y="0" width="6" height="12" />
+                    <rect x="6" y="12" width="8" height="3" />
+                    <rect x="8" y="15" width="4" height="35" />
+                  </svg>
+                </span>
+              </span>
+              STRY
             </div>
             {/* CATALYST */}
             <div 

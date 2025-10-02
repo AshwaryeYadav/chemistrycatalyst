@@ -589,19 +589,24 @@ export function ChemistryHero() {
             </span>
           </div>
           <div
-            className="text-base font-mono text-white/60 tracking-wide cursor-pointer transition-colors hover:text-white/80"
+            className="text-sm md:text-base font-mono text-white/50 tracking-wide cursor-pointer transition-colors hover:text-white/70 max-w-3xl mx-auto"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            <span style={{ color: 'hsl(85, 95%, 65%)' }}>{">"}</span> In partnership with Chemistry, an early-stage venture firm led by investors who have backed companies such as{" "}
-            <span className="inline-block transition-all duration-500 ease-in-out transform whitespace-nowrap">
-              <span className="text-white font-medium">{companyGroups[currentGroup][0]}</span>
-              {", "}
-              <span className="text-white font-medium">{companyGroups[currentGroup][1]}</span>
-              {", "}
-              <span className="text-white font-medium">{companyGroups[currentGroup][2]}</span>
-            </span>
-            .
+            <div>
+              <span style={{ color: 'hsl(85, 95%, 65%)' }}>{">"}</span> In partnership with Chemistry, an early-stage venture firm
+            </div>
+            <div className="md:pl-4">
+              led by investors who have backed companies such as{" "}
+              <span className="inline-block transition-all duration-500 ease-in-out transform">
+                <span className="text-white/90 font-medium">{companyGroups[currentGroup][0]}</span>
+                {", "}
+                <span className="text-white/90 font-medium">{companyGroups[currentGroup][1]}</span>
+                {", "}
+                <span className="text-white/90 font-medium">{companyGroups[currentGroup][2]}</span>
+              </span>
+              .
+            </div>
           </div>
         </div>
 
@@ -610,17 +615,19 @@ export function ChemistryHero() {
             size="xl"
             className="w-56 mx-auto py-4 text-base font-bold rounded-full backdrop-blur-xl hover:scale-105 transform transition-all duration-300"
             style={{
-              background: 'linear-gradient(135deg, hsl(85, 95%, 65%) 0%, hsl(85, 95%, 75%) 100%)',
-              color: 'hsl(235, 75%, 25%)',
-              border: '2px solid hsl(85, 95%, 75%)',
-              boxShadow: '0 0 25px hsl(85, 95%, 65% / 0.5), inset 0 1px 0 hsl(85, 95%, 85%)',
+              background: 'linear-gradient(135deg, hsl(260, 50%, 75%) 0%, hsl(235, 75%, 65%) 50%, hsl(85, 95%, 70%) 100%)',
+              color: 'hsl(235, 75%, 15%)',
+              border: '2px solid hsl(260, 50%, 85%)',
+              boxShadow: '0 0 30px hsl(260, 50%, 70% / 0.6), 0 0 60px hsl(85, 95%, 65% / 0.4), inset 0 1px 0 hsl(260, 50%, 90%)',
               animation: 'subtle-pulse 3s ease-in-out infinite'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 40px hsl(85, 95%, 65% / 0.8), inset 0 1px 0 hsl(85, 95%, 85%)';
+              e.currentTarget.style.boxShadow = '0 0 45px hsl(260, 50%, 70% / 0.9), 0 0 80px hsl(85, 95%, 65% / 0.6), inset 0 1px 0 hsl(260, 50%, 95%)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, hsl(260, 50%, 80%) 0%, hsl(235, 75%, 70%) 50%, hsl(85, 95%, 75%) 100%)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 25px hsl(85, 95%, 65% / 0.5), inset 0 1px 0 hsl(85, 95%, 85%)';
+              e.currentTarget.style.boxShadow = '0 0 30px hsl(260, 50%, 70% / 0.6), 0 0 60px hsl(85, 95%, 65% / 0.4), inset 0 1px 0 hsl(260, 50%, 90%)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, hsl(260, 50%, 75%) 0%, hsl(235, 75%, 65%) 50%, hsl(85, 95%, 70%) 100%)';
             }}
             onClick={() => window.open("https://form.typeform.com/to/iETE0PZy", "_blank")}
           >

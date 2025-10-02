@@ -18,7 +18,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
   const greenGeometry = useMemo(() => new THREE.BoxGeometry(1.8, 1, 0.4, 32, 32, 32), []);
   const startTimeRef = useRef<number | null>(null);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     const time = state.clock.elapsedTime;
     
     // Initialize start time
@@ -26,8 +26,8 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
       startTimeRef.current = time;
     }
     
-    // 20-second cycle
-    const cycleTime = (time - startTimeRef.current) % 20;
+    // 25-second cycle with seamless transition
+    const cycleTime = (time - startTimeRef.current) % 25;
     
     // Phase 1: Loading animation (0-4s) - Sequential bouncing dots
     if (cycleTime < 4) {
@@ -40,7 +40,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         const yPos = bouncePhase * 1.5;
         const scale = 1 + bouncePhase * 0.2;
         
-        blueRef.current.position.set(-1.5, yPos, 0);
+        blueRef.current.position.set(-1.2, yPos, 0);
         blueRef.current.scale.set(scale, scale, scale);
         blueRef.current.rotation.x = 0;
         blueRef.current.rotation.y = 0;
@@ -66,7 +66,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         const yPos = bouncePhase * 1.5;
         const scale = 1 + bouncePhase * 0.2;
         
-        greenRef.current.position.set(1.8, yPos, 0);
+        greenRef.current.position.set(1.5, yPos, 0);
         greenRef.current.scale.set(scale, scale, scale);
         greenRef.current.rotation.x = 0;
         greenRef.current.rotation.y = 0;
@@ -91,15 +91,15 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         }
       });
     }
-    // Phase 3: Interactive rotation state (5-20s)
-    else {
+    // Phase 3: Interactive rotation state (5-23s)
+    else if (cycleTime < 23) {
       // Only rotate if not being dragged by user
       if (!isDragging) {
         const pulse = Math.sin(time * 1.2) * 0.15 + 1;
         
         // Blue box (left)
         if (blueRef.current) {
-          blueRef.current.position.set(-1.5, 0, 0);
+          blueRef.current.position.set(-1.2, 0, 0);
           blueRef.current.scale.set(pulse, pulse, pulse);
           blueRef.current.rotation.x = time * 0.2;
           blueRef.current.rotation.y = time * 0.3;
@@ -117,17 +117,39 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         // Green box (right)
         if (greenRef.current) {
           const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
-          greenRef.current.position.set(1.8, 0, 0);
+          greenRef.current.position.set(1.5, 0, 0);
           greenRef.current.scale.set(greenPulse, greenPulse, greenPulse);
           greenRef.current.rotation.x = time * 0.2 + Math.PI * 1.33;
           greenRef.current.rotation.y = time * 0.3 + Math.PI * 1.33;
         }
       } else {
         // When dragging, maintain positions
-        if (blueRef.current) blueRef.current.position.set(-1.5, 0, 0);
+        if (blueRef.current) blueRef.current.position.set(-1.2, 0, 0);
         if (lavenderRef.current) lavenderRef.current.position.set(0, 0, 0);
-        if (greenRef.current) greenRef.current.position.set(1.8, 0, 0);
+        if (greenRef.current) greenRef.current.position.set(1.5, 0, 0);
       }
+    }
+    // Phase 4: Transition back to loading (23-25s)
+    else {
+      const transitionProgress = (cycleTime - 23) / 2;
+      const easeInOut = transitionProgress < 0.5 
+        ? 2 * transitionProgress * transitionProgress 
+        : 1 - Math.pow(-2 * transitionProgress + 2, 2) / 2;
+      
+      // Smoothly transition rotation back to 0
+      [blueRef, lavenderRef, greenRef].forEach((ref, idx) => {
+        if (ref.current) {
+          const targetRotX = 0;
+          const targetRotY = 0;
+          ref.current.rotation.x *= (1 - easeInOut);
+          ref.current.rotation.y *= (1 - easeInOut);
+          
+          // Maintain positions during transition
+          const positions = [-1.2, 0, 1.5];
+          ref.current.position.set(positions[idx], 0, 0);
+          ref.current.scale.set(1, 1, 1);
+        }
+      });
     }
   });
 
@@ -137,7 +159,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
       <mesh 
         ref={blueRef} 
         geometry={blueGeometry} 
-        position={[-1.5, 0, 0]} 
+        position={[-1.2, 0, 0]} 
         castShadow 
         receiveShadow
       >
@@ -179,7 +201,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
       <mesh 
         ref={greenRef} 
         geometry={greenGeometry} 
-        position={[1.8, 0, 0]} 
+        position={[1.5, 0, 0]} 
         castShadow 
         receiveShadow
       >
@@ -198,7 +220,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
 
       {/* Glow lights */}
       <pointLight
-        position={[-1.5, 0, 0]}
+        position={[-1.2, 0, 0]}
         color="hsl(235, 75%, 45%)"
         intensity={1.2}
         distance={5}
@@ -210,7 +232,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses({ isDragging }: { isDrag
         distance={5}
       />
       <pointLight
-        position={[1.8, 0, 0]}
+        position={[1.5, 0, 0]}
         color="hsl(85, 95%, 65%)"
         intensity={1.2}
         distance={5}
@@ -282,10 +304,12 @@ const HeroEllipses3D = memo(function HeroEllipses3D() {
       aria-hidden
     >
       <Canvas
-        dpr={[1, 2]}
+        dpr={[2, 2]}
+        frameloop="always"
         camera={{ position: [0, 0, 8], fov: 35 }}
         style={{ width: "100%", height: "100%", display: "block" }}
         shadows
+        gl={{ antialias: true, alpha: true }}
       >
         <ambientLight intensity={0.4} />
         <directionalLight

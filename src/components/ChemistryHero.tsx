@@ -14,37 +14,68 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
   
   const boxGeometry = useMemo(() => new THREE.BoxGeometry(1, 1, 1, 32, 32, 32), []);
 
-  useFrame((state) => {
+  // Bouncing velocities for each box
+  const velocities = useRef({
+    blue: { x: 0.02, y: 0.015 },
+    lavender: { x: -0.018, y: 0.022 },
+    green: { x: 0.025, y: -0.02 }
+  });
+
+  // Boundary limits
+  const bounds = { x: 3.5, y: 2.5 };
+
+  useFrame((state, delta) => {
     const time = state.clock.elapsedTime;
     
-    // Cycle animation: boxes come together and then spread apart
-    const cycle = (Math.sin(time * 0.5) + 1) / 2; // 0 to 1, smooth oscillation
-    const spread = cycle * 2.5 + 0.6; // varies from 0.6 (close together) to 3.1 (far apart)
-    
-    // Smooth pulsing animation
-    const pulse = Math.sin(time * 1.2) * 0.08 + 1;
-    
-    // Blue box (left)
+    // Blue box - bouncing behavior
     if (blueRef.current) {
-      blueRef.current.position.x = -spread;
-      blueRef.current.scale.set(pulse, pulse, pulse * 0.3);
+      blueRef.current.position.x += velocities.current.blue.x;
+      blueRef.current.position.y += velocities.current.blue.y;
+      
+      // Bounce off edges
+      if (Math.abs(blueRef.current.position.x) > bounds.x) {
+        velocities.current.blue.x *= -1;
+      }
+      if (Math.abs(blueRef.current.position.y) > bounds.y) {
+        velocities.current.blue.y *= -1;
+      }
+      
       blueRef.current.rotation.y = time * 0.15;
+      blueRef.current.scale.set(1, 1, 0.3);
     }
     
-    // Lavender box (center) - stays at center
+    // Lavender box - bouncing behavior
     if (lavenderRef.current) {
-      const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.08 + 1;
-      lavenderRef.current.position.x = 0;
-      lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse * 0.3);
+      lavenderRef.current.position.x += velocities.current.lavender.x;
+      lavenderRef.current.position.y += velocities.current.lavender.y;
+      
+      // Bounce off edges
+      if (Math.abs(lavenderRef.current.position.x) > bounds.x) {
+        velocities.current.lavender.x *= -1;
+      }
+      if (Math.abs(lavenderRef.current.position.y) > bounds.y) {
+        velocities.current.lavender.y *= -1;
+      }
+      
       lavenderRef.current.rotation.y = time * 0.15 + Math.PI * 0.66;
+      lavenderRef.current.scale.set(1, 1, 0.3);
     }
     
-    // Green box (right)
+    // Green box - bouncing behavior
     if (greenRef.current) {
-      const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.08 + 1;
-      greenRef.current.position.x = spread;
-      greenRef.current.scale.set(greenPulse, greenPulse, greenPulse * 0.3);
+      greenRef.current.position.x += velocities.current.green.x;
+      greenRef.current.position.y += velocities.current.green.y;
+      
+      // Bounce off edges
+      if (Math.abs(greenRef.current.position.x) > bounds.x) {
+        velocities.current.green.x *= -1;
+      }
+      if (Math.abs(greenRef.current.position.y) > bounds.y) {
+        velocities.current.green.y *= -1;
+      }
+      
       greenRef.current.rotation.y = time * 0.15 + Math.PI * 1.33;
+      greenRef.current.scale.set(1, 1, 0.3);
     }
   });
 

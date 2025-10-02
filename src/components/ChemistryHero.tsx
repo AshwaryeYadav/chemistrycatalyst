@@ -17,30 +17,34 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
   useFrame((state) => {
     const time = state.clock.elapsedTime;
     
+    // Cycle animation: boxes come together and then disperse
+    const cycle = (Math.sin(time * 0.4) + 1) / 2; // 0 to 1
+    const spread = 3 - cycle * 1.5; // varies from 3 to 1.5
+    
     // Smooth pulsing animation
-    const pulse = Math.sin(time * 1.2) * 0.15 + 1;
+    const pulse = Math.sin(time * 1.2) * 0.08 + 1;
     
     // Blue box (left)
     if (blueRef.current) {
-      blueRef.current.scale.set(pulse, pulse, pulse * 0.4);
-      blueRef.current.rotation.x = time * 0.2;
-      blueRef.current.rotation.y = time * 0.3;
+      blueRef.current.position.x = -spread;
+      blueRef.current.scale.set(pulse, pulse, pulse * 0.3);
+      blueRef.current.rotation.y = time * 0.2;
     }
     
     // Lavender box (center)
     if (lavenderRef.current) {
-      const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.15 + 1;
-      lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse * 0.4);
-      lavenderRef.current.rotation.x = time * 0.2 + Math.PI * 0.66;
-      lavenderRef.current.rotation.y = time * 0.3 + Math.PI * 0.66;
+      const lavenderPulse = Math.sin(time * 1.2 + Math.PI * 0.66) * 0.08 + 1;
+      lavenderRef.current.position.x = 0;
+      lavenderRef.current.scale.set(lavenderPulse, lavenderPulse, lavenderPulse * 0.3);
+      lavenderRef.current.rotation.y = time * 0.2 + Math.PI * 0.66;
     }
     
     // Green box (right)
     if (greenRef.current) {
-      const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.15 + 1;
-      greenRef.current.scale.set(greenPulse, greenPulse, greenPulse * 0.4);
-      greenRef.current.rotation.x = time * 0.2 + Math.PI * 1.33;
-      greenRef.current.rotation.y = time * 0.3 + Math.PI * 1.33;
+      const greenPulse = Math.sin(time * 1.2 + Math.PI * 1.33) * 0.08 + 1;
+      greenRef.current.position.x = spread;
+      greenRef.current.scale.set(greenPulse, greenPulse, greenPulse * 0.3);
+      greenRef.current.rotation.y = time * 0.2 + Math.PI * 1.33;
     }
   });
 
@@ -50,7 +54,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
       <mesh 
         ref={blueRef} 
         geometry={boxGeometry} 
-        position={[-1.8, 0, 0]} 
+        position={[-3, 0, 0]} 
         castShadow 
         receiveShadow
       >
@@ -92,7 +96,7 @@ const AnimatedEllipses = memo(function AnimatedEllipses() {
       <mesh 
         ref={greenRef} 
         geometry={boxGeometry} 
-        position={[1.8, 0, 0]} 
+        position={[3, 0, 0]} 
         castShadow 
         receiveShadow
       >
